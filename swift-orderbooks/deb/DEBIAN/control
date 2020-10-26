@@ -1,0 +1,7 @@
+Package: swift-orderbooks
+Version: 1.0.275
+Maintainer: swift.bot
+Architecture: amd64
+Section: misc
+Description: SwiftBot orderbooks proxy aggregator
+Pre-Depends: swift-corelib

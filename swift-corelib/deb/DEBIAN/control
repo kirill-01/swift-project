@@ -1,0 +1,6 @@
+Package: swift-corelib
+Version: 1.0.275
+Maintainer: swift.bot
+Architecture: amd64
+Section: misc
+Description: SwiftBot core lib

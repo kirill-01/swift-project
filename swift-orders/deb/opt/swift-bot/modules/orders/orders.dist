@@ -1,0 +1,8 @@
+name=orders
+description=orders module
+version=1.0.75
+binary=/opt/swift-bot/bin/swift-orders
+is_enabled=true
+is_exchange=false
+history_update_interval=360
+active_update_interval=30

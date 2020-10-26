@@ -1,0 +1,9 @@
+name=idcm
+description=IDCM API client module
+version=1.0.84
+binary=/opt/swift-bot/bin/swift-idcm
+is_enabled=true
+is_exchange=true
+api_key=
+api_secret=
+api_user=

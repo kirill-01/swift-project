@@ -1,0 +1,11 @@
+name=orderbooks
+description=OrderBooks proxy aggregator
+version=1.0.75
+binary=/opt/swift-bot/bin/swift-orderbooks
+is_enabled=true
+is_exchange=false
+request_interval=1250
+publish_interval=1500
+limit_records_cnt=20
+orderbooks_valid_time=3000
+send_rates_interval=180000

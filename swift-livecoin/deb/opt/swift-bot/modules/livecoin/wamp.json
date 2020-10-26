@@ -1,0 +1,153 @@
+{
+  "default": {
+    "permissions": {
+      "call": [
+        "swift.settings.set",
+        "swift.settings.get",
+        "swift.telegram.msg",
+        "swift.orderbooks.cache",
+        "swift.rates",
+        "swift.rates.msg",
+        "swift.module.cmd",
+        "swift.server.cmd",
+        "swift.logger.logs",
+        "swift.logger.errors",
+        "swift.module.list",
+        "swift.module.exchanges",
+        "swift.assets.get"
+      ],
+      "register": [],
+      "publish": [
+        "swift.watchdog",
+        "swift.system.events"
+      ],
+      "subscribe": [
+        "swift.system.events",
+        "swift.system.settings",
+        "swift.system.feed.logs",
+        "swift.system.feed.errors",
+        "swift.orderbooks",
+        "swift.system.events",
+        "swift.system.settings"
+      ]
+    }
+  },
+  "module": {
+    "call": ["swift.methodstate"],
+    "register":["swift.api.synctime.livecoin",
+    "swift.api.status.livecoin","swift.api.currencies.livecoin","swift.api.markets.livecoin","swift.api.orderbooks.livecoin","swift.api.order.create.livecoin","swift.api.order.cancel.livecoin",
+    "swift.api.order.get.livecoin","swift.api.withdraw.history.livecoin","swift.api.withdraw.create.livecoin","swift.api.withdraw.inner.livecoin","swift.api.withdraw.fee.livecoin",
+    "swift.api.balances.livecoin","swift.api.deposits.history.livecoin","swift.api.deposits.address.livecoin","swift.api.trade.history.livecoin",
+    "swift.api.trade.active.livecoin","swift.api.trade.fee.livecoin"
+    ],   
+    "publish": ["swift.api.asyncresults","swift.system.events","swift.orders.events","swift.balance.events"],
+    "subscribe": []
+  },
+  "provide": {
+    "feeds":[],
+    "methods":[
+      {
+	"uri":"swift.api.synctime.livecoin",
+	"description":"If supported by exchange, receiving timestamp from remote server and correct local noncer",
+	"arguments":[],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.currencies.livecoin",
+	"description":"Get list of available currencies from exchange API",
+	"arguments":[],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.markets.livecoin",
+	"description":"Get list of available markets  from exchange API",
+	"arguments":[],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.orderbooks.livecoin",
+	"description":"Get orderbooks from exchange. Caution: only one market per request!",
+	"arguments":[{"market_id":"1"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.order.create.livecoin",
+	"description":"Create new limit order",
+	"arguments":[{"market_id":"1","local_id":"localuuid","type":"0","amount":"1.00000000","rate":"12500.00"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.order.cancel.livecoin",
+	"description":"Cancel order",
+	"arguments":[{"remote_id":"1"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.order.get.livecoin",
+	"description":"Get order info",
+	"arguments":[{"remote_id":"1"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.withdraw.history.livecoin",
+	"description":"Get withdrawals history",
+	"arguments":[{"currency_id":"1"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.withdraw.create.livecoin",
+	"description":"Create new withdraw",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.withdraw.inner.livecoin",
+	"description":"Inner move assets between accounts",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.withdraw.fee.livecoin",
+	"description":"Get withdraw fees",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.balances.livecoin",
+	"description":"Get balances info",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.depostist.history.livecoin",
+	"description":"Get deposits history",
+	"arguments":[{"currency_id":"1"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.deposits.address.livecoin",
+	"description":"Get deposit address",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.trade.history.livecoin",
+	"description":"Get closed orders history",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.trade.active.livecoin",
+	"description":"Get active orders",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.trade.fee.livecoin",
+	"description":"Get trade fees",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      }
+    ]
+  }
+}

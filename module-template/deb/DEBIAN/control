@@ -1,0 +1,7 @@
+Package: swift-template
+Version: 1.0.275
+Maintainer: swift.bot
+Architecture: amd64
+Section: misc
+Description: TEMPLATEDESCRIPTION
+Pre-Depends: swift-corelib

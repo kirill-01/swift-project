@@ -1,0 +1,7 @@
+Package: swift-hitbtc
+Version: 1.0.275
+Maintainer: swift.bot
+Architecture: amd64
+Section: misc
+Description: HitBTC cryptocurrency exchange API module for SwiftBot
+Pre-Depends: swift-corelib

@@ -1,0 +1,46 @@
+{
+  "default": {
+    "permissions": {
+      "call": [
+        "swift.settings.set",
+        "swift.settings.get",
+        "swift.telegram.msg",
+        "swift.orderbooks.cache",
+        "swift.rates",
+        "swift.rates.msg",
+        "swift.module.cmd",
+        "swift.server.cmd",
+        "swift.logger.logs",
+        "swift.logger.errors",
+        "swift.module.list",
+        "swift.module.exchanges",
+        "swift.assets.get"
+      ],
+      "register": [],
+      "publish": [
+        "swift.watchdog"
+      ],
+      "subscribe": [
+        "swift.system.events",
+        "swift.arbitrage.windows",
+        "swift.system.settings",
+        "swift.system.feed.logs",
+        "swift.system.feed.errors",
+        "swift.orderbooks",
+        "swift.system.events"
+      ]
+    }
+  },
+  "module": {
+    "call": ["swift.api.status.*","swift.api.trade.active.*","swift.api.trade.history.*","swift.api.order.get.*"],
+    "register": [],
+    "publish": [],
+    "subscribe": ["swift.api.asyncresults","swift.orders.events"]
+  },
+  "provide": {
+    "feeds":[],
+    "methods":[
+     
+    ]
+  }
+}

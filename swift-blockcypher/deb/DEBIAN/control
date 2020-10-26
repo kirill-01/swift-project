@@ -1,0 +1,7 @@
+Package: swift-blockcypher
+Version: 1.0.275
+Maintainer: swift.bot
+Architecture: amd64
+Section: misc
+Description: BlockCypher API to create and manage crypto wallets
+Pre-Depends: swift-corelib

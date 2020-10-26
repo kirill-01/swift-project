@@ -1,0 +1,12 @@
+name=arbitrage
+description=Arbitrage trading module
+binary=/opt/swift-bot/bin/swift-arbitrage
+is_enabled=true
+is_exchange=false
+usage_report_interval=100
+step_order_size=0.05
+min_order_size=0.25
+max_order_size=65.01
+stats_show_interval=30000
+adopt_orderbooks_interval=true
+

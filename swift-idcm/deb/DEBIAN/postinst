@@ -1,0 +1,11 @@
+#!/bin/bash
+MNAM=swift-idcm
+prefix="swift-"
+MNAME=${MNAM#"$prefix"}
+[ ${MNAME} = "corelib" ] && exit 0
+FILE="/opt/swift-bot/modules/${MNAME}/${MNAME}.ini"
+if [[ ! -f "$FILE" ]]; then
+  mv "/opt/swift-bot/modules/${MNAME}/${MNAME}.dist" ${FILE}
+fi
+chmod -R 777 /opt/swift-bot/modules/${MNAME}
+chmod -R 777 /opt/swift-bot/crossbar 

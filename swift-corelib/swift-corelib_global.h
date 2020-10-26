@@ -1,0 +1,12 @@
+#ifndef SWIFTCORELIB_GLOBAL_H
+#define SWIFTCORELIB_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(SWIFTCORELIB_LIBRARY)
+#  define SWIFTCORELIB_EXPORT Q_DECL_EXPORT
+#else
+#  define SWIFTCORELIB_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // SWIFTCORELIB_GLOBAL_H

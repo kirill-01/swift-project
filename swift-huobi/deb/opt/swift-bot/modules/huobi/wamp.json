@@ -1,0 +1,153 @@
+{
+  "default": {
+    "permissions": {
+      "call": [
+        "swift.settings.set",
+        "swift.settings.get",
+        "swift.telegram.msg",
+        "swift.orderbooks.cache",
+        "swift.rates",
+        "swift.rates.msg",
+        "swift.module.cmd",
+        "swift.server.cmd",
+        "swift.logger.logs",
+        "swift.logger.errors",
+        "swift.module.list",
+        "swift.module.exchanges",
+        "swift.assets.get"
+      ],
+      "register": [],
+      "publish": [
+        "swift.watchdog",
+        "swift.system.events"
+      ],
+      "subscribe": [
+        "swift.system.events",
+        "swift.system.settings",
+        "swift.system.feed.logs",
+        "swift.system.feed.errors",
+        "swift.orderbooks",
+        "swift.system.events",
+        "swift.system.settings"
+      ]
+    }
+  },
+  "module": {
+    "call": ["swift.methodstate"],
+    "register":["swift.api.synctime.huobi",
+    "swift.api.status.huobi","swift.api.currencies.huobi","swift.api.markets.huobi","swift.api.orderbooks.huobi","swift.api.order.create.huobi","swift.api.order.cancel.huobi",
+    "swift.api.order.get.huobi","swift.api.withdraw.history.huobi","swift.api.withdraw.create.huobi","swift.api.withdraw.inner.huobi","swift.api.withdraw.fee.huobi",
+    "swift.api.balances.huobi","swift.api.deposits.history.huobi","swift.api.deposits.address.huobi","swift.api.trade.history.huobi",
+    "swift.api.trade.active.huobi","swift.api.trade.fee.huobi"
+    ],   
+    "publish": ["swift.api.asyncresults","swift.system.events","swift.orders.events","swift.balance.events"],
+    "subscribe": []
+  },
+  "provide": {
+    "feeds":[],
+    "methods":[
+      {
+	"uri":"swift.api.synctime.huobi",
+	"description":"If supported by exchange, receiving timestamp from remote server and correct local noncer",
+	"arguments":[],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.currencies.huobi",
+	"description":"Get list of available currencies from exchange API",
+	"arguments":[],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.markets.huobi",
+	"description":"Get list of available markets  from exchange API",
+	"arguments":[],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.orderbooks.huobi",
+	"description":"Get orderbooks from exchange. Caution: only one market per request!",
+	"arguments":[{"market_id":"1"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.order.create.huobi",
+	"description":"Create new limit order",
+	"arguments":[{"market_id":"1","local_id":"localuuid","type":"0","amount":"1.00000000","rate":"12500.00"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.order.cancel.huobi",
+	"description":"Cancel order",
+	"arguments":[{"remote_id":"1"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.order.get.huobi",
+	"description":"Get order info",
+	"arguments":[{"remote_id":"1"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.withdraw.history.huobi",
+	"description":"Get withdrawals history",
+	"arguments":[{"currency_id":"1"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.withdraw.create.huobi",
+	"description":"Create new withdraw",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.withdraw.inner.huobi",
+	"description":"Inner move assets between accounts",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.withdraw.fee.huobi",
+	"description":"Get withdraw fees",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.balances.huobi",
+	"description":"Get balances info",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.depostist.history.huobi",
+	"description":"Get deposits history",
+	"arguments":[{"currency_id":"1"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.deposits.address.huobi",
+	"description":"Get deposit address",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.trade.history.huobi",
+	"description":"Get closed orders history",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.trade.active.huobi",
+	"description":"Get active orders",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.trade.fee.huobi",
+	"description":"Get trade fees",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      }
+    ]
+  }
+}

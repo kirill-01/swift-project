@@ -1,0 +1,12 @@
+name=livecoin
+description=livecoin API client module
+version=1.0.137
+binary=/opt/swift-bot/bin/swift-livecoin
+is_enabled=true
+is_exchange=true
+api_key=
+api_secret=
+api_user=
+cache_orderbooks=true
+cache_orderbooks_time=1500
+

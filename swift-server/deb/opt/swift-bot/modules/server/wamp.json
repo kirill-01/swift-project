@@ -1,0 +1,159 @@
+{
+  "default": {
+    "permissions": {
+      "call": [
+        "swift.settings.set",
+        "swift.settings.get",
+        "swift.telegram.msg",
+        "swift.orderbooks.cache",
+        "swift.rates",
+        "swift.rates.msg",
+        "swift.module.cmd",
+        "swift.server.cmd",
+        "swift.logger.logs",
+        "swift.logger.errors",
+        "swift.module.list",
+        "swift.module.exchanges",
+        "swift.assets.get"
+      ],
+      "register": [],
+      "publish": [
+        "swift.watchdog"
+      ],
+      "subscribe": [
+        "swift.system.events",
+        "swift.arbitrage.windows",
+        "swift.system.settings",
+        "swift.system.feed.logs",
+        "swift.system.feed.errors",
+        "swift.orderbooks",
+        "swift.system.events"
+      ]
+    }
+  },
+  "module": {
+    "name": "templaterole",
+    "call": [],
+    "register": ["swift.module.cmd","swift.server.cmd","swift.logger.logs","swift.logger.errors","swift.methodstate","swift.module.list","swift.module.exchanges","swift.assets.get","swift.apimodule.report","swift.methodstate.summary"],
+    "publish": ["swift.system.feed.errors","swift.system.feed.logs"],
+    "subscribe": ["swift.arbitrage.windows"]
+  },
+  "provide": {
+    "feeds":[
+      {
+	"uri":"swift.system.feed.logs",
+	"description":"System logs feed (Only messages from logger)",
+	"message":["Message object"]
+      },
+      {
+	"uri":"swift.system.feed.logs",
+	"description":"System errors feed (Only messages from logger)",
+	"message":["Message object"]
+      }
+    ],
+    "methods":[
+      {
+	"uri":"swift.module.cmd",
+	"description":"Run specific command to controll module process. Allowed commands: [START,STOP,RESTART]",
+	"arguments":["MODULENAME","COMMAND"],
+	"response":["OK"]
+      },
+      {
+	"uri":"swift.server.cmd",
+	"description":"Run specific shell command on host machine",
+	"arguments":["COMMAND"],
+	"response":["OK"]
+      },
+      {
+	"uri":"swift.logger.logs",
+	"description":"Insert log message into Logger component",
+	"arguments":["SENDER_NAME","GROUP","MESSAGE"],
+	"response":[1]
+      },
+      {
+	"uri":"swift.logger.errors",
+	"description":"Insert error into Logger component",
+	"arguments":["SENDER_NAME","GROUP","MESSAGE"],
+	"response":[1]
+      },
+      {
+	"uri":"swift.methodstate",
+	"description":"Registering api method call result",
+	"arguments":["METHOD_URL", "TRUE"],
+	"response":["OK"]
+      },
+      {
+	"uri":"swift.module.list",
+	"description":"Get all available modules list with status and info",
+	"arguments":[],
+	"response":[
+	  	{
+			"name":"module_name",
+			"version":"version",
+			"binary":"/PATH/TO/BINARY",
+			"is_enabled":true,
+			"is_exchange":false,
+			"status":"status"
+		},
+		{
+			"name":"module_name",
+			"version":"version",
+			"binary":"/PATH/TO/BINARY",
+			"is_enabled":true,
+			"is_exchange":false,
+			"status":"status"
+		}
+	]
+      },
+      {
+	"uri":"swift.module.exchanges",
+	"description":"Run specific shell command on host machine",
+	"arguments":[],
+	"response":["exchange_name_1,exchange_name_2,exchange_name_3"]
+      },
+      {
+	"uri":"swift.apimodule.report",
+	"description":"Get api methods usage report",
+	"arguments":["MODULENAME","MODULESTATUS"],
+	"response":[1]
+      },
+      {
+	"uri":"swift.methodstate.summary",
+	"description":"Run specific command to controll module process. Allowed commands: [START,STOP,RESTART]",
+	"arguments":["MODULENAME","COMMAND"],
+	"response":["OK"]
+      },
+      {
+	"uri":"swift.assets.get",
+	"description":"Run specific command to controll module process. Allowed commands: [START,STOP,RESTART]",
+	"arguments":["MODULENAME","COMMAND"],
+	"response":["OK"]
+      }
+    ]
+  },
+  "http_bridge" : {
+    "type": "web",
+    "endpoint": {
+        "type": "tcp",
+        "port": 8080
+    },
+    "paths": {
+        "call_api": {
+            "type": "caller",
+            "realm": "realm1",
+            "role": "anonymous",
+            "options": {
+                "key": "foobar",
+                "secret": "secret",
+                "post_body_limit": 8192,
+                "timestamp_delta_limit": 10,
+                "require_ip": [
+                    "192.168.1.1/255.255.255.0",
+                    "127.0.0.1"
+                ],
+                "require_tls": false
+            }
+        }
+    }
+  }
+}

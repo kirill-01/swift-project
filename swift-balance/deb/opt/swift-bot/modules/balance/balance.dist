@@ -1,0 +1,10 @@
+name=balance
+description=balance module
+binary=/opt/swift-bot/bin/swift-balance
+is_enabled=true
+is_exchange=false
+balance_update_interval=30000
+deposits_update_interval=360000
+withdraws_update_interval=420000
+use_only_exchange_account=true
+requirements_update_interval=900000

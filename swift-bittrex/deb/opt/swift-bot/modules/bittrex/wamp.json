@@ -1,0 +1,153 @@
+{
+  "default": {
+    "permissions": {
+      "call": [
+        "swift.settings.set",
+        "swift.settings.get",
+        "swift.telegram.msg",
+        "swift.orderbooks.cache",
+        "swift.rates",
+        "swift.rates.msg",
+        "swift.module.cmd",
+        "swift.server.cmd",
+        "swift.logger.logs",
+        "swift.logger.errors",
+        "swift.module.list",
+        "swift.module.exchanges",
+        "swift.assets.get"
+      ],
+      "register": [],
+      "publish": [
+        "swift.watchdog",
+        "swift.system.events"
+      ],
+      "subscribe": [
+        "swift.system.events",
+        "swift.system.settings",
+        "swift.system.feed.logs",
+        "swift.system.feed.errors",
+        "swift.orderbooks",
+        "swift.system.events",
+        "swift.system.settings"
+      ]
+    }
+  },
+  "module": {
+    "call": ["swift.methodstate"],
+    "register":["swift.api.synctime.bittrex",
+    "swift.api.status.bittrex","swift.api.currencies.bittrex","swift.api.markets.bittrex","swift.api.orderbooks.bittrex","swift.api.order.create.bittrex","swift.api.order.cancel.bittrex",
+    "swift.api.order.get.bittrex","swift.api.withdraw.history.bittrex","swift.api.withdraw.create.bittrex","swift.api.withdraw.inner.bittrex","swift.api.withdraw.fee.bittrex",
+    "swift.api.balances.bittrex","swift.api.deposits.history.bittrex","swift.api.deposits.address.bittrex","swift.api.trade.history.bittrex",
+    "swift.api.trade.active.bittrex","swift.api.trade.fee.bittrex"
+    ],   
+    "publish": ["swift.api.asyncresults","swift.system.events","swift.orders.events","swift.balance.events"],
+    "subscribe": []
+  },
+  "provide": {
+    "feeds":[],
+    "methods":[
+      {
+	"uri":"swift.api.synctime.bittrex",
+	"description":"If supported by exchange, receiving timestamp from remote server and correct local noncer",
+	"arguments":[],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.currencies.bittrex",
+	"description":"Get list of available currencies from exchange API",
+	"arguments":[],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.markets.bittrex",
+	"description":"Get list of available markets  from exchange API",
+	"arguments":[],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.orderbooks.bittrex",
+	"description":"Get orderbooks from exchange. Caution: only one market per request!",
+	"arguments":[{"market_id":"1"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.order.create.bittrex",
+	"description":"Create new limit order",
+	"arguments":[{"market_id":"1","local_id":"localuuid","type":"0","amount":"1.00000000","rate":"12500.00"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.order.cancel.bittrex",
+	"description":"Cancel order",
+	"arguments":[{"remote_id":"1"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.order.get.bittrex",
+	"description":"Get order info",
+	"arguments":[{"remote_id":"1"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.withdraw.history.bittrex",
+	"description":"Get withdrawals history",
+	"arguments":[{"currency_id":"1"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.withdraw.create.bittrex",
+	"description":"Create new withdraw",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.withdraw.inner.bittrex",
+	"description":"Inner move assets between accounts",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.withdraw.fee.bittrex",
+	"description":"Get withdraw fees",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.balances.bittrex",
+	"description":"Get balances info",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.depostist.history.bittrex",
+	"description":"Get deposits history",
+	"arguments":[{"currency_id":"1"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.deposits.address.bittrex",
+	"description":"Get deposit address",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.trade.history.bittrex",
+	"description":"Get closed orders history",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.trade.active.bittrex",
+	"description":"Get active orders",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.trade.fee.bittrex",
+	"description":"Get trade fees",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      }
+    ]
+  }
+}

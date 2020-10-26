@@ -1,0 +1,11 @@
+name=bitfinex
+description=bitfinex API client module
+version=1.0.139
+binary=/opt/swift-bot/bin/swift-bitfinex
+is_enabled=true
+is_exchange=true
+api_key=
+api_secret=
+api_user=
+requests_delay=350
+requests_repeat_delay=500

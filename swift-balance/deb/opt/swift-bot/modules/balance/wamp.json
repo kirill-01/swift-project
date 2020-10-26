@@ -1,0 +1,75 @@
+{
+  "default": {
+    "permissions": {
+      "call": [
+        "swift.settings.set",
+        "swift.settings.get",
+        "swift.telegram.msg",
+        "swift.orderbooks.cache",
+        "swift.rates",
+        "swift.rates.msg",
+        "swift.module.cmd",
+        "swift.server.cmd",
+        "swift.logger.logs",
+        "swift.logger.errors",
+        "swift.module.list",
+        "swift.module.exchanges",
+        "swift.assets.get"
+      ],
+      "register": [],
+      "publish": [
+        "swift.watchdog"
+      ],
+      "subscribe": [
+        "swift.system.events",
+        "swift.arbitrage.windows",
+        "swift.system.settings",
+        "swift.system.feed.logs",
+        "swift.system.feed.errors",
+        "swift.orderbooks",
+        "swift.system.events"
+      ]
+    }
+  },
+  "module": {
+    "call": ["swift.api.status.*","swift.api.balances.*","swift.api.withdraw.history.*","swift.api.deposits.history.*"],
+    "register": ["swift.balance", "swift.balance.total","swift.balance.all","swift.deposits","swift.withdraws"],
+    "publish": ["swift.api.asyncresults"],
+    "subscribe": ["swift.api.asyncresults","swift.balance.events"]
+  },
+  "provide": {
+    "feeds":[],
+    "methods":[
+     {
+	"uri":"swift.balance",
+	"description":"Get info about balance",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+       {
+	"uri":"swift.balance.total",
+	"description":"Summary balances total",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+       {
+	"uri":"swift.balance.all",
+	"description":"Summary balances info",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+       {
+	"uri":"swift.deposits",
+	"description":"Deopsits list",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+       {
+	"uri":"swift.withdraws",
+	"description":"Withdraws list",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      }
+    ]
+  }
+}

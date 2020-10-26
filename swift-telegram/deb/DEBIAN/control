@@ -1,0 +1,7 @@
+Package: swift-telegram
+Version: 1.0.275
+Maintainer: swift.bot
+Architecture: amd64
+Section: misc
+Description: SwiftBot telegram API module
+Pre-Depends: swift-corelib

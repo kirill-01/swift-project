@@ -1,0 +1,7 @@
+Package: swift-wampcfg
+Version: 1.0.275
+Maintainer: swift.bot
+Architecture: amd64
+Section: misc
+Description: Build, manage crossbar config rules
+Pre-Depends: swift-corelib

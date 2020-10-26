@@ -1,0 +1,13 @@
+export MODULE_NAME="blockcypher"
+export MODULE_DESCRIPTION="BlockCypher API to create and manage crypto wallets"
+export OPTIONS_SQL=TRUE
+export OPTIONS_WAMP=TRUE
+export OPTIONS_INITIAL_SQL=TRUE
+export OPTIONS_LOGGER=TRUE
+export OPTIONS_SINGLETON=TRUE
+export OPTIONS_AUTHOR="Kirill Kuznetsov"
+export OPTIONS_SINGLE_INSTANCE=TRUE
+export OPTIONS_ASYNC_WORKER=TRUE
+export OPTIONS_LISTEN_ORDERBOOKS=false
+export OPTIONS_LISTEN_BALANCE=false
+export OPTIONS_LISTEN_ORDERS=false

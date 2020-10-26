@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/swift">
+        <file>icon.png</file>
+    </qresource>
+</RCC>

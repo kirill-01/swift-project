@@ -1,0 +1,6 @@
+Package: libqmsgpack
+Version: 1.0
+Maintainer: swift.bot
+Architecture: amd64
+Section: misc
+Description: SwiftBot required lib qmsgpack

@@ -1,0 +1,9 @@
+name=kraken
+description=kraken API client module
+version=1.0.174
+binary=/opt/swift-bot/bin/swift-kraken
+is_enabled=true
+is_exchange=true
+api_key=
+api_secret=
+api_user=

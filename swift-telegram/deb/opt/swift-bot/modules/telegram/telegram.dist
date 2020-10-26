@@ -1,0 +1,9 @@
+name=telegram
+description=Telegram API module
+version=1.0.75
+binary=/opt/swift-bot/bin/swift-telegram
+is_enabled=true
+is_exchange=false
+telegram_api=
+chat_id=
+

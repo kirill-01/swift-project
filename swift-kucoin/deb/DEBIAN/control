@@ -1,0 +1,7 @@
+Package: swift-kucoin
+Version: 1.0.275
+Maintainer: swift.bot
+Architecture: amd64
+Section: misc
+Description: KuCOIN cryptocurrency exchange API module for SwiftBot
+Pre-Depends: swift-corelib

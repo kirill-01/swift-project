@@ -1,0 +1,17 @@
+CREATE TABLE IF NOT EXISTS `arbitrage_events` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `sell_pair_id` INT UNSIGNED NULL,
+  `buy_pair_id` INT UNSIGNED NOT NULL,
+  `min_amount` DOUBLE(16,8) UNSIGNED NOT NULL,
+  `min_profit` DOUBLE(16,8) NOT NULL,
+  `min_sell_rate` DOUBLE(16,8) UNSIGNED NOT NULL,
+  `min_buy_rate` DOUBLE(16,8) UNSIGNED NOT NULL,
+  `max_amount` DOUBLE(16,8) UNSIGNED NOT NULL,
+  `max_profit` DOUBLE(16,8) UNSIGNED NOT NULL,
+  `max_sell_rate` DOUBLE(16,8) UNSIGNED NOT NULL,
+  `max_buy_rate` DOUBLE(16,8) UNSIGNED NOT NULL,
+  `ts` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `arbitrage_pair_id` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
+ENGINE = MyISAM;

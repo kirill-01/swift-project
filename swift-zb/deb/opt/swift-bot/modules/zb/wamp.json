@@ -1,0 +1,153 @@
+{
+  "default": {
+    "permissions": {
+      "call": [
+        "swift.settings.set",
+        "swift.settings.get",
+        "swift.telegram.msg",
+        "swift.orderbooks.cache",
+        "swift.rates",
+        "swift.rates.msg",
+        "swift.module.cmd",
+        "swift.server.cmd",
+        "swift.logger.logs",
+        "swift.logger.errors",
+        "swift.module.list",
+        "swift.module.exchanges",
+        "swift.assets.get"
+      ],
+      "register": [],
+      "publish": [
+        "swift.watchdog",
+        "swift.system.events"
+      ],
+      "subscribe": [
+        "swift.system.events",
+        "swift.system.settings",
+        "swift.system.feed.logs",
+        "swift.system.feed.errors",
+        "swift.orderbooks",
+        "swift.system.events",
+        "swift.system.settings"
+      ]
+    }
+  },
+  "module": {
+    "call": ["swift.methodstate"],
+    "register":["swift.api.synctime.zb",
+    "swift.api.status.zb","swift.api.currencies.zb","swift.api.markets.zb","swift.api.orderbooks.zb","swift.api.order.create.zb","swift.api.order.cancel.zb",
+    "swift.api.order.get.zb","swift.api.withdraw.history.zb","swift.api.withdraw.create.zb","swift.api.withdraw.inner.zb","swift.api.withdraw.fee.zb",
+    "swift.api.balances.zb","swift.api.deposits.history.zb","swift.api.deposits.address.zb","swift.api.trade.history.zb",
+    "swift.api.trade.active.zb","swift.api.trade.fee.zb"
+    ],   
+    "publish": ["swift.api.asyncresults","swift.system.events","swift.orders.events","swift.balance.events"],
+    "subscribe": []
+  },
+  "provide": {
+    "feeds":[],
+    "methods":[
+      {
+	"uri":"swift.api.synctime.zb",
+	"description":"If supported by exchange, receiving timestamp from remote server and correct local noncer",
+	"arguments":[],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.currencies.zb",
+	"description":"Get list of available currencies from exchange API",
+	"arguments":[],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.markets.zb",
+	"description":"Get list of available markets  from exchange API",
+	"arguments":[],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.orderbooks.zb",
+	"description":"Get orderbooks from exchange. Caution: only one market per request!",
+	"arguments":[{"market_id":"1"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.order.create.zb",
+	"description":"Create new limit order",
+	"arguments":[{"market_id":"1","local_id":"localuuid","type":"0","amount":"1.00000000","rate":"12500.00"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.order.cancel.zb",
+	"description":"Cancel order",
+	"arguments":[{"remote_id":"1"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.order.get.zb",
+	"description":"Get order info",
+	"arguments":[{"remote_id":"1"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.withdraw.history.zb",
+	"description":"Get withdrawals history",
+	"arguments":[{"currency_id":"1"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.withdraw.create.zb",
+	"description":"Create new withdraw",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.withdraw.inner.zb",
+	"description":"Inner move assets between accounts",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.withdraw.fee.zb",
+	"description":"Get withdraw fees",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.balances.zb",
+	"description":"Get balances info",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.depostist.history.zb",
+	"description":"Get deposits history",
+	"arguments":[{"currency_id":"1"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.deposits.address.zb",
+	"description":"Get deposit address",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.trade.history.zb",
+	"description":"Get closed orders history",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.trade.active.zb",
+	"description":"Get active orders",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.trade.fee.zb",
+	"description":"Get trade fees",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      }
+    ]
+  }
+}

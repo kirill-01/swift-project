@@ -1,0 +1,6 @@
+name=blockcypher
+description=BlockCypher API to create and manage crypto wallets
+binary=/opt/swift-bot/bin/swift-blockcypher
+is_enabled=true
+is_exchange=false
+api_token=

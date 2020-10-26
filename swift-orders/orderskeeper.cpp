@@ -1,0 +1,190 @@
+#include "orderskeeper.h"
+
+#include <QList>
+
+class OrdersKeeperData : public QSharedData
+{
+public:
+
+};
+
+OrdersKeeper::OrdersKeeper(QObject *parent) : QObject(parent), is_pause(false),
+    update_history_timer( new QTimer(this) ),
+    update_active_timer( new QTimer(this) ),
+
+    data(new OrdersKeeperData),
+
+    session(nullptr)
+
+{
+    connect( this, &OrdersKeeper::activeEvent, this, &OrdersKeeper::onActiveEvent );
+    connect( this, &OrdersKeeper::orderEvent, this, &OrdersKeeper::onOrderEvent );
+    connect( this, &OrdersKeeper::historyEvent, this, &OrdersKeeper::onHistoryEvent );
+
+    QSettings * settings( SwiftCore::getModuleSettings("orders") );
+    const quint32 history_interval = settings->value("history_update_interval", 360000).toUInt();
+    if ( history_interval > 0 ) {
+        update_history_timer->setInterval( history_interval );
+        QObject::connect( update_history_timer, &QTimer::timeout, this, &OrdersKeeper::requestHistory );
+
+    }
+    const quint32 active_interval = settings->value("active_update_interval", 30000).toUInt();
+    if ( active_interval > 0 ) {
+        update_active_timer->setInterval( active_interval );
+        QObject::connect( update_active_timer, &QTimer::timeout, this, &OrdersKeeper::requestActive );
+
+    }
+
+}
+
+OrdersKeeper::OrdersKeeper(const OrdersKeeper &rhs) : QObject(nullptr), data(rhs.data)
+{
+
+}
+
+OrdersKeeper &OrdersKeeper::operator=(const OrdersKeeper &rhs)
+{
+    if (this != &rhs)
+        data.operator=(rhs.data);
+    return *this;
+}
+
+OrdersKeeper::~OrdersKeeper()
+{
+
+}
+
+void OrdersKeeper::onActiveEvent(const QJsonObject &j_data)
+{
+    const QJsonArray items( j_data.value("orders").toArray() );
+    if ( !items.isEmpty() ) {
+        for( auto it = items.begin(); it != items.end(); it++ ) {
+        }
+    }
+}
+
+void OrdersKeeper::onHistoryEvent(const QJsonObject &j_data)
+{
+    const QJsonArray items( j_data.value("orders").toArray() );
+
+    if ( !items.isEmpty() ) {
+        for( auto it = items.begin(); it != items.end(); it++ ) {
+        }
+    }
+}
+
+void OrdersKeeper::onOrderEvent(const QString& event_name, const QJsonObject &j_data )
+{
+    const QJsonObject j_order_object( j_data );
+
+    if ( event_name == EVENTS_NAME_ORDER_PLACED ) {
+
+    } else if ( event_name == EVENTS_NAME_ORDER_COMPLETED ) {
+
+    } else if ( event_name == EVENTS_NAME_ORDER_UPDATED ) {
+
+    } else if ( event_name == EVENTS_NAME_ORDER_ERROR ) {
+
+    }
+}
+
+void OrdersKeeper::requestHistory() {
+    if ( is_pause ) {
+        return;
+    }
+    if ( _active_clients.isEmpty() ) {
+        getConnectedExchanges();
+    }
+}
+
+void OrdersKeeper::requestActive() {
+    if ( is_pause ) {
+        return;
+    }
+    if ( _active_clients.isEmpty() ) {
+        getConnectedExchanges();
+    }
+}
+
+void OrdersKeeper::recheck_clients() {
+
+    getConnectedExchanges();
+
+    if ( _active_clients.isEmpty() ) {
+        QTimer::singleShot( 120000, this, &OrdersKeeper::recheck_clients );
+    } else {
+        update_active_timer->start();
+        update_history_timer->start();
+        is_pause = false;
+    }
+}
+
+void OrdersKeeper::onWampSession(Wamp::Session *sess) {
+    session = sess;
+
+    // Events listener
+    session->subscribe( FEED_EVENTS_ORDERS, [=]( const QVariantList& v, const QVariantMap& m ) {
+        Q_UNUSED(m)
+        const QString event_name( v.at(0).toString() );
+        const QJsonObject j_data( QJsonDocument::fromJson( v.at(1).toString().toUtf8() ).object() );
+        if ( event_name == EVENTS_NAME_ORDERS_ACTIVE ) {
+            emit activeEvent( j_data );
+        } else if ( event_name == EVENTS_NAME_ORDERS_HISTORY ) {
+            emit historyEvent ( j_data );
+        } else {
+            emit orderEvent( event_name, j_data );
+        }
+    });
+
+    update_history_timer->start();
+    update_active_timer->start();
+
+}
+
+void OrdersKeeper::pauseModule() {
+    if ( !is_pause ) {
+        update_history_timer->stop();
+        update_active_timer->stop();
+        if ( session != nullptr && session->isJoined() ) {
+            QString msg("<u><b>No accounts data</b></u>\nInformation about orders unavailable now.\n<u>Suspending orders module.</u>");
+            session->call( RCP_TELEGRAM_NOTIFY, {msg} );
+        }
+        is_pause = true;
+        qWarning() << "ORDERS: Pausing module!";
+        QTimer::singleShot( 120000, this, &OrdersKeeper::recheck_clients );
+    }
+}
+
+void OrdersKeeper::getConnectedExchanges()
+{
+    QMutexLocker lock( &m );
+    static quint64 last_check_clients = 0;
+    if ( ( !is_pause && _active_clients.isEmpty() ) || QDateTime::currentSecsSinceEpoch() - last_check_clients >= 180 ) {
+        if ( session != nullptr && session->isJoined() ) {
+
+            last_check_clients = QDateTime::currentSecsSinceEpoch();
+
+            const QString _targetsstr = session->call( RPC_EXCHANGES_LIST_COMMAND ).toString();
+            const QStringList exchsList( _targetsstr.split(",") );
+
+            _active_clients.clear();
+
+            if ( !exchsList.isEmpty() ) {
+                for( auto it = exchsList.begin(); it!= exchsList.end(); it++ ) {
+                    QVariant res = session->call("swift.api.status."+*it);
+                    const QString res_str( res.toString() );
+                    if ( !res_str.isEmpty() ) {
+                        const QJsonObject j_api_state( QJsonDocument::fromJson( res_str.toUtf8() ).object() );
+                        if ( j_api_state.value("public_methods").toBool( false ) &&
+                             j_api_state.value("private_methods").toBool( false ) ) {
+                            _active_clients.push_back( *it );
+                        }
+                    }
+                }
+            }
+            if ( !is_pause && _active_clients.isEmpty() ) {
+                pauseModule();
+            }
+        }
+    }
+}

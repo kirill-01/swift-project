@@ -1,0 +1,37 @@
+{
+    "$schema": "https://raw.githubusercontent.com/crossbario/crossbar/master/crossbar.json",
+    "controller": {
+    },
+    "version": 2,
+    "workers": [
+        {
+            "realms": [
+                {
+                    "name": "realm1",
+                    "roles": [
+                        
+                    ]
+                }
+            ],
+            "transports": [
+                {
+                    "endpoint": {
+                        "backlog": 1024,
+                        "port": 8081,
+                        "type": "tcp"
+                    },
+                    "options": {
+                        "max_message_size": 1048576
+                    },
+                    "serializers": [
+                        "cbor",
+                        "msgpack",
+                        "json"
+                    ],
+                    "type": "rawsocket"
+                }
+            ],
+            "type": "router"
+        }
+    ]
+}

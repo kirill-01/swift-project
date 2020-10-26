@@ -1,0 +1,64 @@
+{
+  "default": {
+    "permissions": {
+      "call": [
+        "swift.settings.set",
+        "swift.settings.get",
+        "swift.telegram.msg",
+        "swift.orderbooks.cache",
+        "swift.rates",
+        "swift.rates.msg",
+        "swift.module.cmd",
+        "swift.server.cmd",
+        "swift.logger.logs",
+        "swift.logger.errors",
+        "swift.module.list",
+        "swift.module.exchanges",
+        "swift.assets.get"
+      ],
+      "register": [],
+      "publish": [
+        "swift.watchdog"
+      ],
+      "subscribe": [
+        "swift.system.events",
+        "swift.arbitrage.windows",
+        "swift.system.settings",
+        "swift.system.feed.logs",
+        "swift.system.feed.errors",
+        "swift.orderbooks",
+        "swift.system.events"
+      ]
+    }
+  },
+  "module": {
+    "name": "templaterole",
+    "call": ["swift.api.order.create.*","swift.balance"],
+    "register": ["swift.arbitrage.volume","swift.arbitrage.info"],
+    "publish": ["swift.arbitrage.windows"],
+    "subscribe": ["swift.orderbooks"]
+  },
+  "provide": {
+    "feeds":[
+      {
+	"uri":"swift.arbitrage.windows",
+	"description":"Information about profitable windows publishing into this feed",
+	"message":["Message object"]
+      }
+    ],
+    "methods":[
+     {
+	"uri":"swift.arbitrage.volume",
+	"description":"Request arbitrage volume info report",
+	"arguments":[],
+	"response":["OK"]
+      },
+      {
+	"uri":"swift.arbitrage.info",
+	"description":"Request arbitrage summary indormation",
+	"arguments":[],
+	"response":["JSONOBJECT"]
+      }
+    ]
+  }
+}

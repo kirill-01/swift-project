@@ -1,0 +1,153 @@
+{
+  "default": {
+    "permissions": {
+      "call": [
+        "swift.settings.set",
+        "swift.settings.get",
+        "swift.telegram.msg",
+        "swift.orderbooks.cache",
+        "swift.rates",
+        "swift.rates.msg",
+        "swift.module.cmd",
+        "swift.server.cmd",
+        "swift.logger.logs",
+        "swift.logger.errors",
+        "swift.module.list",
+        "swift.module.exchanges",
+        "swift.assets.get"
+      ],
+      "register": [],
+      "publish": [
+        "swift.watchdog",
+        "swift.system.events"
+      ],
+      "subscribe": [
+        "swift.system.events",
+        "swift.system.settings",
+        "swift.system.feed.logs",
+        "swift.system.feed.errors",
+        "swift.orderbooks",
+        "swift.system.events",
+        "swift.system.settings"
+      ]
+    }
+  },
+  "module": {
+    "call": ["swift.methodstate"],
+    "register":["swift.api.synctime.idcm",
+    "swift.api.status.idcm","swift.api.currencies.idcm","swift.api.markets.idcm","swift.api.orderbooks.idcm","swift.api.order.create.idcm","swift.api.order.cancel.idcm",
+    "swift.api.order.get.idcm","swift.api.withdraw.history.idcm","swift.api.withdraw.create.idcm","swift.api.withdraw.inner.idcm","swift.api.withdraw.fee.idcm",
+    "swift.api.balances.idcm","swift.api.deposits.history.idcm","swift.api.deposits.address.idcm","swift.api.trade.history.idcm",
+    "swift.api.trade.active.idcm","swift.api.trade.fee.idcm"
+    ],   
+    "publish": ["swift.api.asyncresults","swift.system.events","swift.orders.events","swift.balance.events"],
+    "subscribe": []
+  },
+  "provide": {
+    "feeds":[],
+    "methods":[
+      {
+	"uri":"swift.api.synctime.idcm",
+	"description":"If supported by exchange, receiving timestamp from remote server and correct local noncer",
+	"arguments":[],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.currencies.idcm",
+	"description":"Get list of available currencies from exchange API",
+	"arguments":[],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.markets.idcm",
+	"description":"Get list of available markets  from exchange API",
+	"arguments":[],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.orderbooks.idcm",
+	"description":"Get orderbooks from exchange. Caution: only one market per request!",
+	"arguments":[{"market_id":"1"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.order.create.idcm",
+	"description":"Create new limit order",
+	"arguments":[{"market_id":"1","local_id":"localuuid","type":"0","amount":"1.00000000","rate":"12500.00"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.order.cancel.idcm",
+	"description":"Cancel order",
+	"arguments":[{"remote_id":"1"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.order.get.idcm",
+	"description":"Get order info",
+	"arguments":[{"remote_id":"1"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.withdraw.history.idcm",
+	"description":"Get withdrawals history",
+	"arguments":[{"currency_id":"1"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.withdraw.create.idcm",
+	"description":"Create new withdraw",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.withdraw.inner.idcm",
+	"description":"Inner move assets between accounts",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.withdraw.fee.idcm",
+	"description":"Get withdraw fees",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.balances.idcm",
+	"description":"Get balances info",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.depostist.history.idcm",
+	"description":"Get deposits history",
+	"arguments":[{"currency_id":"1"}],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.deposits.address.idcm",
+	"description":"Get deposit address",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.trade.history.idcm",
+	"description":"Get closed orders history",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.trade.active.idcm",
+	"description":"Get active orders",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      },
+      {
+	"uri":"swift.api.trade.fee.idcm",
+	"description":"Get trade fees",
+	"arguments":["JSONPARAMS"],
+	"response":["ASYNC_UUID"]
+      }
+    ]
+  }
+}
