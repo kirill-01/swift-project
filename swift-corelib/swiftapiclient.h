@@ -249,13 +249,7 @@ protected:
         return SwiftCore::getModuleSettings( getExchangeName() );
     }
     bool isApiDebug() {
-        static bool _r = false;
-        static bool is_inited = false;
-        if ( !is_inited ) {
-            _r = SwiftCore::getSettings()->value( SETTINGS_NAME_API_DEBUG, false ).toBool();
-            is_inited = true;
-        }
-        return _r;
+        return SwiftBot::appParam( SETTINGS_NAME_API_DEBUG, false ).toBool();
     }
 private:
 

@@ -62,7 +62,7 @@ cd ${SRCDIR}
 build_module swift-corelib ${1} ${2} ${3}
 cd ${SRCDIR}
 
-sudo dpkg -i swift-corelib.deb
+sudo dpkg -i swift-corelib*.deb
 
 for item in ${MODULES[*]}
 do

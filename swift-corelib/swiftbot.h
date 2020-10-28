@@ -5,14 +5,13 @@
 #include <QHostAddress>
 #include <QNetworkInterface>
 #include <QCryptographicHash>
-
+#include <QMap>
 
 #ifdef SWIFT_USE_WAMP_AUTH
 #include <wampauth.h>
 #endif
-#ifdef SWIFT_USE_WAMP_CLIENT
+
 #include <wampclient.h>
-#endif
 
 
 #ifndef VARS_DEFINED
@@ -148,16 +147,17 @@
 static QSqlDatabase db;
 #endif
 
-#ifdef SWIFT_USE_WAMP_CLIENT
 #ifdef SWIFT_USE_WAMP_AUTH
 static QSharedPointer<WampAuth> wamp_client;
 #else
-static QSharedPointer<WampClient> wamp_client;
+static QSharedPointer<WampClient> wamp_client = nullptr;
 #endif
-#endif
+
 
 namespace SwiftBot {
 
+typedef std::function<QVariant(const QVariantList &v, const QVariantMap &m)> WampProcedure;
+typedef std::function<void(const QVariantList &v, const QVariantMap &m)> WampSubscribe;
 
 struct AssetsStruct {
 
@@ -183,36 +183,15 @@ struct AssetsStruct {
     QHash<QString,QVariant> _data;
 };
 
-struct Exchange : AssetsStruct {
-
-};
+class Exchange;
 
 #ifndef SWIFT_CURRENCY_ATTRIBUTES
 #define SWIFT_CURRENCY_ATTRIBUTES "id,exchange_id,coin_id,is_enabled,name,withdraw_fee,min_withdraw"
 #endif
 
-struct Currency : AssetsStruct {
+class Currency;
 
-};
-
-struct Coin : AssetsStruct{
-
-};
-
-struct Order : AssetsStruct {
-    QString local_id;
-    QString remote_id;
-    double amount;
-    double amount_left;
-    double rate;
-    double price;
-    double fee;
-    quint64 ts;
-    quint32 market_id;
-    quint32 exchange_id;
-    quint32 type;
-    quint32 status;
-};
+class Coin;
 
 struct Balance  : AssetsStruct {
     Balance( const QJsonObject & j ) {
@@ -307,13 +286,9 @@ struct Withdraw : AssetsStruct{
 
 typedef QMap<quint32,Withdraw> Withdraws;
 
-struct Market: AssetsStruct {
-
-};
-
-struct ArbitragePair :AssetsStruct {
-
-};
+class Market;
+class ArbitragePair;
+class Order;
 
 typedef QMap<quint32, Currency> Currencies;
 typedef QMap<quint32, Coin> Coins;
@@ -322,35 +297,85 @@ typedef QMap<quint32, Order> Orders;
 typedef QMap<quint32, Exchange> Exchanges;
 typedef QMap<quint32, ArbitragePair> ArbitragePairs;
 
-struct AssetsData {
-    Exchanges _exchs;
-    Markets _markets;
-    Currencies _currencies;
-    Coins _coins;
-    Orders _orders;
-};
+static QSettings * moduleSettings(  const QString& m = QString(QCoreApplication::applicationName()).replace("swift-","")   );
+static QSettings * appSettings();
 
+static QVariant appParam( const QString& name, const QVariant & default_value = QVariant("") ) {
+    return appSettings()->value( name, default_value );
+}
+
+
+static QVariant moduleParam( const QString& name, const QVariant & default_value = QVariant("") ) {
+    return moduleSettings()->value( name, default_value );
+}
+
+static void initWampClient() {
+    if ( !wamp_client || wamp_client == nullptr ) {
+
+        wamp_client = QSharedPointer<WampClient>( new WampClient(SwiftBot::appParam(SETTINGS_NAME_WAMP_REALM,"swift").toString(),
+             SwiftBot::appParam(SETTINGS_NAME_WAMP_HOME,"localhost").toString(),
+             SwiftBot::appParam(SETTINGS_NAME_WAMP_PORT, 8081).toInt(),
+             SwiftBot::appParam(SETTINGS_NAME_WAMP_DEBUG, false).toBool())
+        );
+    }
+
+}
+
+static QVariant method( const QString& method_name, const QVariantList & arguments ) {
+
+    if ( !wamp_client || wamp_client == nullptr ) {
+        return 0;
+    } else {
+        if ( wamp_client->isConnected() ) {
+            return wamp_client->getSession()->call( method_name, arguments );
+        }
+    }
+    return 0;
+
+}
+
+static void provide( const QString& method_name, WampProcedure p ) {
+
+    if ( !wamp_client || wamp_client == nullptr ) {
+        initWampClient();
+    }
+    wamp_client->provide( method_name, p );
+}
+
+static void publish( const QString& method_name, const QVariantList& v ) {
+    if ( !wamp_client || wamp_client == nullptr ) {
+        initWampClient();
+    }
+    wamp_client->publish( method_name, v );
+}
+
+static void subscribe( const QString& method_name, WampSubscribe p ) {
+    if ( !wamp_client || wamp_client == nullptr ) {
+        initWampClient();
+    }
+    wamp_client->subscribe( method_name, p );
+    if ( false ) {
+        method( method_name, {} );
+        provide( method_name, []( const QVariantList&, const QVariantMap& ){ return 1; });
+        publish( method_name, QVariantList({}) );
+    }
+}
 
 
 #ifdef SWIFT_USE_WAMP_CLIENT
 static void addLog( const QString & message, const QString & log_group = "INFO" ) {
-    if ( !wamp_client.isNull() ) {
-        static Wamp::Session * session = wamp_client->getSession();
-        if ( session != nullptr && session->isJoined() ) {
-            session->call( RPC_SERVER_LOGGER_LOGS, { SWIFT_MODULE_NAME, log_group, message });
-            return;
-        }
+    if ( wamp_client->isConnected() ) {
+        SwiftBot::method( RPC_SERVER_LOGGER_LOGS, { SWIFT_MODULE_NAME, log_group, message } );
+        return;
     }
+
     qInfo() << QDateTime::currentDateTime().time().toString() << log_group << message;
 }
 
 static void addError( const QString & message, const QString & log_group = "DANGER" ) {
-    if ( !wamp_client.isNull() ) {
-        static Wamp::Session * session = wamp_client->getSession();
-        if ( session != nullptr && session->isJoined() ) {
-            session->call( RPC_SERVER_LOGGER_ERRORS, { SWIFT_MODULE_NAME, log_group, message });
-            return;
-        }
+    if ( wamp_client->isConnected() ) {
+        SwiftBot::method( RPC_SERVER_LOGGER_ERRORS, { SWIFT_MODULE_NAME, log_group, message } );
+        return;
     }
     qWarning() << QDateTime::currentDateTime().time().toString() << log_group << message;
 }
@@ -375,7 +400,6 @@ static QString getHostIpAddress(){
     return "";
 }
 
-static QSettings * moduleSettings(  const QString& m = QString(QCoreApplication::applicationName()).replace("swift-","")   );
 static QSettings * appSettings() {
 
     static QSharedPointer<QSettings> _inst;
@@ -384,13 +408,12 @@ static QSettings * appSettings() {
         if ( false ) {
             SwiftBot::moduleSettings()->sync();
             qWarning() << SwiftBot::getHostIpAddress();
-
+            subscribe( "", []( const QVariantList&, const QVariantMap& ){ return 1; });
         }
     }
 
     return _inst.data();
 };
-
 
 
 static QSettings * moduleSettings( const QString& m   ) {
@@ -435,6 +458,8 @@ static bool hasSqlMigrationsDir() {
     sqldir.setNameFilters({"*.sql"});
     const QStringList sql_files( sqldir.entryList() );
     if ( false ) {
+        qWarning() << SwiftBot::appParam("false").toString();
+        qWarning() << SwiftBot::moduleParam("false").toString();
         SwiftBot::applySqlMigrations();
     }
     return !sql_files.isEmpty();
@@ -467,7 +492,104 @@ static void applySqlMigrations() {
 }
 
 
+class WampRules {
+public:
+
+    WampRules( const QString& module_name ) : filename("/opt/swift-bot/modules/"+module_name+"/wamp.json"){
+        QFile f(filename);
+        if ( f.open(QFile::ReadWrite ) ) {
+            j_config = QJsonDocument::fromJson( f.readAll().constData() ).object();
+        }
+    }
+    QJsonObject j_config;
+    QString filename;
+};
+
+class Module;
+
+typedef QMap<QString,Module> Modules;
+typedef std::function<void(Module)> ModulesEach;
+
+class Module {
+public:
+
+    static void enable( const QString& module_name ) {
+        Module(module_name).enable();
+    }
+
+    static void disable( const QString& module_name ) {
+        Module(module_name).disable();
+    }
+
+    static void eachModule( ModulesEach f ) {
+        static Modules a;
+        if ( a.isEmpty() ) { a=Module::all(); }
+        for( auto it = a.begin(); it != a.end(); it++ ) {
+            f( *it );
+        }
+    }
+
+    static Modules all() {
+        Modules r;
+        QDir dir( QString(APP_DIR)+"/modules/" );
+        const QStringList found_modules_dirs( dir.entryList( QDir::Filter::Dirs ) );
+        for( auto it = found_modules_dirs.begin(); it != found_modules_dirs.end(); it++ ) {
+            const QString module_name( *it );
+            if ( module_name != "." &&  module_name != ".."  && module_name != "") {
+                r.insert( module_name, Module( module_name ) );
+            }
+        }
+
+        return r;
+    }
+
+    Module( const QString& module_name ) :
+        settings( moduleSettings( module_name )),
+        name( module_name )
+    {
+        binary = settings->value("binary").toString();
+    }
+    Module() :
+        settings( moduleSettings()),
+        name( QCoreApplication::applicationName().replace("swift-","" ) )
+    {
+        binary = settings->value("binary").toString();
+    }
+
+    QJsonObject toJson() {
+        QJsonObject r;
+        r["is_enabled"] = isEnabled();
+        r["name"] = name;
+        r["status"] = isEnabled() ? "Enabled" : "Disabled";
+        r["binary"] = binary;
+        return r;
+    }
+
+    void enable() {
+        settings->setValue("is_enabled", true );
+    }
+
+    void disable() {
+        settings->setValue("is_enabled", false );
+    }
+
+    bool isExchange() const {
+        return settings->value("is_exchange", false).toBool();
+    }
+
+    bool isEnabled() const {
+        return settings->value("is_enabled", false).toBool();
+    }
+
+    WampRules wampRules() {
+        return WampRules( name );
+    }
+    QSettings * settings;
+    QString binary;
+    QString name;
+};
 
 }
+
 
 #endif // SWIFTBOT_H

@@ -2,7 +2,7 @@ QT -= gui
 QT += network websockets sql
 
 TEMPLATE = lib
-VERSION = 1.0.275
+VERSION = 1.0.343
 DEFINES += SWIFTCORELIB_LIBRARY
 
 CONFIG += c++11
@@ -40,14 +40,11 @@ LIBS += -lqmsgpack
 
 
 CONFIG(debug, debug|release) {
-    message(DEBUG BUILD)
-    headers.path    = /usr/include/swiftbot
-    headers.files   += $$HEADERS
-    INSTALLS += headers target
+    message(DEBUG BUILD $$TARGET)
 }
 
 CONFIG(release, debug|release) {
-    message(RELEASE build)
+    message(RELEASE build $$TARGET)
     headers.path    = /usr/include/swiftbot
     headers.files   += $$HEADERS
     INSTALLS += headers target

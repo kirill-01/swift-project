@@ -4,9 +4,8 @@
 #include <QObject>
 #include <QSharedDataPointer>
 
-#include "../swift-corelib/swiftcore.h"
-#include "../swift-corelib/wampclient.h"
-
+#include <swiftbot.h>
+#include <swiftcore.h>
 
 class OrdersKeeperData;
 

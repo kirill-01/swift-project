@@ -65,7 +65,9 @@ OBJECTS       = main.o \
 		moc_orderbooksproxy.o \
 		moc_nodescontroller.o \
 		moc_orderbooksnode.o
-DIST          = ../../Qt/5.14.2/gcc_64/mkspecs/features/spec_pre.prf \
+DIST          = deb/opt/swift-bot/modules/orderbooks/orderbooks.dist \
+		deb/opt/swift-bot/modules/orderbooks/wamp.json \
+		../../Qt/5.14.2/gcc_64/mkspecs/features/spec_pre.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/common/unix.conf \
 		../../Qt/5.14.2/gcc_64/mkspecs/common/linux.conf \
 		../../Qt/5.14.2/gcc_64/mkspecs/common/sanitize.conf \
@@ -259,6 +261,7 @@ DIST          = ../../Qt/5.14.2/gcc_64/mkspecs/features/spec_pre.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/exclusive_builds.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/toolchain.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/default_pre.prf \
+		../shared.pri \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/resolve_config.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/default_post.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/warn_on.prf \
@@ -484,6 +487,7 @@ Makefile: swift-orderbooks.pro ../../Qt/5.14.2/gcc_64/mkspecs/linux-g++/qmake.co
 		../../Qt/5.14.2/gcc_64/mkspecs/features/exclusive_builds.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/toolchain.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/default_pre.prf \
+		../shared.pri \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/resolve_config.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/default_post.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/warn_on.prf \
@@ -694,6 +698,7 @@ Makefile: swift-orderbooks.pro ../../Qt/5.14.2/gcc_64/mkspecs/linux-g++/qmake.co
 ../../Qt/5.14.2/gcc_64/mkspecs/features/exclusive_builds.prf:
 ../../Qt/5.14.2/gcc_64/mkspecs/features/toolchain.prf:
 ../../Qt/5.14.2/gcc_64/mkspecs/features/default_pre.prf:
+../shared.pri:
 ../../Qt/5.14.2/gcc_64/mkspecs/features/resolve_config.prf:
 ../../Qt/5.14.2/gcc_64/mkspecs/features/default_post.prf:
 ../../Qt/5.14.2/gcc_64/mkspecs/features/warn_on.prf:
@@ -876,48 +881,22 @@ moc_orderbooksproxy.cpp: orderbooksproxy.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qlocalsocket.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QSettings \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qsettings.h \
-		../swift-corelib/swiftcore.h \
-		../swift-corelib/swiftbot.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostInfo \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qhostinfo.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostAddress \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkInterface \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkinterface.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineOption \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineoption.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineParser \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineparser.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcoreapplication.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qeventloop.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QLockFile \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qlockfile.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QDir \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qdir.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qfileinfo.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qfile.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qfiledevice.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QDebug \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QDateTime \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QQueue \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qqueue.h \
+		../swift-corelib/assetsstorage.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QObject \
 		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlQuery \
 		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlquery.h \
 		../../Qt/5.14.2/gcc_64/include/QtSql/qtsqlglobal.h \
 		../../Qt/5.14.2/gcc_64/include/QtSql/qtsql-config.h \
 		../../Qt/5.14.2/gcc_64/include/QtSql/qsqldatabase.h \
+		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlDatabase \
 		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlRecord \
 		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlrecord.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlDatabase \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlError \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlerror.h \
-		../swift-corelib/swift-corelib_global.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QSharedPointer \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QFile \
-		../swift-corelib/assetsstorage.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QObject \
 		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlResult \
 		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlresult.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QQueue \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qqueue.h \
+		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlError \
+		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlerror.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QElapsedTimer \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qelapsedtimer.h \
 		../../Qt/5.14.2/gcc_64/include/QtConcurrent/QtConcurrent \
@@ -926,6 +905,7 @@ moc_orderbooksproxy.cpp: orderbooksproxy.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QtCoreDepends \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qabstractanimation.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qabstracteventdispatcher.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qeventloop.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qabstractitemmodel.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qabstractnativeeventfilter.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qabstractproxymodel.h \
@@ -948,9 +928,16 @@ moc_orderbooksproxy.cpp: orderbooksproxy.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcborstream.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qfloat16.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcollator.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineoption.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineparser.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qcoreapplication.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qconcatenatetablesproxymodel.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qdatastream.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qdeadlinetimer.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qdir.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qfileinfo.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qfile.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qfiledevice.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qdiriterator.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qeasingcurve.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qendian.h \
@@ -976,6 +963,7 @@ moc_orderbooksproxy.cpp: orderbooksproxy.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qversionnumber.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qline.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qlinkedlist.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qlockfile.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qloggingcategory.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qmargins.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qmath.h \
@@ -1316,6 +1304,7 @@ moc_nodescontroller.cpp: nodescontroller.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkInterface \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkinterface.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QMap \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineOption \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineParser \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QLockFile \
@@ -1601,6 +1590,7 @@ moc_orderbooksnode.cpp: orderbooksnode.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkInterface \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkinterface.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QMap \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineOption \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineParser \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QLockFile \
@@ -1697,20 +1687,37 @@ main.o: main.cpp ../../Qt/5.14.2/gcc_64/include/QtCore/QCoreApplication \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qhash.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineParser \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineparser.h \
-		../swift-corelib/wampclient.h \
-		../swift-corelib/wamp.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QMetaMethod \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qmetaobject.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qvariant.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qmap.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qdebug.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qtextstream.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QLockFile \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qlockfile.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QDir \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qdir.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qfileinfo.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qfile.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qfiledevice.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qiodevice.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QDebug \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qdebug.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qmap.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qtextstream.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qlocale.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qvariant.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qset.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcontiguouscache.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qsharedpointer.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QSettings \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qsettings.h \
+		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlDatabase \
+		../../Qt/5.14.2/gcc_64/include/QtSql/qsqldatabase.h \
+		../../Qt/5.14.2/gcc_64/include/QtSql/qtsqlglobal.h \
+		../../Qt/5.14.2/gcc_64/include/QtSql/qtsql-config.h \
+		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlError \
+		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlerror.h \
+		orderbooksproxy.h \
+		../swift-corelib/wampclient.h \
+		../swift-corelib/wamp.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QMetaMethod \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qmetaobject.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QTime \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qdatetime.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QVariant \
@@ -1756,45 +1763,16 @@ main.o: main.cpp ../../Qt/5.14.2/gcc_64/include/QtCore/QCoreApplication \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qbasictimer.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/QLocalSocket \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qlocalsocket.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QSettings \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qsettings.h \
-		../swift-corelib/swiftcore.h \
-		../swift-corelib/swiftbot.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostInfo \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qhostinfo.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostAddress \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkInterface \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkinterface.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QLockFile \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qlockfile.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QDir \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qdir.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qfileinfo.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qfile.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qfiledevice.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QDebug \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QDateTime \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlQuery \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlquery.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qtsqlglobal.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qtsql-config.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqldatabase.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlRecord \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlrecord.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlDatabase \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlError \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlerror.h \
-		../swift-corelib/swift-corelib_global.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QSharedPointer \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QFile \
-		../swift-corelib/assetsstorage.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QObject \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlResult \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlresult.h \
-		orderbooksproxy.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QQueue \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qqueue.h \
+		../swift-corelib/assetsstorage.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QObject \
+		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlQuery \
+		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlquery.h \
+		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlRecord \
+		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlrecord.h \
+		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlResult \
+		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlresult.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QElapsedTimer \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qelapsedtimer.h \
 		../../Qt/5.14.2/gcc_64/include/QtConcurrent/QtConcurrent \
@@ -1935,6 +1913,15 @@ main.o: main.cpp ../../Qt/5.14.2/gcc_64/include/QtCore/QCoreApplication \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkreply.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QIODevice \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QFuture \
+		../swift-corelib/swiftbot.h \
+		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostInfo \
+		../../Qt/5.14.2/gcc_64/include/QtNetwork/qhostinfo.h \
+		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostAddress \
+		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkInterface \
+		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkinterface.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QMap \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QDateTime \
 		nodescontroller.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QThread
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
@@ -2055,48 +2042,22 @@ orderbooksproxy.o: orderbooksproxy.cpp orderbooksproxy.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qlocalsocket.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QSettings \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qsettings.h \
-		../swift-corelib/swiftcore.h \
-		../swift-corelib/swiftbot.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostInfo \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qhostinfo.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostAddress \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkInterface \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkinterface.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineOption \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineoption.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineParser \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineparser.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcoreapplication.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qeventloop.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QLockFile \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qlockfile.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QDir \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qdir.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qfileinfo.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qfile.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qfiledevice.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QDebug \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QDateTime \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QQueue \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qqueue.h \
+		../swift-corelib/assetsstorage.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QObject \
 		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlQuery \
 		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlquery.h \
 		../../Qt/5.14.2/gcc_64/include/QtSql/qtsqlglobal.h \
 		../../Qt/5.14.2/gcc_64/include/QtSql/qtsql-config.h \
 		../../Qt/5.14.2/gcc_64/include/QtSql/qsqldatabase.h \
+		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlDatabase \
 		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlRecord \
 		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlrecord.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlDatabase \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlError \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlerror.h \
-		../swift-corelib/swift-corelib_global.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QSharedPointer \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QFile \
-		../swift-corelib/assetsstorage.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QObject \
 		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlResult \
 		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlresult.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QQueue \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qqueue.h \
+		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlError \
+		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlerror.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QElapsedTimer \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qelapsedtimer.h \
 		../../Qt/5.14.2/gcc_64/include/QtConcurrent/QtConcurrent \
@@ -2105,6 +2066,7 @@ orderbooksproxy.o: orderbooksproxy.cpp orderbooksproxy.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QtCoreDepends \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qabstractanimation.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qabstracteventdispatcher.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qeventloop.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qabstractitemmodel.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qabstractnativeeventfilter.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qabstractproxymodel.h \
@@ -2127,9 +2089,16 @@ orderbooksproxy.o: orderbooksproxy.cpp orderbooksproxy.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcborstream.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qfloat16.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcollator.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineoption.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineparser.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qcoreapplication.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qconcatenatetablesproxymodel.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qdatastream.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qdeadlinetimer.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qdir.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qfileinfo.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qfile.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qfiledevice.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qdiriterator.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qeasingcurve.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qendian.h \
@@ -2155,6 +2124,7 @@ orderbooksproxy.o: orderbooksproxy.cpp orderbooksproxy.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qversionnumber.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qline.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qlinkedlist.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qlockfile.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qloggingcategory.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qmargins.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qmath.h \
@@ -2493,6 +2463,7 @@ nodescontroller.o: nodescontroller.cpp nodescontroller.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkInterface \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkinterface.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QMap \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineOption \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineParser \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QLockFile \
@@ -2509,14 +2480,7 @@ nodescontroller.o: nodescontroller.cpp nodescontroller.h \
 		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlrecord.h \
 		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlDatabase \
 		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlError \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlerror.h \
-		../swift-corelib/swiftcore.h \
-		../swift-corelib/swift-corelib_global.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QSharedPointer \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QFile \
-		../swift-corelib/assetsstorage.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlResult \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlresult.h
+		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlerror.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o nodescontroller.o nodescontroller.cpp
 
 orderbooksnode.o: orderbooksnode.cpp orderbooksnode.h \
@@ -2783,6 +2747,7 @@ orderbooksnode.o: orderbooksnode.cpp orderbooksnode.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkInterface \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkinterface.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QMap \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineOption \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineParser \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QLockFile \

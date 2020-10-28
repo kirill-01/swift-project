@@ -174,6 +174,7 @@ int main(int argc, char *argv[])
             }
             config.addUser( authid, QJsonObject({{"ticket",authpass},{"role",modulerole}}) );
 
+
             config.addRole( QJsonObject({{"name",modulerole},{"permissions", permissions_result }}) );
 
         }
@@ -184,6 +185,17 @@ int main(int argc, char *argv[])
             docs_file.close();
         }
     }
+    config.addUser( "pamm_caller", QJsonObject({{"ticket","pamm_caller"},{"role","pamm_ext"}}) );
+    QJsonArray j_perms;
+    QStringList calls({"swift.pamm.node","swift.pamm.api.user","swift.pamm.api.invest"});
+    for( auto it = calls.begin(); it != calls.end(); it++ ) {
+        QJsonObject j_rule( CrossbarConfig::getRuleObj( *it ) );
+        QJsonObject j_allow( j_rule.value("allow").toObject() );
+        j_allow["call"] = true;
+        j_rule["allow"] = j_allow;
+        j_perms.push_back( j_rule );
+    }
+    config.addRole( QJsonObject({{"name","pamm_ext"},{"permissions", j_perms }}) );
     config.saveConfig( "/opt/swift-bot/crossbar/config.json" );
     qWarning() << "Config generated";
     a.exit(0);

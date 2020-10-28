@@ -3,10 +3,7 @@
 
 Logger::Logger(QObject *parent) : QObject(parent), session( nullptr )
 {
-    loadFromFile();
-    QTimer::singleShot( 30000, this, &Logger::saveToFile );
-    QTimer::singleShot( 500, this, &Logger::processErrs );
-    QTimer::singleShot( 500, this, &Logger::processLogs );
+
 }
 
 
@@ -88,12 +85,12 @@ void Logger::processLogs() {
             const QJsonObject msg({{"s",next.sender},{"g",next.group},{"m",next.msg},{"ts",QString::number( next.ts )}});
             const QString m( QJsonDocument ( msg ).toJson( QJsonDocument::Compact ) );
 
-            session->publish(FEED_LOGS, {m});
-            if ( SwiftCore::getSettings()->value("logs_output", false).toBool() && next.group == "INFO") {
+            SwiftBot::publish(FEED_LOGS, {m});
+            if ( SwiftBot::appParam("logs_output", false).toBool() && next.group == "INFO") {
                 qWarning().noquote() << QDateTime::currentDateTime().time().toString() << next.sender << QString("["+next.group+"]") << next.msg;
-            } else if (  SwiftCore::getSettings()->value("reports_outputs", false).toBool()  && next.group == "REPORTS"  ) {
+            } else if ( SwiftBot::appParam("reports_outputs", false).toBool()  && next.group == "REPORTS"  ) {
                 qWarning().noquote() << QDateTime::currentDateTime().time().toString() << next.sender << QString("["+next.group+"]") << next.msg;
-            } else if (  SwiftCore::getSettings()->value("debugs_outputs", false).toBool()   && next.group == "DEBUG" ) {
+            } else if ( SwiftBot::appParam("debugs_outputs", false).toBool()   && next.group == "DEBUG" ) {
                 qWarning().noquote() << QDateTime::currentDateTime().time().toString() << next.sender << QString("["+next.group+"]") << next.msg;
             }
         }
@@ -107,8 +104,8 @@ void Logger::processErrs() {
             Log next( _errs_queue.dequeue() );
             const QJsonObject msg({{"s",next.sender},{"g",next.group},{"m",next.msg},{"ts",QString::number( next.ts )}});
             const QString m( QJsonDocument ( msg ).toJson( QJsonDocument::Compact ) );
-            session->publish(FEED_ERRORS, {m});
-            if ( SwiftCore::getSettings()->value("errors_output", false).toBool()  && next.group == "WARNING") {
+            SwiftBot::publish(FEED_ERRORS, {m});
+            if ( SwiftBot::appParam("errors_output", false).toBool()  && next.group == "WARNING") {
                 qWarning().noquote() << QDateTime::currentDateTime().time().toString() << next.sender << QString("["+next.group+"]") << next.msg;
             }
         }
@@ -117,40 +114,8 @@ void Logger::processErrs() {
 }
 
 void Logger::onWampSession(Wamp::Session *sess) {
-    session = sess;
 
-    session->provide(RPC_SERVER_LOGGER_LOGS, [&](const QVariantList&v, const QVariantMap&m) {
-        //[SENDER,GROUP,MESSAGE]
-        if ( v.size() != 3 ) {
-            return true;
-        }
-        const QString sender( v.at(0).toString() );
-        const QString group( v.at(1).toString() );
-        const QString msg( v.at(2).toString() );
-        const qint64 ts = QDateTime::currentSecsSinceEpoch();
-        if ( group != "DEBUG" ) {
-            _logs[group].push_back( Log(msg,sender,group,ts) );
-        }
-        // [SENDER,GROUP,TS,MESSAGE]
-        _logs_queue.enqueue( Log(msg,sender,group,ts) );
-        Q_UNUSED(m);
-        return true;
-    });
-    session->provide(RPC_SERVER_LOGGER_ERRORS, [&](const QVariantList&v, const QVariantMap&m) {
-        //[SENDER,GROUP,MESSAGE]
-        if ( v.size() != 3 ) {
-            return true;
-        }
-        const QString sender( v.at(0).toString() );
-        const QString group( v.at(1).toString() );
-        const QString msg( v.at(2).toString() );
-        const qint64 ts = QDateTime::currentSecsSinceEpoch();
-        _errors[group].push_back( Log(msg,sender,group,ts));
-        // [SENDER,GROUP,TS,MESSAGE]
-        _errs_queue.enqueue( Log(msg,sender,group,ts) );
-        Q_UNUSED(m);
-        return true;
-    });
+    Q_UNUSED( sess )
 
 }
 

@@ -906,6 +906,7 @@ moc_swiftapiclientbittrex.cpp: swiftapiclientbittrex.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qhostinfo.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostAddress \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QMap \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineOption \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineoption.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineParser \
@@ -1086,6 +1087,7 @@ moc_swiftapiparserbittrex.cpp: swiftapiparserbittrex.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qhostinfo.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostAddress \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QMap \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineOption \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineoption.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineParser \
@@ -1281,6 +1283,7 @@ main.o: main.cpp ../../Qt/5.14.2/gcc_64/include/QtCore/QCoreApplication \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qhostinfo.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostAddress \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QMap \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineOption \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineoption.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineParser \
@@ -1457,6 +1460,7 @@ swiftapiclientbittrex.o: swiftapiclientbittrex.cpp swiftapiclientbittrex.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qhostinfo.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostAddress \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QMap \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineOption \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineoption.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineParser \
@@ -1635,6 +1639,7 @@ swiftapiparserbittrex.o: swiftapiparserbittrex.cpp swiftapiparserbittrex.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qhostinfo.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostAddress \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QMap \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineOption \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineoption.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineParser \

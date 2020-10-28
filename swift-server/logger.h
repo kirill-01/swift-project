@@ -10,7 +10,7 @@
 #include <QFile>
 #include <QTimer>
 #include <wampclient.h>
-#include "../swift-corelib/swiftbot.h"
+#include <swiftbot.h>
 #include <QDir>
 
 
@@ -37,7 +37,46 @@ class Logger : public QObject
 public:
     explicit Logger(QObject *parent = nullptr);
     void loadFromFile();
+    void init() {
+        loadFromFile();
+        QTimer::singleShot( 30000, this, &Logger::saveToFile );
+        QTimer::singleShot( 500, this, &Logger::processErrs );
+        QTimer::singleShot( 500, this, &Logger::processLogs );
 
+        SwiftBot::provide(RPC_SERVER_LOGGER_LOGS, [&](const QVariantList&v, const QVariantMap&m) {
+            //[SENDER,GROUP,MESSAGE]
+            if ( v.size() != 3 ) {
+                return true;
+            }
+            const QString sender( v.at(0).toString() );
+            const QString group( v.at(1).toString() );
+            const QString msg( v.at(2).toString() );
+            const qint64 ts = QDateTime::currentSecsSinceEpoch();
+            if ( group != "DEBUG" ) {
+                _logs[group].push_back( Log(msg,sender,group,ts) );
+            }
+            // [SENDER,GROUP,TS,MESSAGE]
+            _logs_queue.enqueue( Log(msg,sender,group,ts) );
+            Q_UNUSED(m);
+            return true;
+        });
+        SwiftBot::provide(RPC_SERVER_LOGGER_ERRORS, [&](const QVariantList&v, const QVariantMap&m) {
+            //[SENDER,GROUP,MESSAGE]
+            if ( v.size() != 3 ) {
+                return true;
+            }
+            const QString sender( v.at(0).toString() );
+            const QString group( v.at(1).toString() );
+            const QString msg( v.at(2).toString() );
+            const qint64 ts = QDateTime::currentSecsSinceEpoch();
+            _errors[group].push_back( Log(msg,sender,group,ts));
+            // [SENDER,GROUP,TS,MESSAGE]
+            _errs_queue.enqueue( Log(msg,sender,group,ts) );
+            Q_UNUSED(m);
+            return true;
+        });
+
+    }
 signals:
 private:
     QMap<QString, QVector<Log>> _logs;

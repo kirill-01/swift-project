@@ -1,8 +1,7 @@
 #include <QCoreApplication>
 #include <QCommandLineOption>
 #include <QCommandLineParser>
-#include "../swift-corelib/wampclient.h"
-#include "../swift-corelib/swiftcore.h"
+#include <swiftcore.h>
 
 #include <QLockFile>
 #include <QDir>
@@ -34,7 +33,21 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
     QCoreApplication::setApplicationName("swift-arbitrage");
-    QCoreApplication::setApplicationVersion("1.0.275");
+    QCoreApplication::setApplicationVersion("1.0.343");
+
+    // MySQL db
+    QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
+    db.setHostName( SwiftBot::appParam(SETTINGS_NAME_MYSQL_HOST ).toString() );
+    db.setPort( SwiftBot::appParam(SETTINGS_NAME_MYSQL_PORT ).toInt() );
+    db.setUserName( SwiftBot::appParam(SETTINGS_NAME_MYSQL_USER).toString() );
+    db.setPassword( SwiftBot::appParam(SETTINGS_NAME_MYSQL_PASSWORD ).toString() );
+    db.setDatabaseName( SwiftBot::appParam(SETTINGS_NAME_MYSQL_DBNAME ).toString() );
+
+    if ( !db.open() ) {
+        qWarning() << "MySQL database error: ";
+        qWarning() << db.lastError().text();
+        return 1;
+    }
 
     // Allow only one instance per host
     QLockFile lockFile(QDir::temp().absoluteFilePath( QString(QCoreApplication::applicationName()+".lock") ) );
@@ -55,46 +68,18 @@ int main(int argc, char *argv[])
     parser.addOption(targetDirectoryOption);
     parser.process(a);
 
-    static QString app_dir( parser.value( targetDirectoryOption ) );
-    QSettings settings(app_dir+"/settings.ini", QSettings::IniFormat );
-    QSettings current_settings( "/opt/swift-bot/modules/arbitrage/arbitrage.ini", QSettings::IniFormat );
+    SwiftBot::initWampClient();
 
-    if ( QFile::exists( "/opt/swift-bot/modules/arbitrage/arbitrage.dist" ) ) {
-        QSettings dist_settings( "/opt/swift-bot/modules/arbitrage/arbitrage.dist", QSettings::IniFormat );
-        const QStringList dist_keys( dist_settings.allKeys() );
-        for( auto it = dist_keys.begin(); it != dist_keys.end(); it++ ) {
-            if ( !current_settings.contains( *it ) ) {
-                current_settings.setValue( *it, dist_settings.value( *it ) );
-            }
-        }
-        current_settings.sync();
-        QFile::remove( "/opt/swift-bot/modules/arbitrage/arbitrage.dist" );
+
+    if ( SwiftBot::moduleParam("assets_initiated", false ).toBool() && QDateTime::currentSecsSinceEpoch() - SwiftBot::moduleParam("assets_ts", 0).toUInt() >= 3600 ) {
+        SwiftBot::moduleSettings()->setValue("assets_initiated",false);
     }
 
-
-    // MySQL db
-    QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
-    db.setHostName( settings.value(SETTINGS_NAME_MYSQL_HOST ).toString() );
-    db.setPort( settings.value(SETTINGS_NAME_MYSQL_PORT ).toInt() );
-    db.setUserName( settings.value(SETTINGS_NAME_MYSQL_USER).toString() );
-    db.setPassword( settings.value(SETTINGS_NAME_MYSQL_PASSWORD ).toString() );
-    db.setDatabaseName( settings.value(SETTINGS_NAME_MYSQL_DBNAME ).toString() );
-
-    if ( !db.open() ) {
-        qWarning() << "MySQL database error: ";
-        qWarning() << db.lastError().text();
-        return 1;
-    }
-
-    if ( current_settings.value("assets_initiated", false ).toBool() && QDateTime::currentSecsSinceEpoch() - current_settings.value("assets_ts", 0).toUInt() >= 3600 ) {
-        current_settings.setValue("assets_initiated",false);
-    }
-
-    if ( !current_settings.value("assets_initiated", false ).toBool() ) {
+    if ( !SwiftBot::moduleParam("assets_initiated", false ).toBool() ) {
 
         // Get available coins
         QStringList default_enabled_names( SwiftCore::getSettings()->value(SETTINGS_NAME_DEFAULT_COINS,"").toString().split(",") );
-        QSqlQuery q("SELECT DISTINCT( LOWER(name) ) as nm FROM swiftbot.currencies");
+        QSqlQuery q("SELECT DISTINCT( LOWER(name) ) as nm FROM currencies");
         QStringList avcoins;
         if ( q.exec() ) {
             while( q.next() ) {
@@ -159,37 +144,36 @@ int main(int argc, char *argv[])
         }
 
         q.finish();
-        current_settings.setValue("assets_ts", QDateTime::currentSecsSinceEpoch() );
-        current_settings.setValue("assets_initiated",true);
+        SwiftBot::moduleSettings()->setValue("assets_ts", QDateTime::currentSecsSinceEpoch() );
+        SwiftBot::moduleSettings()->setValue("assets_initiated",true);
     }
     // Create arbitrage windows
 
-    // Wamp client
-    WampClient * wamp_client = new WampClient(
-       settings.value(SETTINGS_NAME_WAMP_REALM,"swift").toString(),
-       settings.value(SETTINGS_NAME_WAMP_HOME,"localhost").toString(),
-       settings.value(SETTINGS_NAME_WAMP_PORT, 8081).toInt(),
-       settings.value(SETTINGS_NAME_WAMP_DEBUG, false).toBool() );
+
+    QTimer * watchdog = new QTimer();
+    watchdog->setInterval( 30000 );
+    QObject::connect( watchdog, &QTimer::timeout, [](){
+        const QString mname( QCoreApplication::applicationName().replace("swift-","") );
+        wamp_client->publish( FEED_WATCHDOG, { mname });
+    });
+    watchdog->start();
 
     MarketsFilter * markets_filter = new MarketsFilter();
 
-    QObject::connect( wamp_client, &WampClient::clientConnected, markets_filter, &MarketsFilter::onWampSession );
+    QObject::connect( wamp_client.data(), &WampClient::clientConnected, markets_filter, &MarketsFilter::onWampSession );
 
     StatsNotifier * notifier = new StatsNotifier();
 
-
-    QObject::connect( notifier, &StatsNotifier::updatedStats,[ wamp_client ]( const QJsonObject& stats ){
+    QObject::connect( notifier, &StatsNotifier::updatedStats,[]( const QJsonObject& stats ){
         wamp_client->publishMessage( FEED_EVENTS_ARBITRAGE, stats );
     });
-    QObject::connect( wamp_client, &WampClient::clientConnected, notifier, &StatsNotifier::onWampSession );
 
-    QObject::connect( wamp_client, &WampClient::clientdiconnected, [&a](){
+    QObject::connect( wamp_client.data(), &WampClient::clientConnected, notifier, &StatsNotifier::onWampSession );
+
+    QObject::connect( wamp_client.data(), &WampClient::clientdiconnected, [&a](){
         qWarning() << "WAMP client disconnected. Exiting.";
         a.quit();
     });
-
-
-    //filters_thread.start();
 
     wamp_client->startClient();
 

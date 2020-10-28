@@ -229,11 +229,13 @@ void OrderBooksProxy::mergeOrderbooks(const QString& topic,const QJsonObject &j_
     _bids = _new_bids;
 
     for ( auto it = _bids.begin(); it != _bids.end(); it++ ) {
-        const double as = _asks.value( it.key() ).lastKey();
-        const double bi = it.value().firstKey();
-        const double rate( as > bi ? as - ( ( as - bi ) / 2 ) : bi - ( ( bi - as ) /2 ) );
-        _current_rates[ it.key() ] = rate;
-        _rates_history_data[it.key()][ QDateTime::currentSecsSinceEpoch() ] = rate;
+        if ( _asks.contains( it.key() ) &&  !_asks[it.key()].isEmpty() ) {
+            const double as = _asks.value( it.key() ).lastKey();
+            const double bi = it.value().firstKey();
+            const double rate( as > bi ? as - ( ( as - bi ) / 2 ) : bi - ( ( bi - as ) /2 ) );
+            _current_rates[ it.key() ] = rate;
+            _rates_history_data[it.key()][ QDateTime::currentSecsSinceEpoch() ] = rate;
+        }
     }
 
 

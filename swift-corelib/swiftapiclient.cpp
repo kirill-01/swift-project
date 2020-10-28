@@ -12,7 +12,7 @@ SwiftApiClient::SwiftApiClient(QObject *parent) : SwiftWorker(parent),
 
     request_pause(false)
 {
-    debug = false;
+    debug = SwiftCore::getSettings()->value(SETTINGS_NAME_API_DEBUG, false ).toBool();
     _requests_debug_log = SwiftCore::getSettings()->value(SETTINGS_NAME_API_DEBUG, false ).toBool();
     qRegisterMetaType<SwiftApiClient::AsyncMethods>("SwiftApiClient::AsyncMethods");
 
@@ -61,15 +61,15 @@ QString SwiftApiClient::getApiVersionString() {
 }
 
 QString SwiftApiClient::getExchangeApiKey() const {
-    return  getSettings()->value(SETTINGS_NAME_API_KEY,"").toString();
+    return SwiftBot::moduleParam( SETTINGS_NAME_API_KEY,"").toString().trimmed();
 }
 
 QString SwiftApiClient::getExchangeApiSecret() const {
-    return getSettings()->value(SETTINGS_NAME_API_SECRET,"").toString();
+    return SwiftBot::moduleParam( SETTINGS_NAME_API_SECRET,"").toString().trimmed();
 }
 
 QString SwiftApiClient::getExchangeApiAdditional() const {
-    return getSettings()->value(SETTINGS_NAME_API_USER,"").toString();
+    return SwiftBot::moduleParam( SETTINGS_NAME_API_USER,"").toString().trimmed();
 }
 
 void SwiftApiClient::customParser(const SwiftApiClient::AsyncMethods &method, const QJsonObject &j_result) {
@@ -91,7 +91,7 @@ quint64 SwiftApiClient::createAsyncWaiter(const SwiftApiClient::AsyncMethods &me
 
     // Allow call public methods without api keys
     if ( method != AsyncMethods::GetMarkets && method != AsyncMethods::GetOrderbooks && method != AsyncMethods::GetCurrencies ) {
-        if ( getExchangeApiKey().isEmpty() || getExchangeApiKey() == "" ) {
+        if ( api_key.isEmpty() || api_key == "" ) {
             addError("Api key or secret is empty: " + getExchangeName() + " Key: " + getExchangeApiKey()+ " Secret: " + getExchangeApiSecret() );
             return 1;
         }
@@ -100,14 +100,13 @@ quint64 SwiftApiClient::createAsyncWaiter(const SwiftApiClient::AsyncMethods &me
         return 2;
     }
 
-
     const quint64 uuid = registerAsyncCall( method );
     if ( method == SwiftApiClient::AsyncMethods::OrderPlace ) {
         registerOrder( j_params, uuid );
     }
     _async_params.insert( uuid, j_params );
     _async_queue.enqueue( uuid );
-    if ( debug ) {
+    if ( isApiDebug() ) {
         qWarning() << getExchangeName() << getMethodName( method ) << "ASYNC REQUEST REGISTERED" << uuid << "PARAMS" << j_params;
     }
     if ( isApiDebug() ) {
@@ -122,20 +121,6 @@ QNetworkAccessManager *SwiftApiClient::getManager() {
 
 void SwiftApiClient::onWampSession_(Wamp::Session *session ) {
 
-
-    if ( QFile::exists( QString(APP_DIR)+"/modules/"+getExchangeName()+"/"+getExchangeName()+".dist" ) ) {
-        QSettings dist_settings( QString(APP_DIR)+"/modules/"+getExchangeName()+"/"+getExchangeName()+".dist", QSettings::IniFormat );
-        QSettings current_settings( QString(APP_DIR)+"/modules/"+getExchangeName()+"/"+getExchangeName()+".ini", QSettings::IniFormat );
-        const QStringList dist_keys( dist_settings.allKeys() );
-        for( auto it = dist_keys.begin(); it != dist_keys.end(); it++ ) {
-            if ( !current_settings.contains( *it ) ) {
-                current_settings.setValue( *it, dist_settings.value( *it ) );
-            }
-        }
-        current_settings.sync();
-        QFile::remove( QString(APP_DIR)+"/modules/"+getExchangeName()+"/"+getExchangeName()+".dist" );
-    }
-
     delay_between_requests = getSettings()->value( SETTINGS_NAME_EXCHANGE_DELAY_REQUESTS, 50 ).toUInt();
     delay_between_same_requests = getSettings()->value( SETTINGS_NAME_EXCHANGE_DELAY_SAME_REQUESTS, 500 ).toUInt();
 
@@ -143,7 +128,6 @@ void SwiftApiClient::onWampSession_(Wamp::Session *session ) {
     api_key = getExchangeApiKey();
     api_secret = getExchangeApiSecret();
     api_user = getExchangeApiAdditional();
-
 
 
     connect( this, &SwiftApiClient::pubWamp, session, &Wamp::Session::publishMessage, Qt::QueuedConnection );
@@ -170,21 +154,17 @@ void SwiftApiClient::onWampSession_(Wamp::Session *session ) {
     {
         const SwiftApiClient::AsyncMethods met( static_cast<SwiftApiClient::AsyncMethods> ( i ) );
         const QString rpc_path( "swift.api."+getMethodName( met )+"."+getExchangeName() );
-        _methods_minimum_delay.insert( met, 1000 );
-        QVariantMap options;
-        options["invoke"] = "last";
-        session->provide(rpc_path, [=](const QVariantList &args, const QVariantMap &kwargs ) {
+        SwiftBot::provide( rpc_path, [this, &met](const QVariantList &args, const QVariantMap &kwargs ) {
                 Q_UNUSED(kwargs)
-                if ( request_pause ) {
-                    return quint64(0);
-                }
                 if ( args.isEmpty() ) {
                     const QJsonObject j_params;
-                    const quint64 uuid =  createAsyncWaiter( static_cast<SwiftApiClient::AsyncMethods>( met ), j_params );
+                    const quint64 uuid =  createAsyncWaiter( met, j_params );
+
                     return uuid;
                 } else {
                     const QJsonObject j_params( QJsonDocument::fromJson( args.at(0).toString().toUtf8() ).object() );
-                    const quint64 uuid =  createAsyncWaiter( static_cast<SwiftApiClient::AsyncMethods>( met ), j_params );
+                    const quint64 uuid =  createAsyncWaiter( met, j_params );
+                    qWarning() << uuid << met;
                     return uuid;
                 }
             });
@@ -488,8 +468,6 @@ QJsonObject & SwiftApiClient::parsePublicGroup( QJsonObject  & j_result ) {
             }
         }
     }
-
-
     return j_result;
 }
 
@@ -831,7 +809,7 @@ bool SwiftApiClient::isUintInRange(quint32 val, quint32 r_min, quint32 r_max, bo
 
 void SwiftApiClient::initWorker(Wamp::Session *sess)
 {
-    settings = SwiftCore::getModuleSettings( getExchangeName() );
+    settings = SwiftBot::moduleSettings();
     onWampSession_(sess);
 }
 

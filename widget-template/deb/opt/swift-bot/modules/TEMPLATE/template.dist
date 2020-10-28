@@ -1,7 +1,0 @@
-name=template
-description=Simple module example
-version=1.0.75
-binary=/opt/swift-bot/bin/swift-template
-is_enabled=true
-is_exchange=false
-

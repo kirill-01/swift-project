@@ -44,9 +44,9 @@ void TemplateWorker::onRpcResult(const QVariant & res )
 void TemplateWorker::onFeedMessage(const QString &feed, const QVariantList &data)
 {
     if ( feed == FEED_ORDERBOOKS_SNAPSHOT ) {
-        last_orderbooks = prepareOrderbooks( data );
+        // last_orderbooks = prepareOrderbooks( data );
     } else if ( FEED_EVENTS_BALANCES ) {
-        assets_data = prepareAssets( data );
+
     } else if ( FEED_EVENTS_ORDERS ) {
         qInfo() << "Orders event received" << data;
     } else {

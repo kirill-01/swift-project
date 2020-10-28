@@ -17,16 +17,4 @@ HEADERS += \
     swiftapiclientzb.h \
     swiftapiparserzb.h
 
-CONFIG(debug, debug|release) {
-    message(DEBUG BUILD)
-    INCLUDEPATH += $$PWD/../swift-corelib
-    DEPENDPATH += $$PWD/../build-corelib
-    LIBS += -L$$PWD/../build-corelib/  -lswift-corelib
-}
-
-CONFIG(release, debug|release) {
-    message(RELEASE build)
-    INCLUDEPATH += /usr/include/swiftbot
-    DEPENDPATH += /usr/include/swiftbot
-    LIBS += -lswift-corelib
-}
+include(../shared.pri)

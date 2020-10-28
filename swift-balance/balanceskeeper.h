@@ -5,7 +5,7 @@
 #include <QSharedDataPointer>
 
 #include "../swift-corelib/wampclient.h"
-#include "../swift-corelib/swiftcore.h"
+#include <swiftcore.h>
 #include "../swift-corelib/assetsstorage.h"
 
 class BalancesKeeperData;

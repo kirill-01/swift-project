@@ -2,8 +2,8 @@
 #define SWIFTAPIPARSERKUCOIN_H
 
 #include <QObject>
-#include "../swift-corelib/swiftapiparser.h"
-#include "../swift-corelib/swiftcore.h"
+#include <swiftapiparser.h>
+#include <swiftcore.h>
 
 class SwiftApiParserKuCoin : public SwiftApiParser
 {

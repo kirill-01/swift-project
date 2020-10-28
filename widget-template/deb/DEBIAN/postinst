@@ -1,7 +1,0 @@
-#!/bin/bash
-MODULENAME=template
-FILE="/opt/swift-bot/modules/${MODULENAME}/${MODULENAME}.ini"
-if [[ ! -f "$FILE" ]]; then
-  mv /opt/swift-bot/modules/${MODULENAME}/${MODULENAME}.dist /opt/swift-bot/modules/${MODULENAME}/${MODULENAME}.ini
-fi
-chmod -R 777 /opt/swift-bot/modules/${MODULENAME}

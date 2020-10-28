@@ -1,7 +1,7 @@
 #include <QCoreApplication>
 #ifdef SWIFT_ASYNC_WORKER
 #include <QThread>
-#include <templateworker.h>
+#include "templateworker.h"
 #endif
 
 #include "module_definitions.h"

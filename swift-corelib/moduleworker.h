@@ -17,7 +17,7 @@ class ModuleWorker : public QObject
 public:
     explicit ModuleWorker(QObject *parent = nullptr);
 
-    SwiftBot::AssetsData prepareAssets( const QVariantList & v );
+
     OrderBooks prepareOrderbooks( const QVariantList & v );
 signals:
     void callRpc( const QString& path, const QVariantList & args = QVariantList() );

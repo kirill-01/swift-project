@@ -2,7 +2,7 @@
 #define SWIFTAPICLIENTBITFINEX_H
 
 #include <QObject>
-#include "../swift-corelib/swiftapiclient.h"
+#include <swiftapiclient.h>
 
 class SwiftApiClientBitfinex : public SwiftApiClient
 {

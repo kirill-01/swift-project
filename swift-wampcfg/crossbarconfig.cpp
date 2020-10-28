@@ -100,6 +100,8 @@ QJsonObject CrossbarConfig::getConfig() {
         QJsonObject j_transport( it->toObject() );
         if ( j_transport.value("type").toString() != "web" ) {
             j_transport["auth"] = _worker_transports_auth;
+        } else {
+            j_web = j_transport;
         }
         new_transports.push_back( j_transport );
     }
@@ -115,6 +117,26 @@ QJsonObject CrossbarConfig::getConfig() {
 }
 
 void CrossbarConfig::saveConfig(const QString &config_filename) {
+    if ( j_web.isEmpty() ) {
+        j_web["type"] = "web";
+        j_web["endpoint"] = QJsonObject({{"type","tcp"}, {"port", 8082}});
+        j_web["paths"] = QJsonObject({{"pamm", QJsonObject({{"type","caller"},{"realm","realm1"},{"role","pamm_ext"}})}});
+    }
+    QJsonArray _new_transports;
+    bool web_added = false;
+    for( auto it = _worker_transports.begin(); it != _worker_transports.end(); it ++ ) {
+        QJsonObject j_transport( it->toObject() );
+        if ( j_transport.value("type").toString() == "web") {
+            _new_transports.push_back( j_web );
+            web_added = true;
+        } else {
+            _new_transports.push_back( j_transport );
+        }
+    }
+    if ( !web_added ) {
+        _new_transports.push_back( j_web );
+    }
+    _worker_transports = _new_transports;
     QFile f( config_filename );
     if ( f.open( QFile::ReadWrite ) ) {
         f.resize(0);

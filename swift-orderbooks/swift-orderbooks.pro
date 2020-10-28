@@ -20,16 +20,8 @@ HEADERS += \
     orderbooksnode.h
 
 
-CONFIG(debug, debug|release) {
-    message(DEBUG BUILD)
-    INCLUDEPATH += $$PWD/../swift-corelib
-    DEPENDPATH += $$PWD/../build-corelib
-    LIBS += -L$$PWD/../build-corelib/  -lswift-corelib
-}
+include( ../shared.pri )
 
-CONFIG(release, debug|release) {
-    message(RELEASE build)
-    INCLUDEPATH += /usr/include/swiftbot
-    DEPENDPATH += /usr/include/swiftbot
-    LIBS += -lswift-corelib
-}
+DISTFILES += \
+    deb/opt/swift-bot/modules/orderbooks/orderbooks.dist \
+    deb/opt/swift-bot/modules/orderbooks/wamp.json

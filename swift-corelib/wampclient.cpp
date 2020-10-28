@@ -7,7 +7,7 @@ WampClient::WampClient(const QString &realmname, const QString &servername, cons
     debug(_debug),
     started_at(QDateTime::currentDateTime()),
     sysinf_timer(new QTimer), p_realmname(realmname),
-    p_servername(servername), p_serverport(serverport),session(nullptr), reconnect_limit(0),is_connected(false)
+    p_servername(servername), p_serverport(serverport),session(nullptr), reconnect_limit(0),is_connected(false),is_starting(false)
 {
 
     connect(&m_webSocket, &QTcpSocket::disconnected, this, &WampClient::closeConnections );
@@ -24,8 +24,51 @@ WampClient::WampClient(QObject *parent) : QObject(parent), debug(0), p_realmname
     connect(&m_webSocket, &QTcpSocket::aboutToClose, this, &WampClient::closeConnections );
 }
 
+bool WampClient::hasSession() const {
+    if ( is_connected ) {
+        return session != nullptr && session->isJoined();
+    } else {
+        return false;
+    }
+}
+
 Wamp::Session *WampClient::getSession() const {
     return session;
+}
+
+bool WampClient::isConnected() const {
+    return (session != nullptr && session->isJoined());
+}
+
+bool WampClient::isStarting() const
+{
+    return is_starting;
+}
+
+void WampClient::onClientConnected(onWampConnected func) {
+    connect( this, &WampClient::clientConnected, func );
+}
+
+void WampClient::subscribeFeed(const QString &path, const QString &name){
+    if ( is_connected && session != nullptr && session->isJoined() ) {
+        session->subscribe( path, [=]( const QVariantList & v, const QVariantMap & m ) {
+            Q_UNUSED( m )
+            emit feedMessage( name, v );
+        });
+    }
+}
+
+void WampClient::callRpc(const QString &path, const QVariantList &args){
+    if ( is_connected && session != nullptr && session->isJoined() ) {
+        const QVariant re = session->call( path, args );
+        emit rpcResult( re );
+    }
+}
+
+void WampClient::publishFeed(const QString &path, const QVariantList &args){
+    if ( is_connected && session != nullptr && session->isJoined() ) {
+        session->publish( path, args );
+    }
 }
 
 void WampClient::connectRealm(const QString &realmname) {
@@ -59,6 +102,10 @@ void WampClient::publishMessage(const QString &topic, const QJsonArray &j) {
 }*/
 
 void WampClient::startClient() {
+    if ( is_connected || is_starting ) {
+        return;
+    }
+    is_starting = true;
     if (debug) {
         qInfo() << "Starting WAMP client node :" << p_realmname << p_servername << p_serverport;
     }
@@ -105,6 +152,7 @@ void WampClient::onJoined() {
 
 void WampClient::onConnected() {
     is_connected=true;
+    is_starting = false;
     reconnect_limit = 0;
     started_at = QDateTime::currentDateTime();
 
@@ -119,6 +167,27 @@ void WampClient::onConnected() {
         }
         sessionname = QString::number( s );
         is_connected=true;
+
+        if ( !_provided_queue.isEmpty() ) {
+            while ( !_provided_queue.isEmpty() ) {
+                QPair<QString,  Wamp::Endpoint::Function> next = _provided_queue.dequeue();
+                session->provide( next.first, next.second );
+            }
+        }
+
+        if ( !_subsd_queue.isEmpty() ) {
+            while ( !_subsd_queue.isEmpty() ) {
+                QPair<QString, wampFunction2> next = _subsd_queue.dequeue();
+                session->subscribe( next.first, next.second );
+            }
+        }
+
+        if ( !_published_queue.isEmpty() ) {
+            while ( !_published_queue.isEmpty() ) {
+                QPair<QString, QVariantList> next = _published_queue.dequeue();
+                session->publish( next.first, next.second );
+            }
+        }
 
         emit clientJoined();
         emit clientConnected( session );
@@ -155,6 +224,7 @@ void WampClient::onConnected() {
 }
 
 void WampClient::onDisconnected( const QString& realm ) {
+    is_starting = false;
     if ( is_connected ) {
         is_connected=false;
         qWarning() << "WAMP client disconnected." << "Realm/Reason" << realm;
@@ -174,6 +244,7 @@ void WampClient::onDisconnected( const QString& realm ) {
 }
 
 void WampClient::closeConnections() {
+    is_starting = false;
     if ( is_connected ) {
         if ( session != nullptr ) {
             if ( session->isJoined() ) {

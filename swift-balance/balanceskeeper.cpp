@@ -193,8 +193,9 @@ void BalancesKeeper::requestBals() {
     if ( !_active_clients.isEmpty() ) {
         for( auto it = _active_clients.begin(); it != _active_clients.end(); it++ ) {
             if ( session != nullptr && session->isJoined() ) {
-                QVariant resp = session->call("swift.api.balance.get."+*it);
+                QVariant resp = session->call("swift.api.balances."+*it);
                 if ( resp.toULongLong() < 100 ) {
+                    qWarning() << "Error receive balances" << *it;
                     // Request error, pause exchange
                 }
             }

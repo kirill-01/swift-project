@@ -1,7 +1,7 @@
 #ifndef SWIFTAPIPARSERKRAKEN_H
 #define SWIFTAPIPARSERKRAKEN_H
-#include "../swift-corelib/swiftapiparser.h"
-#include "../swift-corelib/swiftcore.h"
+#include <swiftapiparser.h>
+#include <swiftcore.h>
 
 
 class SwiftApiParserKraken : public SwiftApiParser

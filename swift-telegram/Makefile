@@ -827,6 +827,7 @@ moc_telegramapi.cpp: telegramapi.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkinterface.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcryptographichash.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QMap \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineOption \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineoption.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineParser \
@@ -904,6 +905,8 @@ moc_telegramapi.cpp: telegramapi.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qbasictimer.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/QLocalSocket \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qlocalsocket.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QQueue \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qqueue.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkAccessManager \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkaccessmanager.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QVector \
@@ -1054,6 +1057,8 @@ main.o: main.cpp ../../Qt/5.14.2/gcc_64/include/QtCore/QCoreApplication \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qlocalsocket.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QSettings \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qsettings.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QQueue \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qqueue.h \
 		../swift-corelib/swiftcore.h \
 		../swift-corelib/swiftbot.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostInfo \
@@ -1062,6 +1067,7 @@ main.o: main.cpp ../../Qt/5.14.2/gcc_64/include/QtCore/QCoreApplication \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkInterface \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkinterface.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QMap \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QLockFile \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qlockfile.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QDir \
@@ -1180,6 +1186,7 @@ telegramapi.o: telegramapi.cpp telegramapi.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkinterface.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcryptographichash.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QMap \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineOption \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineoption.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineParser \
@@ -1257,6 +1264,8 @@ telegramapi.o: telegramapi.cpp telegramapi.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qbasictimer.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/QLocalSocket \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qlocalsocket.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QQueue \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qqueue.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkAccessManager \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkaccessmanager.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QVector \

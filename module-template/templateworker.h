@@ -21,7 +21,6 @@ public slots:
     void onFeedMessage(const QString &feed, const QVariantList &) override;
     void onClientStarted() override;
 private:
-    SwiftBot::AssetsData assets_data;
     OrderBooks last_orderbooks;private:
     QSharedDataPointer<TemplateStorageData> data;
 };

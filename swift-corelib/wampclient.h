@@ -5,7 +5,11 @@
 #include <QTimer>
 #include <QLocalSocket>
 #include <QSettings>
+#include <QQueue>
 
+typedef std::function<void( Wamp::Session * )> onWampConnected;
+typedef std::function<QVariant( const QVariantList&v, const QVariantMap&m )> wampFunction;
+typedef std::function<void(const QVariantList&, const QVariantMap&)> wampFunction2;
 
 class WampClient : public QObject
 {
@@ -14,16 +18,38 @@ public:
     WampClient(const QString & realmname, const QString & servername, const quint16& serverport, bool debug=false, QObject *parent = nullptr);
     WampClient( const QString& realmname );
     explicit WampClient( QObject * parent = nullptr );
-    bool hasSession() const {
-        if ( is_connected ) {
-            return session != nullptr && session->isJoined();
-        } else {
-            return false;
-        }
-    }
+    bool hasSession() const;
     Wamp::Session * getSession() const;
     void setOrderbooksSubscriber();
-    void subscribe( const QString& topic );
+    void subscribeSignl( const QString& topic );
+    bool isConnected() const;
+    bool isStarting() const;
+    void onClientConnected(onWampConnected func );
+    QQueue<QPair<QString, Wamp::Endpoint::Function>> _provided_queue;
+    void provide( const QString& method,  Wamp::Endpoint::Function func ) {
+        if ( getSession() == nullptr || !getSession()->isJoined() ) {
+            _provided_queue.enqueue( QPair<QString,  Wamp::Endpoint::Function>({method, func }) );
+        } else {
+            getSession()->provide( method, func );
+        }
+    }
+    QQueue<QPair<QString, wampFunction2>> _subsd_queue;
+    void subscribe( const QString& method, wampFunction2 func ) {
+        if ( getSession() == nullptr || !getSession()->isJoined() ) {
+            _subsd_queue.enqueue( QPair<QString, wampFunction2>({method, func }) );
+        } else {
+            getSession()->subscribe( method, func );
+        }
+    }
+    QQueue<QPair<QString, QVariantList>> _published_queue;
+    void publish( const QString& method, QVariantList func ) {
+        if ( getSession() == nullptr || !getSession()->isJoined() ) {
+            _published_queue.enqueue( QPair<QString, QVariantList>({method, func }) );
+        } else {
+            getSession()->publish( method, func );
+        }
+    }
+
 signals:
     void clientStarted();
     void clientConnected( Wamp::Session * session );
@@ -39,25 +65,9 @@ signals:
     void feedMessage( const QString& feed, const QVariantList & args );
 
 public slots:
-    void subscribeFeed( const QString& path, const QString& name ){
-        if ( is_connected && session != nullptr && session->isJoined() ) {
-            session->subscribe( path, [=]( const QVariantList & v, const QVariantMap & m ) {
-                Q_UNUSED( m )
-                emit feedMessage( name, v );
-            });
-        }
-    }
-    void callRpc( const QString& path, const QVariantList & args = QVariantList() ){
-        if ( is_connected && session != nullptr && session->isJoined() ) {
-            const QVariant re = session->call( path, args );
-            emit rpcResult( re );
-        }
-    }
-    void publishFeed( const QString& path, const QVariantList & args ){
-        if ( is_connected && session != nullptr && session->isJoined() ) {
-            session->publish( path, args );
-        }
-    }
+    void subscribeFeed( const QString& path, const QString& name );
+    void callRpc( const QString& path, const QVariantList & args = QVariantList() );
+    void publishFeed( const QString& path, const QVariantList & args );
 
     void connectRealm( const QString& realmname );
     void publishMessage( const QString& topic, const QJsonObject& j );
@@ -82,6 +92,7 @@ private:
     quint16 reconnect_limit;
     QString sessionname;
     bool is_connected;
+    bool is_starting;
     QMutex mutex;
     QSettings * settings;
 };

@@ -334,6 +334,10 @@ QStringList AssetsStorage::getExchangesNames() const {
     return data->_exchange_name.values();
 }
 
+QList<quint32> AssetsStorage::getAllExchanges() const {
+    return data->_exchange_name.keys();
+}
+
 double AssetsStorage::getBalance(const quint32 &currency) const {
 
     return data->_balances.value( currency, 0 );
@@ -553,4 +557,14 @@ QString AssetsStorage::getArbitragePairBaseCurrencyName(const quint32 &apid) con
 
 QString AssetsStorage::getArbitragePairMarketCurrencyName(const quint32 &apid) const {
     return data->_arbitrage_pairs_market_coin_name.value( apid );
+}
+
+quint32 AssetsStorage::getArbitragePairBaseCoinId(const quint32 &apid) const
+{
+    return data->_arbitrage_pair_coins.value(apid).first;
+}
+
+quint32 AssetsStorage::getArbitragePairMarketCoinId(const quint32 &apid) const
+{
+    return data->_arbitrage_pair_coins.value(apid).second;
 }

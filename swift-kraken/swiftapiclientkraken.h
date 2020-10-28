@@ -1,7 +1,7 @@
 #ifndef SWIFTAPICLIENTKRAKEN_H
 #define SWIFTAPICLIENTKRAKEN_H
-#include "../swift-corelib/swiftapiclient.h"
-#include "../swift-corelib/swiftcore.h"
+#include <swiftapiclient.h>
+#include <swiftcore.h>
 
 #include <sys/time.h>
 #include <sstream>

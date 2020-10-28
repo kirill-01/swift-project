@@ -19,17 +19,9 @@ HEADERS += \
     marketsfilter.h \
     statsnotifier.h
 
+include( ../shared.pri )
 
-CONFIG(debug, debug|release) {
-    message(DEBUG BUILD)
-    INCLUDEPATH += $$PWD/../swift-corelib
-    DEPENDPATH += $$PWD/../build-corelib
-    LIBS += -L$$PWD/../build-corelib/  -lswift-corelib
-}
+DISTFILES += \
+    deb/opt/swift-bot/modules/arbitrage/arbitrage.dist \
+    deb/opt/swift-bot/modules/arbitrage/wamp.json
 
-CONFIG(release, debug|release) {
-    message(RELEASE build)
-    INCLUDEPATH += /usr/include/swiftbot
-    DEPENDPATH += /usr/include/swiftbot
-    LIBS += -lswift-corelib
-}

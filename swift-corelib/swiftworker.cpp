@@ -88,29 +88,6 @@ void SwiftWorker::onWampSession(Wamp::Session *sess) {
     if ( session == nullptr ) {
         session = sess;
     }
-    session->subscribe(FEED_SETTINGS_SYSTEM,[&](const QVariantList&v, const QVariantMap&m) {
-        //[PARAM,VALUE]
-        Q_UNUSED(m)
-        if ( !v.isEmpty() ) {
-            const QString param( v.at(0).toString() );
-            if ( listenParams().contains( param ) ) {
-                onParamChanged( param, v.at(1).toString() );
-            }
-        }
-    });
     initWorker( session );
-    setIsInited();
-
-
-    if ( SwiftCore::getSettings()->value("clickhouse_enabled", false).toBool() ) {
-        _ch = QSqlDatabase::addDatabase("QMYSQL", "clickhouse-"+getWorkerName() );
-        _ch.setHostName( SwiftCore::getSettings()->value("clickhouse_host",  "localhost").toString() );
-        _ch.setPort( SwiftCore::getSettings()->value("clickhouse_port",  9004).toUInt() );
-        _ch.setUserName( SwiftCore::getSettings()->value("clickhouse_user",  "default").toString() );
-        _ch.setPassword( SwiftCore::getSettings()->value("clickhouse_password",  "clickhouse").toString()  );
-        _ch.setDatabaseName( SwiftCore::getSettings()->value("clickhouse_db",  "default").toString()  );
-        if ( !_ch.open() ) {
-            qWarning() << _ch.lastError().text();
-        }
-    }
+    // setIsInited();
 }

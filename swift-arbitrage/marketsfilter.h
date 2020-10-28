@@ -3,175 +3,19 @@
 
 
 #include "../swift-corelib/wampclient.h"
-#include "../swift-corelib/swiftcore.h"
+#include <swiftcore.h>
 #include "../swift-corelib/assetsstorage.h"
 
+struct filter_settings {
+    QMap<quint32,double> _min_sizes;
+    QMap<quint32,double> _max_sizes;
+    QMap<quint32,double> _stp_sizes;
+
+};
+
+#include <QElapsedTimer>
 
 #include <QObject>
-
-
-struct Ask {
-    Ask( const double&a, const double&b ) : rate( a ), amount( b ) {
-
-    }
-    double rate;
-    double amount;
-    double price( const double& max = 0 ) const {
-        if ( max != 0 && max < amount ) {
-            return max * rate;
-        } else {
-            return amount * rate;
-        }
-    }
-};
-
-struct Bid {
-    Bid( const double&a, const double&b ) : rate( a ), amount( b ) {
-
-    }
-    double rate;
-    double amount;
-    double price( const double& max = 0 ) const {
-        if ( max != 0 && max < amount ) {
-            return max * rate;
-        } else {
-            return amount * rate;
-        }
-    }
-};
-
-struct Asks {
-    Asks( const QMap<double, double> & a ) {
-        _amount = 0;
-        for( auto it = a.begin(); it != a.end(); it++ ) {
-            _items.push_back( Ask( it.key(), it.value() ) );
-            _amount += it.value();
-        }
-    }
-    bool hasSizes( const double& am ) {
-        return amount() >= am;
-    }
-    double getPrice( const double& amount ) {
-        double r = 0;
-        double r_filled = 0;
-        for( auto it = _items.begin(); it != _items.end(); it++ ) {
-            if ( r_filled < amount ) {
-                const double amleft = amount - r_filled;
-                r += it->price( amleft );
-                r_filled += amleft > it->amount ? it->amount : amleft;
-            } else {
-                return r;
-            }
-        }
-        return amount * _items.first().rate;
-    }
-
-    double amount() const {
-        return _amount;
-    }
-    double _amount;
-    QVector<Ask> _items;
-};
-
-
-struct Bids {
-    Bids( const QMap<double, double> & a ) {
-        _amount = 0;
-        for( auto it = a.begin(); it != a.end(); it++ ) {
-            _items.push_back( Bid( it.key(), it.value() ) );
-            _amount += it.value();
-        }
-    }
-    bool hasSizes( const double& am ) {
-        return amount() >= am;
-    }
-    double getPrice( const double& amount ) {
-        double r = 0;
-        double r_filled = 0;
-        for( auto it = _items.rbegin(); it != _items.rend(); it++ ) {
-            if ( r_filled < amount ) {
-                const double amleft = amount - r_filled;
-                r += it->price( amleft );
-                r_filled += amleft > it->amount ? it->amount : amleft;
-            } else {
-                return r;
-            }
-        }
-        return amount * _items.last().rate;
-    }
-    double amount() const {
-        return _amount;
-    }
-    double _amount;
-    QVector<Bid> _items;
-};
-
-struct OrderbooksVariant {
-    OrderbooksVariant( const double&a, const double&rs, const double&br, const double& sf, const double&bf )
-        : amount( a ), sell_rate( rs ), buy_rate( br ), sell_fee(sf ), buy_fee( bf ) {
-        fee = sellFee() + buyFee();
-        profit = ( sellPrice() - sellFee() ) - ( buyPrice() + buyFee() );
-    }
-    double sellPrice() const {
-        return amount * sell_rate;
-    }
-    double buyPrice() const {
-        return amount * buy_rate;
-    }
-    double sellFee() const {
-        return sellPrice() * sell_fee;
-    }
-    double buyFee() const {
-        return buyPrice() * buy_fee;
-    }
-
-    double fee;
-    double amount;
-    double sell_rate;
-    double buy_rate;
-    double profit;
-    double sell_fee;
-    double buy_fee;
-};
-
-struct OrdersVariants {
-    OrdersVariants( const Asks& a, const Bids& b, const double&sf = 0.0018, const double&bf = 0.0018,
-                    const double& min_order_size = 0.1,
-                    const double& max_order_size = 50,
-                    const double& step = 0.1 ) :
-                    sell_fee(sf), buy_fee(bf), asks(a), bids(b)
-    {
-        for( double size = min_order_size; size < max_order_size; size += step ) {
-            if ( hasAmountAsks( size ) && hasAmountBids( size ) ) {
-                const double buy_price = asks.getPrice( size );
-                const double sell_price = bids.getPrice( size );
-                if ( sell_price > buy_price ) {
-                    _variants.push_back( OrderbooksVariant( size, sell_price / size, buy_price / size, sell_fee, buy_fee ) );
-                }
-            }
-        }
-    }
-    bool hasAmountAsks(  const double& target_amount ) {
-        return asks.amount() >= target_amount;
-    }
-    bool hasAmountBids(  const double& target_amount ) {
-        return bids.amount() >= target_amount;
-    }
-    QList<OrderbooksVariant> getProfitable() {
-        QList<OrderbooksVariant> _r;
-        for( auto it = _variants.begin(); it!= _variants.end(); it++ ) {
-            if ( it->profit > 0 ) {
-                _r.push_back( *it );
-            }
-        }
-        return _r;
-    }
-    double sell_fee;
-    double buy_fee;
-    Asks asks;
-    Bids bids;
-    QList<OrderbooksVariant> _variants;
-};
 
 
 class MarketsFilter : public QObject
@@ -183,7 +27,9 @@ public:
     void addError( const QString& msg, const QString& group = "WARNING" );
 signals:
     void sendWindowEvent( const QJsonObject& j_window );
+    void orderbooksSnapshot( const QJsonObject& j_data );
 public slots:
+    void precessSnapShot( const QJsonObject& j_data );
     void onWindowEventSend( const QJsonObject& j_window );
     void onWampSession( Wamp::Session * sess );
 

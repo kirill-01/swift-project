@@ -255,6 +255,7 @@ DIST          = ../../Qt/5.14.2/gcc_64/mkspecs/features/spec_pre.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/exclusive_builds.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/toolchain.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/default_pre.prf \
+		../shared.pri \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/resolve_config.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/default_post.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/warn_on.prf \
@@ -478,6 +479,7 @@ Makefile: swift-livecoin.pro ../../Qt/5.14.2/gcc_64/mkspecs/linux-g++/qmake.conf
 		../../Qt/5.14.2/gcc_64/mkspecs/features/exclusive_builds.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/toolchain.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/default_pre.prf \
+		../shared.pri \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/resolve_config.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/default_post.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/warn_on.prf \
@@ -688,6 +690,7 @@ Makefile: swift-livecoin.pro ../../Qt/5.14.2/gcc_64/mkspecs/linux-g++/qmake.conf
 ../../Qt/5.14.2/gcc_64/mkspecs/features/exclusive_builds.prf:
 ../../Qt/5.14.2/gcc_64/mkspecs/features/toolchain.prf:
 ../../Qt/5.14.2/gcc_64/mkspecs/features/default_pre.prf:
+../shared.pri:
 ../../Qt/5.14.2/gcc_64/mkspecs/features/resolve_config.prf:
 ../../Qt/5.14.2/gcc_64/mkspecs/features/default_post.prf:
 ../../Qt/5.14.2/gcc_64/mkspecs/features/warn_on.prf:
@@ -906,6 +909,7 @@ moc_swiftapiclientlivecoin.cpp: swiftapiclientlivecoin.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qhostinfo.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostAddress \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QMap \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineOption \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineoption.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineParser \
@@ -1085,6 +1089,7 @@ moc_swiftapiparserlivecoin.cpp: swiftapiparserlivecoin.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qhostinfo.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostAddress \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QMap \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineOption \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineoption.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineParser \
@@ -1280,6 +1285,7 @@ main.o: main.cpp ../../Qt/5.14.2/gcc_64/include/QtCore/QCoreApplication \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qhostinfo.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostAddress \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QMap \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineOption \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineoption.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineParser \
@@ -1458,6 +1464,7 @@ swiftapiclientlivecoin.o: swiftapiclientlivecoin.cpp swiftapiclientlivecoin.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qhostinfo.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostAddress \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QMap \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineOption \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineoption.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineParser \
@@ -1635,6 +1642,7 @@ swiftapiparserlivecoin.o: swiftapiparserlivecoin.cpp swiftapiparserlivecoin.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qhostinfo.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostAddress \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QMap \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineOption \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineoption.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineParser \

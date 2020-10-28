@@ -1,0 +1,43 @@
+{
+  "default": {
+    "permissions": {
+      "call": [
+        "swift.settings.set",
+        "swift.settings.get",
+        "swift.telegram.msg",
+        "swift.orderbooks.cache",
+        "swift.rates",
+        "swift.rates.msg",
+        "swift.module.cmd",
+        "swift.server.cmd",
+        "swift.logger.logs",
+        "swift.logger.errors",
+        "swift.module.list",
+        "swift.module.exchanges",
+        "swift.assets.get"
+      ],
+      "register": [],
+      "publish": [
+        "swift.watchdog"
+      ],
+      "subscribe": [
+        "swift.system.events",
+        "swift.arbitrage.windows",
+        "swift.system.settings",
+        "swift.system.feed.logs",
+        "swift.system.feed.errors",
+        "swift.orderbooks",
+        "swift.system.events"
+      ]
+    }
+  },
+  "module": {
+    "name": "templaterole",
+    "call": ["swift.arbitrage.info","swift.api.balances.*","swift.api.trade.active.*","swift.api.trade.history.*","swift.pamm.node","swift.pamm.api.user","swift.pamm.api.invest","swift.address.generate","swift.address.balance","swift.address.withdraw","swift.arbitrage.info","swift.api.markets.*","swift.api.status.*","swift.api.currencies.*","swift.api.orderbooks.*","swift.api.order.place.*","swift.api.order.cancel.*","swift.api.order.get.*","swift.api.withdraw.history.*","swift.api.withdraw.create.*","swift.api.withdraw.inner.*","swift.api.deposits.history.*","swift.api.trade.*"],
+    "register": [],
+    "publish": [],
+    "subscribe": ["swift.system.feed.logs","swift.system.feed.errors","swift.api.asyncresults"]
+  }
+}
+
+

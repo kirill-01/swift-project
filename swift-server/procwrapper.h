@@ -24,11 +24,13 @@ public slots:
     void start();
     void onStateChanged( QProcess::ProcessState state );
 private:
+    bool is_inited;
     QString process_name;
     QString cmd;
     QStringList arg;
     QSharedPointer<QProcess> _proc;
     bool was_started;
+    bool has_error;
     quint32 restarts_count;
 };
 

@@ -1,7 +1,7 @@
 #include "nodescontroller.h"
 #include <QSqlQuery>
 #include <QSqlError>
-#include "../swift-corelib/swiftcore.h"
+#include <swiftcore.h>
 
 NodesController::NodesController(QObject *parent) : QObject(parent)
 {
@@ -147,7 +147,7 @@ void NodesController::onOrderBooks(const QJsonArray &a, const QJsonArray &b) {
             const quint32 pid = it->toArray().at(0).toString().toUInt();
             if ( pid > 0 ) {
                 _bindexed[ pid ].push_back( it->toArray() );
-                _last_pair_update[ pid ] = QDateTime::currentSecsSinceEpoch();
+                _last_pair_update[ pid ] = QDateTime::currentMSecsSinceEpoch();
             }
         }
         for ( auto it = _bindexed.begin(); it != _bindexed.end(); it++ ) {
@@ -185,6 +185,11 @@ void NodesController::findOutdatedPairs() {
 
             }
         }
+    }
+    for( auto it = _current_outdated_list.begin(); it != _current_outdated_list.end(); it++ ) {
+        _asks.remove( *it );
+        _bids.remove( *it );
+        _current_outdated_list.removeOne( *it );
     }
 }
 
@@ -227,6 +232,8 @@ void NodesController::sendOrderbooks() {
     if ( _allasks.isEmpty() && _allbids.isEmpty() ) {
         return;
     }
+
+
     for( auto it = _allasks.begin(); it != _allasks.end(); it++ ) {
 
         accresa.push_back( *it );

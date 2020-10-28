@@ -68,6 +68,8 @@ public:
     QList<quint32> getAllCurrencies( ) const;
     QList<quint32> getAllExchangeCurrencies( const QString& exchange_name ) const;
     QStringList getExchangesNames() const;
+
+    QList<quint32> getAllExchanges() const;
     double getBalance( const quint32& currency ) const;
     QHash<quint32,double> getBalances() const;
 
@@ -99,6 +101,9 @@ public:
     QString getArbitragePairName( const quint32& apid ) const;
     QString getArbitragePairBaseCurrencyName( const quint32& apid ) const;
     QString getArbitragePairMarketCurrencyName( const quint32& apid ) const;
+
+    quint32 getArbitragePairBaseCoinId( const quint32& apid ) const;
+    quint32 getArbitragePairMarketCoinId( const quint32& apid ) const;
 signals:
 
 public slots:

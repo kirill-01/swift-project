@@ -23,6 +23,7 @@ public:
     QJsonArray _worker_realms;
     QJsonArray _worker_realms_roles;
 
+    QJsonObject j_web;
     QJsonArray _worker_transports;
     QJsonObject _worker_transports_auth;
     QJsonObject _worker_transports_auth_wampcra;

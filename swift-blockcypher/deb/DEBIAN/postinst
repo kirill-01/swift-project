@@ -1,7 +1,11 @@
 #!/bin/bash
-MODULENAME=template
-FILE="/opt/swift-bot/modules/${MODULENAME}/${MODULENAME}.ini"
+MNAM=swift-blockcypher
+prefix="swift-"
+MNAME=${MNAM#"$prefix"}
+[ ${MNAME} = "corelib" ] && exit 0
+FILE="/opt/swift-bot/modules/${MNAME}/${MNAME}.ini"
 if [[ ! -f "$FILE" ]]; then
-  mv /opt/swift-bot/modules/${MODULENAME}/${MODULENAME}.dist /opt/swift-bot/modules/${MODULENAME}/${MODULENAME}.ini
+  mv "/opt/swift-bot/modules/${MNAME}/${MNAME}.dist" ${FILE}
 fi
-chmod -R 777 /opt/swift-bot/modules/${MODULENAME}
+chmod -R 777 /opt/swift-bot/modules/${MNAME}
+chmod -R 777 /opt/swift-bot/crossbar 

@@ -5,15 +5,6 @@ ModuleWorker::ModuleWorker(QObject *parent) : QObject(parent)
 
 }
 
-SwiftBot::AssetsData ModuleWorker::prepareAssets(const QVariantList &v) {
-    const QJsonObject j_data( QJsonDocument::fromJson( v.at(0).toString().toUtf8() ).object() );
-
-    SwiftBot::AssetsData to_store_data;
-
-    // to_store_data._currencies =
-    return to_store_data;
-}
-
 OrderBooks ModuleWorker::prepareOrderbooks(const QVariantList &v) {
     const QJsonArray j_asks( QJsonDocument::fromJson( v.at(0).toString().toUtf8() ).object().value("asks").toArray() );
     OrderBookQuotes _asks;

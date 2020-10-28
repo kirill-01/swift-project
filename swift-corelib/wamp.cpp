@@ -778,17 +778,19 @@ namespace Wamp {
     switch (request_type) {
     case WampMsgCode::SUBSCRIBE:
       {
-        qWarning() << msg << "Has no access rights to subscribe" << error;
+        qWarning() << QCoreApplication::applicationName() << msg << "Has no access rights to subscribe" << error;
       }
       break;
     case WampMsgCode::CALL:
       {
-        qWarning() << msg << "No procedure registered: " << error;
+        qWarning() << QCoreApplication::applicationName() << " cant call: " << msg;
+
+        // qWarning() << msg << "No procedure registered: " << error;
       }
       break;
     case WampMsgCode::REGISTER:
       {
-        qWarning() << msg<< "Has no access rights to register method" << error;
+        qWarning() << QCoreApplication::applicationName() << msg<< "Has no access rights to register method" << error;
       }
       break;
         // FIXME: handle other error messages

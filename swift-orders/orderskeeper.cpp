@@ -5,7 +5,7 @@
 class OrdersKeeperData : public QSharedData
 {
 public:
-
+    SwiftBot::Orders orders;
 };
 
 OrdersKeeper::OrdersKeeper(QObject *parent) : QObject(parent), is_pause(false),
@@ -21,7 +21,7 @@ OrdersKeeper::OrdersKeeper(QObject *parent) : QObject(parent), is_pause(false),
     connect( this, &OrdersKeeper::orderEvent, this, &OrdersKeeper::onOrderEvent );
     connect( this, &OrdersKeeper::historyEvent, this, &OrdersKeeper::onHistoryEvent );
 
-    QSettings * settings( SwiftCore::getModuleSettings("orders") );
+    QSettings * settings( SwiftBot::moduleSettings() );
     const quint32 history_interval = settings->value("history_update_interval", 360000).toUInt();
     if ( history_interval > 0 ) {
         update_history_timer->setInterval( history_interval );
@@ -59,6 +59,24 @@ void OrdersKeeper::onActiveEvent(const QJsonObject &j_data)
     const QJsonArray items( j_data.value("orders").toArray() );
     if ( !items.isEmpty() ) {
         for( auto it = items.begin(); it != items.end(); it++ ) {
+            const quint64 locuid( it->toObject().value("local_id").toString().toUInt() );
+            if ( locuid == 0 ) {
+                SwiftBot::Order order( SwiftBot::Order::create(
+                                           it->toObject().value("market_id").toString().toUInt(),
+                                           it->toObject().value("amount").toString().toDouble(),
+                                           it->toObject().value("rate").toString().toDouble(),
+                                           it->toObject().value("type").toString() == "sell" ? 0 : 1
+                                           ));
+                order.update( it->toObject( ) );
+                data->orders.insert( order.local_id, order );
+            } else {
+                if ( !data->orders.contains( locuid ) ){
+                    data->orders.insert( it->toObject().value("local_id").toString().toUInt(),
+                        SwiftBot::Order( it->toObject().value("local_id").toString().toUInt() )
+                        );
+                }
+                data->orders[ locuid ].update( it->toObject() );
+            }
         }
     }
 }
@@ -69,6 +87,24 @@ void OrdersKeeper::onHistoryEvent(const QJsonObject &j_data)
 
     if ( !items.isEmpty() ) {
         for( auto it = items.begin(); it != items.end(); it++ ) {
+            const quint64 locuid( it->toObject().value("local_id").toString().toUInt() );
+            if ( locuid == 0 ) {
+                SwiftBot::Order order( SwiftBot::Order::create(
+                                           it->toObject().value("market_id").toString().toUInt(),
+                                           it->toObject().value("amount").toString().toDouble(),
+                                           it->toObject().value("rate").toString().toDouble(),
+                                           it->toObject().value("type").toString() == "sell" ? 0 : 1
+                                           ));
+                order.update( it->toObject( ) );
+                data->orders.insert( order.local_id, order );
+            } else {
+                if ( !data->orders.contains( locuid ) ){
+                    data->orders.insert( it->toObject().value("local_id").toString().toUInt(),
+                        SwiftBot::Order( it->toObject().value("local_id").toString().toUInt() )
+                        );
+                }
+                data->orders[ locuid ].update( it->toObject() );
+            }
         }
     }
 }
@@ -76,7 +112,7 @@ void OrdersKeeper::onHistoryEvent(const QJsonObject &j_data)
 void OrdersKeeper::onOrderEvent(const QString& event_name, const QJsonObject &j_data )
 {
     const QJsonObject j_order_object( j_data );
-
+    const quint64 locuid( j_order_object.value("local_id").toString().toUInt() );
     if ( event_name == EVENTS_NAME_ORDER_PLACED ) {
 
     } else if ( event_name == EVENTS_NAME_ORDER_COMPLETED ) {
@@ -86,6 +122,7 @@ void OrdersKeeper::onOrderEvent(const QString& event_name, const QJsonObject &j_
     } else if ( event_name == EVENTS_NAME_ORDER_ERROR ) {
 
     }
+    data->orders[ locuid ].update( j_order_object );
 }
 
 void OrdersKeeper::requestHistory() {
@@ -94,6 +131,27 @@ void OrdersKeeper::requestHistory() {
     }
     if ( _active_clients.isEmpty() ) {
         getConnectedExchanges();
+    } else {
+        for( auto it = _active_clients.begin(); it != _active_clients.end(); it++ ) {
+            SwiftBot::Exchange exchange( *it );
+            if ( exchange.isRequstsSeparated() ) {
+                exchange.forEachMarket([&exchange](SwiftBot::Market m){
+                    QJsonObject j_params({{"market_id",QString::number( m.id ) }});
+                    const QString str( QJsonDocument(j_params).toJson( QJsonDocument::Compact ) );
+                    const QString methodpath( "swift.api.trade.history."+exchange.name );
+                    quint64 async_uid = SwiftBot::method( methodpath, { str } ).toULongLong();
+                    if ( async_uid <= 10 ) {
+                        qWarning() << "Error requesting orders history" << j_params << methodpath;
+                    }
+                });
+            } else {
+                const QString methodpath( "swift.api.trade.history."+exchange.name );
+                quint64 async_uid = SwiftBot::method( methodpath, {}).toULongLong();
+                if ( async_uid <= 10 ) {
+                    qWarning() << "Error requesting orders history" << methodpath;
+                }
+            }
+        }
     }
 }
 
@@ -103,6 +161,27 @@ void OrdersKeeper::requestActive() {
     }
     if ( _active_clients.isEmpty() ) {
         getConnectedExchanges();
+    } else {
+        for( auto it = _active_clients.begin(); it != _active_clients.end(); it++ ) {
+            SwiftBot::Exchange exchange( *it );
+            if ( exchange.isRequstsSeparated() ) {
+                exchange.forEachMarket([&exchange](SwiftBot::Market m){
+                    QJsonObject j_params({{"market_id",QString::number( m.id ) }});
+                    const QString str( QJsonDocument(j_params).toJson( QJsonDocument::Compact ) );
+                    const QString methodpath( "swift.api.trade.active."+exchange.name );
+                    quint64 async_uid = SwiftBot::method( methodpath, { str } ).toULongLong();
+                    if ( async_uid <= 10 ) {
+                        qWarning() << "Error requesting active orders" << async_uid << j_params << methodpath;
+                    }
+                });
+            } else {
+                const QString methodpath( "swift.api.trade.active."+exchange.name );
+                quint64 async_uid = SwiftBot::method( methodpath, {}).toULongLong();
+                if ( async_uid <= 10 ) {
+                    qWarning() << "Error requesting active orders" << async_uid << methodpath;
+                }
+            }
+        }
     }
 }
 
@@ -164,7 +243,7 @@ void OrdersKeeper::getConnectedExchanges()
 
             last_check_clients = QDateTime::currentSecsSinceEpoch();
 
-            const QString _targetsstr = session->call( RPC_EXCHANGES_LIST_COMMAND ).toString();
+            const QString _targetsstr = SwiftBot::method( RPC_EXCHANGES_LIST_COMMAND, {} ).toString();
             const QStringList exchsList( _targetsstr.split(",") );
 
             _active_clients.clear();

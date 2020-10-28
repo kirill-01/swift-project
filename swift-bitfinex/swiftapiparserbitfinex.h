@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <functional>
-#include "../swift-corelib/swiftapiparser.h"
+#include <swiftapiparser.h>
 
 class SwiftApiParserBitfinex : public SwiftApiParser
 {

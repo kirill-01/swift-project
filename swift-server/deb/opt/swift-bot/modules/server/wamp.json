@@ -36,7 +36,7 @@
     "call": [],
     "register": ["swift.module.cmd","swift.server.cmd","swift.logger.logs","swift.logger.errors","swift.methodstate","swift.module.list","swift.module.exchanges","swift.assets.get","swift.apimodule.report","swift.methodstate.summary"],
     "publish": ["swift.system.feed.errors","swift.system.feed.logs"],
-    "subscribe": ["swift.arbitrage.windows"]
+    "subscribe": ["swift.arbitrage.windows","swift.watchdog"]
   },
   "provide": {
     "feeds":[

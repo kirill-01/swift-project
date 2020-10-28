@@ -255,6 +255,7 @@ DIST          = ../../Qt/5.14.2/gcc_64/mkspecs/features/spec_pre.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/exclusive_builds.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/toolchain.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/default_pre.prf \
+		../shared.pri \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/resolve_config.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/default_post.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/warn_on.prf \
@@ -478,6 +479,7 @@ Makefile: swift-huobi.pro ../../Qt/5.14.2/gcc_64/mkspecs/linux-g++/qmake.conf ..
 		../../Qt/5.14.2/gcc_64/mkspecs/features/exclusive_builds.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/toolchain.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/default_pre.prf \
+		../shared.pri \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/resolve_config.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/default_post.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/warn_on.prf \
@@ -688,6 +690,7 @@ Makefile: swift-huobi.pro ../../Qt/5.14.2/gcc_64/mkspecs/linux-g++/qmake.conf ..
 ../../Qt/5.14.2/gcc_64/mkspecs/features/exclusive_builds.prf:
 ../../Qt/5.14.2/gcc_64/mkspecs/features/toolchain.prf:
 ../../Qt/5.14.2/gcc_64/mkspecs/features/default_pre.prf:
+../shared.pri:
 ../../Qt/5.14.2/gcc_64/mkspecs/features/resolve_config.prf:
 ../../Qt/5.14.2/gcc_64/mkspecs/features/default_post.prf:
 ../../Qt/5.14.2/gcc_64/mkspecs/features/warn_on.prf:
@@ -808,126 +811,6 @@ moc_swiftapiclienthuobi.cpp: swiftapiclienthuobi.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qvarlengtharray.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcontainerfwd.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qobject_impl.h \
-		../swift-corelib/swiftapiclient.h \
-		../swift-corelib/wamp.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QMetaMethod \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qmetaobject.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qvariant.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qmap.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qdebug.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qhash.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qtextstream.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qiodevice.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qlocale.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qshareddata.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qset.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcontiguouscache.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qsharedpointer.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qsharedpointer_impl.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QTime \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qdatetime.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QVariant \
-		../../Qt/5.14.2/gcc_64/include/QtWebSockets/QWebSocket \
-		../../Qt/5.14.2/gcc_64/include/QtWebSockets/qwebsocket.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QUrl \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qurl.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qurlquery.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QAbstractSocket \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qabstractsocket.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qtnetworkglobal.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qtnetwork-config.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkRequest \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkrequest.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QSharedDataPointer \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QString \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkProxy \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkproxy.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qhostaddress.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QSslError \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qsslerror.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qsslcertificate.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcryptographichash.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qssl.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QFlags \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QSslConfiguration \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qsslconfiguration.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qsslsocket.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qtcpsocket.h \
-		../../Qt/5.14.2/gcc_64/include/QtWebSockets/qwebsockets_global.h \
-		../../Qt/5.14.2/gcc_64/include/QtWebSockets/qwebsocketprotocol.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QJsonObject \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qjsonobject.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qjsonvalue.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QJsonDocument \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qjsondocument.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QJsonValue \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QJsonArray \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qjsonarray.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QMutex \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QQueue \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qqueue.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QTimer \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qtimer.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qbasictimer.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkAccessManager \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkaccessmanager.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QVector \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QSslPreSharedKeyAuthenticator \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qsslpresharedkeyauthenticator.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QMetaType \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkReply \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkreply.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QIODevice \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QMessageAuthenticationCode \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qmessageauthenticationcode.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QUrlQuery \
-		../swift-corelib/swiftworker.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QFile \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qfile.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qfiledevice.h \
-		../swift-corelib/wampclient.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QLocalSocket \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qlocalsocket.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QSettings \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qsettings.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkInterface \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkinterface.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QProcess \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qprocess.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlDatabase \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqldatabase.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qtsqlglobal.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qtsql-config.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlError \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlerror.h \
-		../swift-corelib/swiftcore.h \
-		../swift-corelib/swiftbot.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostInfo \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qhostinfo.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostAddress \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineOption \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineoption.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineParser \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineparser.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcoreapplication.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qeventloop.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QLockFile \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qlockfile.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QDir \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qdir.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qfileinfo.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QDebug \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QDateTime \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlQuery \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlquery.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlRecord \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlrecord.h \
-		../swift-corelib/swift-corelib_global.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QSharedPointer \
-		../swift-corelib/assetsstorage.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlResult \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlresult.h \
 		moc_predefs.h \
 		../../Qt/5.14.2/gcc_64/bin/moc
 	/home/kkuznetsov/Qt/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/kkuznetsov/swift-project/swift-huobi/moc_predefs.h -I/home/kkuznetsov/Qt/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/kkuznetsov/swift-project/swift-huobi -I/usr/include/swiftbot -I/home/kkuznetsov/Qt/5.14.2/gcc_64/include -I/home/kkuznetsov/Qt/5.14.2/gcc_64/include/QtWebSockets -I/home/kkuznetsov/Qt/5.14.2/gcc_64/include/QtNetwork -I/home/kkuznetsov/Qt/5.14.2/gcc_64/include/QtSql -I/home/kkuznetsov/Qt/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include swiftapiclienthuobi.h -o moc_swiftapiclienthuobi.cpp
@@ -986,127 +869,6 @@ moc_swiftapiparserhuobi.cpp: swiftapiparserhuobi.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qvarlengtharray.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcontainerfwd.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qobject_impl.h \
-		../swift-corelib/swiftapiparser.h \
-		../swift-corelib/swiftapiclient.h \
-		../swift-corelib/wamp.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QMetaMethod \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qmetaobject.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qvariant.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qmap.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qdebug.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qhash.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qtextstream.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qiodevice.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qlocale.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qshareddata.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qset.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcontiguouscache.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qsharedpointer.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qsharedpointer_impl.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QTime \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qdatetime.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QVariant \
-		../../Qt/5.14.2/gcc_64/include/QtWebSockets/QWebSocket \
-		../../Qt/5.14.2/gcc_64/include/QtWebSockets/qwebsocket.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QUrl \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qurl.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qurlquery.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QAbstractSocket \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qabstractsocket.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qtnetworkglobal.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qtnetwork-config.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkRequest \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkrequest.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QSharedDataPointer \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QString \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkProxy \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkproxy.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qhostaddress.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QSslError \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qsslerror.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qsslcertificate.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcryptographichash.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qssl.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QFlags \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QSslConfiguration \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qsslconfiguration.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qsslsocket.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qtcpsocket.h \
-		../../Qt/5.14.2/gcc_64/include/QtWebSockets/qwebsockets_global.h \
-		../../Qt/5.14.2/gcc_64/include/QtWebSockets/qwebsocketprotocol.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QJsonObject \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qjsonobject.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qjsonvalue.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QJsonDocument \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qjsondocument.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QJsonValue \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QJsonArray \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qjsonarray.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QMutex \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QQueue \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qqueue.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QTimer \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qtimer.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qbasictimer.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkAccessManager \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkaccessmanager.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QVector \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QSslPreSharedKeyAuthenticator \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qsslpresharedkeyauthenticator.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QMetaType \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkReply \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkreply.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QIODevice \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QMessageAuthenticationCode \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qmessageauthenticationcode.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QUrlQuery \
-		../swift-corelib/swiftworker.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QFile \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qfile.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qfiledevice.h \
-		../swift-corelib/wampclient.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QLocalSocket \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qlocalsocket.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QSettings \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qsettings.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkInterface \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkinterface.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QProcess \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qprocess.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlDatabase \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqldatabase.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qtsqlglobal.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qtsql-config.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlError \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlerror.h \
-		../swift-corelib/swiftcore.h \
-		../swift-corelib/swiftbot.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostInfo \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qhostinfo.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostAddress \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineOption \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineoption.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineParser \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineparser.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcoreapplication.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qeventloop.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QLockFile \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qlockfile.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QDir \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qdir.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qfileinfo.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QDebug \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QDateTime \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlQuery \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlquery.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlRecord \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlrecord.h \
-		../swift-corelib/swift-corelib_global.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QSharedPointer \
-		../swift-corelib/assetsstorage.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlResult \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlresult.h \
 		moc_predefs.h \
 		../../Qt/5.14.2/gcc_64/bin/moc
 	/home/kkuznetsov/Qt/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/kkuznetsov/swift-project/swift-huobi/moc_predefs.h -I/home/kkuznetsov/Qt/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/kkuznetsov/swift-project/swift-huobi -I/usr/include/swiftbot -I/home/kkuznetsov/Qt/5.14.2/gcc_64/include -I/home/kkuznetsov/Qt/5.14.2/gcc_64/include/QtWebSockets -I/home/kkuznetsov/Qt/5.14.2/gcc_64/include/QtNetwork -I/home/kkuznetsov/Qt/5.14.2/gcc_64/include/QtSql -I/home/kkuznetsov/Qt/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include swiftapiparserhuobi.h -o moc_swiftapiparserhuobi.cpp
@@ -1182,106 +944,11 @@ main.o: main.cpp ../../Qt/5.14.2/gcc_64/include/QtCore/QCoreApplication \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qeventloop.h \
 		swiftapiclienthuobi.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QObject \
-		../swift-corelib/swiftapiclient.h \
-		../swift-corelib/wamp.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QMetaMethod \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qmetaobject.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qvariant.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qmap.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qdebug.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qhash.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qtextstream.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qiodevice.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qlocale.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qshareddata.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qset.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcontiguouscache.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qsharedpointer.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qsharedpointer_impl.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QTime \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qdatetime.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QVariant \
-		../../Qt/5.14.2/gcc_64/include/QtWebSockets/QWebSocket \
-		../../Qt/5.14.2/gcc_64/include/QtWebSockets/qwebsocket.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QUrl \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qurl.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qurlquery.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QAbstractSocket \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qabstractsocket.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qtnetworkglobal.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qtnetwork-config.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkRequest \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkrequest.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QSharedDataPointer \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QString \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkProxy \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkproxy.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qhostaddress.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QSslError \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qsslerror.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qsslcertificate.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcryptographichash.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qssl.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QFlags \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QSslConfiguration \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qsslconfiguration.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qsslsocket.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qtcpsocket.h \
-		../../Qt/5.14.2/gcc_64/include/QtWebSockets/qwebsockets_global.h \
-		../../Qt/5.14.2/gcc_64/include/QtWebSockets/qwebsocketprotocol.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QJsonObject \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qjsonobject.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qjsonvalue.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QJsonDocument \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qjsondocument.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QJsonValue \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QJsonArray \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qjsonarray.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QMutex \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QQueue \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qqueue.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QTimer \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qtimer.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qbasictimer.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkAccessManager \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkaccessmanager.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QVector \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QSslPreSharedKeyAuthenticator \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qsslpresharedkeyauthenticator.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QMetaType \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkReply \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkreply.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QIODevice \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QMessageAuthenticationCode \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qmessageauthenticationcode.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QUrlQuery \
-		../swift-corelib/swiftworker.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QFile \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qfile.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qfiledevice.h \
-		../swift-corelib/wampclient.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QLocalSocket \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qlocalsocket.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QSettings \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qsettings.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkInterface \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkinterface.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QProcess \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qprocess.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlDatabase \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqldatabase.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qtsqlglobal.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qtsql-config.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlError \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlerror.h \
-		../swift-corelib/swiftcore.h \
-		../swift-corelib/swiftbot.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostInfo \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qhostinfo.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostAddress \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
+		swiftapiparserhuobi.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineOption \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineoption.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qshareddata.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qhash.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineParser \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineparser.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QLockFile \
@@ -1289,19 +956,22 @@ main.o: main.cpp ../../Qt/5.14.2/gcc_64/include/QtCore/QCoreApplication \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QDir \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qdir.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qfileinfo.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QDebug \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QDateTime \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlQuery \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlquery.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlRecord \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlrecord.h \
-		../swift-corelib/swift-corelib_global.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QSharedPointer \
-		../swift-corelib/assetsstorage.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlResult \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlresult.h \
-		swiftapiparserhuobi.h \
-		../swift-corelib/swiftapiparser.h
+		../../Qt/5.14.2/gcc_64/include/QtCore/qfile.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qfiledevice.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qiodevice.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QSettings \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qsettings.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qvariant.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qmap.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qdebug.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qtextstream.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qlocale.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qset.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qsharedpointer.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QThread \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qthread.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
 swiftapiclienthuobi.o: swiftapiclienthuobi.cpp swiftapiclienthuobi.h \
@@ -1357,127 +1027,7 @@ swiftapiclienthuobi.o: swiftapiclienthuobi.cpp swiftapiclienthuobi.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qmetatype.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qvarlengtharray.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcontainerfwd.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qobject_impl.h \
-		../swift-corelib/swiftapiclient.h \
-		../swift-corelib/wamp.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QMetaMethod \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qmetaobject.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qvariant.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qmap.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qdebug.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qhash.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qtextstream.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qiodevice.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qlocale.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qshareddata.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qset.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcontiguouscache.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qsharedpointer.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qsharedpointer_impl.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QTime \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qdatetime.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QVariant \
-		../../Qt/5.14.2/gcc_64/include/QtWebSockets/QWebSocket \
-		../../Qt/5.14.2/gcc_64/include/QtWebSockets/qwebsocket.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QUrl \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qurl.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qurlquery.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QAbstractSocket \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qabstractsocket.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qtnetworkglobal.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qtnetwork-config.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkRequest \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkrequest.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QSharedDataPointer \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QString \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkProxy \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkproxy.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qhostaddress.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QSslError \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qsslerror.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qsslcertificate.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcryptographichash.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qssl.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QFlags \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QSslConfiguration \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qsslconfiguration.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qsslsocket.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qtcpsocket.h \
-		../../Qt/5.14.2/gcc_64/include/QtWebSockets/qwebsockets_global.h \
-		../../Qt/5.14.2/gcc_64/include/QtWebSockets/qwebsocketprotocol.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QJsonObject \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qjsonobject.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qjsonvalue.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QJsonDocument \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qjsondocument.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QJsonValue \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QJsonArray \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qjsonarray.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QMutex \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QQueue \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qqueue.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QTimer \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qtimer.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qbasictimer.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkAccessManager \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkaccessmanager.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QVector \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QSslPreSharedKeyAuthenticator \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qsslpresharedkeyauthenticator.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QMetaType \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkReply \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkreply.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QIODevice \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QMessageAuthenticationCode \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qmessageauthenticationcode.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QUrlQuery \
-		../swift-corelib/swiftworker.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QFile \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qfile.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qfiledevice.h \
-		../swift-corelib/wampclient.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QLocalSocket \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qlocalsocket.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QSettings \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qsettings.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkInterface \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkinterface.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QProcess \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qprocess.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlDatabase \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqldatabase.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qtsqlglobal.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qtsql-config.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlError \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlerror.h \
-		../swift-corelib/swiftcore.h \
-		../swift-corelib/swiftbot.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostInfo \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qhostinfo.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostAddress \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineOption \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineoption.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineParser \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineparser.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcoreapplication.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qeventloop.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QLockFile \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qlockfile.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QDir \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qdir.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qfileinfo.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QDebug \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QDateTime \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlQuery \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlquery.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlRecord \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlrecord.h \
-		../swift-corelib/swift-corelib_global.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QSharedPointer \
-		../swift-corelib/assetsstorage.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlResult \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlresult.h
+		../../Qt/5.14.2/gcc_64/include/QtCore/qobject_impl.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o swiftapiclienthuobi.o swiftapiclienthuobi.cpp
 
 swiftapiparserhuobi.o: swiftapiparserhuobi.cpp swiftapiparserhuobi.h \
@@ -1533,128 +1083,7 @@ swiftapiparserhuobi.o: swiftapiparserhuobi.cpp swiftapiparserhuobi.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qmetatype.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qvarlengtharray.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcontainerfwd.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qobject_impl.h \
-		../swift-corelib/swiftapiparser.h \
-		../swift-corelib/swiftapiclient.h \
-		../swift-corelib/wamp.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QMetaMethod \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qmetaobject.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qvariant.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qmap.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qdebug.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qhash.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qtextstream.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qiodevice.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qlocale.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qshareddata.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qset.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcontiguouscache.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qsharedpointer.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qsharedpointer_impl.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QTime \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qdatetime.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QVariant \
-		../../Qt/5.14.2/gcc_64/include/QtWebSockets/QWebSocket \
-		../../Qt/5.14.2/gcc_64/include/QtWebSockets/qwebsocket.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QUrl \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qurl.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qurlquery.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QAbstractSocket \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qabstractsocket.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qtnetworkglobal.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qtnetwork-config.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkRequest \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkrequest.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QSharedDataPointer \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QString \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkProxy \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkproxy.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qhostaddress.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QSslError \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qsslerror.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qsslcertificate.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcryptographichash.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qssl.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QFlags \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QSslConfiguration \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qsslconfiguration.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qsslsocket.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qtcpsocket.h \
-		../../Qt/5.14.2/gcc_64/include/QtWebSockets/qwebsockets_global.h \
-		../../Qt/5.14.2/gcc_64/include/QtWebSockets/qwebsocketprotocol.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QJsonObject \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qjsonobject.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qjsonvalue.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QJsonDocument \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qjsondocument.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QJsonValue \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QJsonArray \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qjsonarray.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QMutex \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QQueue \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qqueue.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QTimer \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qtimer.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qbasictimer.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkAccessManager \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkaccessmanager.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QVector \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QSslPreSharedKeyAuthenticator \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qsslpresharedkeyauthenticator.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QMetaType \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkReply \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkreply.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QIODevice \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QMessageAuthenticationCode \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qmessageauthenticationcode.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QUrlQuery \
-		../swift-corelib/swiftworker.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QFile \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qfile.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qfiledevice.h \
-		../swift-corelib/wampclient.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QLocalSocket \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qlocalsocket.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QSettings \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qsettings.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkInterface \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkinterface.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QProcess \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qprocess.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlDatabase \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqldatabase.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qtsqlglobal.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qtsql-config.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlError \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlerror.h \
-		../swift-corelib/swiftcore.h \
-		../swift-corelib/swiftbot.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostInfo \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/qhostinfo.h \
-		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostAddress \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineOption \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineoption.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineParser \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineparser.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qcoreapplication.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qeventloop.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QLockFile \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qlockfile.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QDir \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qdir.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qfileinfo.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QDebug \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QDateTime \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlQuery \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlquery.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlRecord \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlrecord.h \
-		../swift-corelib/swift-corelib_global.h \
-		../../Qt/5.14.2/gcc_64/include/QtCore/QSharedPointer \
-		../swift-corelib/assetsstorage.h \
-		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlResult \
-		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlresult.h
+		../../Qt/5.14.2/gcc_64/include/QtCore/qobject_impl.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o swiftapiparserhuobi.o swiftapiparserhuobi.cpp
 
 moc_swiftapiclienthuobi.o: moc_swiftapiclienthuobi.cpp 

@@ -196,7 +196,7 @@ void SwiftApiClientIDCM::getDepositAddress(const QJsonObject &j_params, const qu
 }
 
 void SwiftApiClientIDCM::tradeHistory(const QJsonObject &j_params, const quint64 &async_uuid){
-    getHistoryOrders(j_params, async_uuid, QJsonArray({ 1, 2}), "tradeHistory");
+    getHistoryOrders(j_params, async_uuid, QJsonArray({1, 2}), "tradeHistory");
 }
 
 void SwiftApiClientIDCM::tradeOpenOrders(const QJsonObject &j_params, const quint64 &async_uuid){
@@ -233,11 +233,11 @@ void SwiftApiClientIDCM::getHistoryOrders(const QJsonObject &j_params, const qui
 void SwiftApiClientIDCM::buildPostRequest_withSignature(const QString &api_path, const QJsonObject& params, const quint64 &uuid)
 {
     const auto input = QJsonDocument(params).toJson(QJsonDocument::Compact);
-    const QByteArray signature = QMessageAuthenticationCode::hash(input, api_secret.toUtf8(), QCryptographicHash::Sha384).toBase64();
+    const QByteArray signature = QMessageAuthenticationCode::hash(input, getExchangeApiSecret().toUtf8(), QCryptographicHash::Sha384).toBase64();
     QUrl url(api_path);
     QNetworkRequest request(url);
 
-    request.setRawHeader("X-IDCM-APIKEY", api_key.toUtf8());
+    request.setRawHeader("X-IDCM-APIKEY", getExchangeApiKey().toUtf8());
     request.setRawHeader("X-IDCM-SIGNATURE", signature);
     request.setRawHeader("X-IDCM-INPUT", input);
     request.setRawHeader("Content-Type", "application/json");

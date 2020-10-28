@@ -10,7 +10,7 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
-#include "../swift-corelib/swiftcore.h"
+#include <swiftcore.h>
 #include <QTimer>
 
 #include "../swift-corelib/wampclient.h"

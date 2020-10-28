@@ -2,7 +2,7 @@
 #define SWIFTAPIPARSERBINANCE_H
 
 #include <QObject>
-#include "../swift-corelib/swiftapiparser.h"
+#include <swiftapiparser.h>
 
 class SwiftApiParserBinance : public SwiftApiParser
 {

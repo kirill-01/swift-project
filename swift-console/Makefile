@@ -61,7 +61,8 @@ OBJECTS       = consolereader.o \
 		resultwaiter.o \
 		moc_consolereader.o \
 		moc_resultwaiter.o
-DIST          = ../../Qt/5.14.2/gcc_64/mkspecs/features/spec_pre.prf \
+DIST          = deb/opt/swift-bot/modules/console/wamp.json \
+		../../Qt/5.14.2/gcc_64/mkspecs/features/spec_pre.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/common/unix.conf \
 		../../Qt/5.14.2/gcc_64/mkspecs/common/linux.conf \
 		../../Qt/5.14.2/gcc_64/mkspecs/common/sanitize.conf \
@@ -255,6 +256,7 @@ DIST          = ../../Qt/5.14.2/gcc_64/mkspecs/features/spec_pre.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/exclusive_builds.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/toolchain.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/default_pre.prf \
+		../shared.pri \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/resolve_config.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/default_post.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/warn_on.prf \
@@ -478,6 +480,7 @@ Makefile: swift-console.pro ../../Qt/5.14.2/gcc_64/mkspecs/linux-g++/qmake.conf 
 		../../Qt/5.14.2/gcc_64/mkspecs/features/exclusive_builds.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/toolchain.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/default_pre.prf \
+		../shared.pri \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/resolve_config.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/default_post.prf \
 		../../Qt/5.14.2/gcc_64/mkspecs/features/warn_on.prf \
@@ -688,6 +691,7 @@ Makefile: swift-console.pro ../../Qt/5.14.2/gcc_64/mkspecs/linux-g++/qmake.conf 
 ../../Qt/5.14.2/gcc_64/mkspecs/features/exclusive_builds.prf:
 ../../Qt/5.14.2/gcc_64/mkspecs/features/toolchain.prf:
 ../../Qt/5.14.2/gcc_64/mkspecs/features/default_pre.prf:
+../shared.pri:
 ../../Qt/5.14.2/gcc_64/mkspecs/features/resolve_config.prf:
 ../../Qt/5.14.2/gcc_64/mkspecs/features/default_post.prf:
 ../../Qt/5.14.2/gcc_64/mkspecs/features/warn_on.prf:
@@ -872,6 +876,8 @@ moc_consolereader.cpp: consolereader.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qlocalsocket.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QSettings \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qsettings.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QQueue \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qqueue.h \
 		moc_predefs.h \
 		../../Qt/5.14.2/gcc_64/bin/moc
 	/home/kkuznetsov/Qt/5.14.2/gcc_64/bin/moc $(DEFINES) --include /home/kkuznetsov/swift-project/swift-console/moc_predefs.h -I/home/kkuznetsov/Qt/5.14.2/gcc_64/mkspecs/linux-g++ -I/home/kkuznetsov/swift-project/swift-console -I/usr/include/swiftbot -I/home/kkuznetsov/Qt/5.14.2/gcc_64/include -I/home/kkuznetsov/Qt/5.14.2/gcc_64/include/QtWebSockets -I/home/kkuznetsov/Qt/5.14.2/gcc_64/include/QtNetwork -I/home/kkuznetsov/Qt/5.14.2/gcc_64/include/QtSql -I/home/kkuznetsov/Qt/5.14.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include consolereader.h -o moc_consolereader.cpp
@@ -993,6 +999,8 @@ moc_resultwaiter.cpp: resultwaiter.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qlocalsocket.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QSettings \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qsettings.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QQueue \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qqueue.h \
 		../swift-corelib/swiftcore.h \
 		../swift-corelib/swiftbot.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostInfo \
@@ -1001,6 +1009,7 @@ moc_resultwaiter.cpp: resultwaiter.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkInterface \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkinterface.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QMap \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineOption \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineoption.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineParser \
@@ -1168,7 +1177,9 @@ consolereader.o: consolereader.cpp consolereader.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/QLocalSocket \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qlocalsocket.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QSettings \
-		../../Qt/5.14.2/gcc_64/include/QtCore/qsettings.h
+		../../Qt/5.14.2/gcc_64/include/QtCore/qsettings.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QQueue \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qqueue.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o consolereader.o consolereader.cpp
 
 main.o: main.cpp ../../Qt/5.14.2/gcc_64/include/QtCore/QCoreApplication \
@@ -1293,6 +1304,8 @@ main.o: main.cpp ../../Qt/5.14.2/gcc_64/include/QtCore/QCoreApplication \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qlocalsocket.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QSettings \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qsettings.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QQueue \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qqueue.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QDebug \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QList \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QLockFile \
@@ -1315,6 +1328,7 @@ main.o: main.cpp ../../Qt/5.14.2/gcc_64/include/QtCore/QCoreApplication \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkInterface \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkinterface.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QMap \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QDateTime \
 		../../Qt/5.14.2/gcc_64/include/QtSql/QSqlQuery \
 		../../Qt/5.14.2/gcc_64/include/QtSql/qsqlquery.h \
@@ -1451,6 +1465,8 @@ resultwaiter.o: resultwaiter.cpp resultwaiter.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qlocalsocket.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QSettings \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qsettings.h \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QQueue \
+		../../Qt/5.14.2/gcc_64/include/QtCore/qqueue.h \
 		../swift-corelib/swiftcore.h \
 		../swift-corelib/swiftbot.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/QHostInfo \
@@ -1459,6 +1475,7 @@ resultwaiter.o: resultwaiter.cpp resultwaiter.h \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/QNetworkInterface \
 		../../Qt/5.14.2/gcc_64/include/QtNetwork/qnetworkinterface.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCryptographicHash \
+		../../Qt/5.14.2/gcc_64/include/QtCore/QMap \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineOption \
 		../../Qt/5.14.2/gcc_64/include/QtCore/qcommandlineoption.h \
 		../../Qt/5.14.2/gcc_64/include/QtCore/QCommandLineParser \

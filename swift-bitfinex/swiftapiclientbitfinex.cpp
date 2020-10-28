@@ -1,5 +1,5 @@
 #include "swiftapiclientbitfinex.h"
-#include "../swift-corelib/swiftcore.h"
+#include <swiftcore.h>
 
 SwiftApiClientBitfinex::SwiftApiClientBitfinex(QObject* parent) : SwiftApiClient(parent)
 {}
