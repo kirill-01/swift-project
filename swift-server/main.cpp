@@ -21,6 +21,7 @@
 #include <iostream>
 #include <swiftbot.h>
 #include <QDirIterator>
+#define WAMP_START_DELAY 3500
 
 struct ApiMethodStatus {
     quint64 success_count;
@@ -42,7 +43,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
     QCoreApplication::setApplicationName("swift-server");
-    QCoreApplication::setApplicationVersion("1.0.343");
+    QCoreApplication::setApplicationVersion("1.0.379");
 
     // Allow only one instance per host
     QLockFile lockFile( QDir::temp().absoluteFilePath( QString(QCoreApplication::applicationName()+".lock") ) );
@@ -121,10 +122,12 @@ int main(int argc, char *argv[])
     QObject::connect( crossbar_process, &QProcess::stateChanged, [&]( QProcess::ProcessState state ) {
        if ( state == QProcess::NotRunning ) {
            qWarning() << "Crossbar router subprocess is going down!";
-          // qApp->exit(1);
+           qInfo() << "You may need to check, that crossbar is installed and worked:";
+           qInfo() << "crossbar start --cbdir=/opt/swift-bot/crossbar";
+           qApp->exit(1);
        } else if ( state == QProcess::Running ) {
-           qInfo() << "Crossbar starting. Connecting after 2 sec...";
-            QTimer::singleShot( 2000, wamp_client.data(), &WampClient::startClient );
+           qInfo() << "Crossbar starting. Connecting after "+QString::number( quint32(WAMP_START_DELAY) / 1000, 'f', 2 )+" sec...";
+           QTimer::singleShot( WAMP_START_DELAY, wamp_client.data(), &WampClient::startClient );
        }
     });
 
@@ -214,6 +217,15 @@ int main(int argc, char *argv[])
         return r;
     });
 
+    SwiftBot::provide( RPC_HOST_STATUS, [hinfo](const QVariantList&v, const QVariantMap &m ) {
+        QVariantList r;
+        Q_UNUSED(m)
+        Q_UNUSED(v)
+        r.push_back( hinfo->getLastCpu() );
+        r.push_back( hinfo->getLastRam() );
+        return r;
+    });
+
     // Get available exchanges modules
     SwiftBot::provide( RPC_EXCHANGES_LIST_COMMAND, [](const QVariantList& v, const QVariantMap&m) {
         Q_UNUSED(m)
@@ -231,7 +243,7 @@ int main(int argc, char *argv[])
         return str_assets;
     });
 
-    SwiftBot::subscribe( FEED_EVENTS_ARBITRAGE, [](const QVariantList& v, const QVariantMap&m) {
+    wamp_client->subscribe( FEED_EVENTS_ARBITRAGE, [](const QVariantList& v, const QVariantMap&m) {
         Q_UNUSED(m)
         const QString event_name( v.at(0).toString() );
         if ( event_name == "WINDOW" ) {
@@ -282,10 +294,10 @@ VALUES (:sell_pair_id,:buy_pair_id,:min_amount,:min_profit,:min_sell_rate,:min_b
     });
 
     QTimer * check_watchdog_timer = new QTimer();
-    check_watchdog_timer->setInterval(60000);
+    check_watchdog_timer->setInterval( SwiftBot::appParam("whatchdog_interval", 60 ).toUInt() * 1000 );
     QObject::connect( check_watchdog_timer, &QTimer::timeout,[&a](){
        for( auto it = _watchdog.begin(); it != _watchdog.end(); it++ ) {
-           if ( QDateTime::currentSecsSinceEpoch() - it.value().toSecsSinceEpoch() >= 50 ) {
+           if ( QDateTime::currentSecsSinceEpoch() - it.value().toSecsSinceEpoch() >= SwiftBot::appParam("whatchdog_alive_time", 50 ).toUInt() ) {
                if ( _running_modules.contains( it.key() ) ) {
                     _running_modules[ it.key() ].reset( new ProcWrapper( modules[ it.key() ].binary , {} ));
                     QObject::connect( &a, &QCoreApplication::aboutToQuit, _running_modules[it.key()].data(), &ProcWrapper::stop );
@@ -309,8 +321,8 @@ VALUES (:sell_pair_id,:buy_pair_id,:min_amount,:min_profit,:min_sell_rate,:min_b
                 SwiftBot::addLog( "Starting system module: " + module.name );
             }
         }
-        qWarning().noquote() << "---- Exchanges clients ----";
-        QThread::msleep(5000);
+        qInfo().noquote() << "---- Exchanges clients ----";
+        QThread::msleep(SwiftBot::appParam("before_exchanges_delay", 5000).toUInt() );
         // Start enabled modules
         for( auto it = modules.begin(); it != modules.end(); it++ ) {
             Module module = it.value();
@@ -319,7 +331,7 @@ VALUES (:sell_pair_id,:buy_pair_id,:min_amount,:min_profit,:min_sell_rate,:min_b
                 exchange_modules.push_back( module.name );
                 SwiftBot::addLog( "Starting exchange module: " + module.name );
             }
-            QThread::msleep(150);
+            QThread::msleep(100);
         }
 
         for ( auto it = _running_modules.begin(); it != _running_modules.end(); it++ ) {

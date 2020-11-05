@@ -13,6 +13,7 @@
 #include "crossbarconfig.h"
 #include <QCryptographicHash>
 
+
 QStringList arrayToStringList( const QJsonArray & src ) {
     QStringList ret;
     for ( auto it = src.begin(); it != src.end();it++ ) {
@@ -70,7 +71,8 @@ int main(int argc, char *argv[])
     while (it.hasNext()) {
         _modules_files << it.next();
     }
-    QString _docs_api_index;
+    QString _docs_api_index_modules;
+    QString _docs_api_index_exchanges;
     for( auto it = _modules_files.begin(); it != _modules_files.end(); it++ ) {
         QFile _module_wamp_file( *it );
         if ( _module_wamp_file.open( QFile::ReadOnly ) ) {
@@ -80,35 +82,55 @@ int main(int argc, char *argv[])
             qWarning() << "Processing module: " << modulename;
             QByteArray filedata( _module_wamp_file.readAll().constData()  );
             QJsonObject j_config( QJsonDocument::fromJson( filedata ).object() );
+            QString navmenu_feeds("## Feeds:\n\n");
+            QString navmenu_methods("## Methods:\n\n");
+            QString _api_description("# API for module: "+modulename+"\n\n"+SwiftBot::moduleSettings( modulename )->value("description").toString()+"\n\n");
+            if ( SwiftBot::moduleSettings( modulename )->value("is_exchange", false).toBool() ) {
+                _docs_api_index_exchanges += "### ["+modulename+"]("+modulename+".md)\n\n";
+            } else {
+                _docs_api_index_modules += "### ["+modulename+"]("+modulename+".md)\n\n";
+            }
 
-            QString _api_description("# API description for module "+modulename+"\n");
-            _docs_api_index+="["+modulename+"]("+modulename+".md)";
             QJsonArray j_provided_feeds( j_config.value("provide").toObject().value("feeds").toArray() );
             if ( !j_provided_feeds.isEmpty() ) {
-                _api_description += "## Feeds\n";
+                _api_description += "# Feeds\n\n";
                 for( auto it = j_provided_feeds.begin(); it != j_provided_feeds.end(); it++ ) {
                     QJsonObject j_feed( it->toObject() );
-                    _api_description += "### "+ j_feed.value("uri").toString() + "\n";
-                    _api_description += j_feed.value("description").toString() + "\n";
-                    _api_description += "#### Message \n";
-                    _api_description += "```json\n"+QJsonDocument( j_feed.value("message").toArray()).toJson( QJsonDocument::Indented)+"\n```";
+                    navmenu_feeds += "- ["+j_feed.value("uri").toString()+"](#"+j_feed.value("uri").toString().replace(".","")+")\n";
+                    _api_description += "## "+ j_feed.value("uri").toString() + "\n\n";
+                    _api_description += j_feed.value("description").toString() + "\n\n";
+                    _api_description += "#### Message \n\n";
+                    _api_description += "```json\n"+QJsonDocument( j_feed.value("message").toArray()).toJson( QJsonDocument::Indented)+"\n```\n\n";
+                    _api_description += "---\n\n";
                 }
             }
 
             QJsonArray j_provided_methods( j_config.value("provide").toObject().value("methods").toArray() );
 
             if ( !j_provided_methods.isEmpty() ) {
-                _api_description += "## Methods\n";
+                _api_description += "# Methods\n\n";
                 for( auto it = j_provided_methods.begin(); it != j_provided_methods.end(); it++ ) {
                     QJsonObject j_rpc( it->toObject() );
-                    _api_description += "### "+ j_rpc.value("uri").toString() + "\n";
-                    _api_description += j_rpc.value("description").toString() + "\n";
-                    _api_description += "#### Arguments \n";
-                    _api_description += "```json\n"+QJsonDocument( j_rpc.value("arguments").toArray()).toJson( QJsonDocument::Indented)+"\n```";
-                    _api_description += "#### Response \n";
-                    _api_description += "```json\n"+QJsonDocument( j_rpc.value("response").toArray()).toJson( QJsonDocument::Indented)+"\n```";
+                    navmenu_methods += "- ["+j_rpc.value("uri").toString()+"](#"+j_rpc.value("uri").toString().replace(".","")+")\n";
+                    _api_description += "## "+ j_rpc.value("uri").toString() + "\n\n";
+                    _api_description += j_rpc.value("description").toString() + "\n\n";
+                    _api_description += "#### Arguments \n\n";
+                    _api_description += "```json\n"+QJsonDocument( j_rpc.value("arguments").toArray()).toJson( QJsonDocument::Indented)+"\n```\n\n";
+                    _api_description += "#### Response \n\n";
+                    _api_description += "```json\n"+QJsonDocument( j_rpc.value("response").toArray()).toJson( QJsonDocument::Indented)+"\n```\n\n";
+                    if ( j_rpc.contains("async_response") ) {
+                        _api_description += "#### Async response \n\n";
+                        _api_description += "```json\n"+QJsonDocument( j_rpc.value("async_response").toObject() ).toJson( QJsonDocument::Indented)+"\n```\n\n";
+                    }
+
+                    _api_description += "[Go to top](#methods-1)\n---\n\n";
+
+
                 }
             }
+
+            _api_description = navmenu_feeds+"\n\n"+navmenu_methods +"\n\n"+ _api_description+"\n\n[Back to list](docs/api.md)\n\n";
+
 
             QFile docs_file("/opt/swift-bot/docs/"+modulename+".md");
             if ( docs_file.open( QFile::ReadWrite ) ) {
@@ -145,7 +167,7 @@ int main(int argc, char *argv[])
                         ));
 
             QJsonArray _calls;
-            QStringList exchanges( QString("bittrex bitfinex binance hitbtc zb kucoin huobi kraken idcm livecoin").split(" ") );
+            QStringList exchanges( QString(EXCHS_LIST).split(" ") );
             QJsonArray call_enabled( j_config.value("module").toObject().value("call").toArray() );
             for( auto it = call_enabled.begin(); it != call_enabled.end(); it++ ) {
                 QString uri = it->toString();
@@ -157,7 +179,6 @@ int main(int argc, char *argv[])
                 } else {
                     _calls.push_back( uri );
                 }
-
             }
 
             QJsonArray permissions_module(
@@ -173,11 +194,10 @@ int main(int argc, char *argv[])
                 permissions_result.push_back( it->toObject() );
             }
             config.addUser( authid, QJsonObject({{"ticket",authpass},{"role",modulerole}}) );
-
-
             config.addRole( QJsonObject({{"name",modulerole},{"permissions", permissions_result }}) );
 
         }
+        QString _docs_api_index( "# API reference\n\n## Modules:\n"+_docs_api_index_modules + "\n\n## Exchanges\n"+_docs_api_index_exchanges );
         QFile docs_file("/opt/swift-bot/docs/api.md");
         if ( docs_file.open( QFile::ReadWrite ) ) {
             docs_file.resize(0);

@@ -13,7 +13,11 @@ QString SwiftApiClientZB::getApiVersionString(){
 }
 
 void SwiftApiClientZB::getCurrencies(const QJsonObject &j_params, const quint64 &async_uuid){
-    unrealizedMethod(j_params, async_uuid);
+    Q_UNUSED(j_params)
+    QString url( QStringList({publicPrefix, "markets"}).join("/") );
+    QNetworkRequest request( url );
+    QNetworkReply * reply = getManager()->get( request );
+    reply->setProperty("uuid", async_uuid);
 }
 
 void SwiftApiClientZB::getMarkets(const QJsonObject &j_params, const quint64 &async_uuid){

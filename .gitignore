@@ -1,5 +1,0 @@
-build-*
-*.deb
-moc_*
-*.so*
-*.o

@@ -87,11 +87,11 @@ void Logger::processLogs() {
 
             SwiftBot::publish(FEED_LOGS, {m});
             if ( SwiftBot::appParam("logs_output", false).toBool() && next.group == "INFO") {
-                qWarning().noquote() << QDateTime::currentDateTime().time().toString() << next.sender << QString("["+next.group+"]") << next.msg;
+                qInfo().noquote() << next.sender << QString("["+next.group+"]") << next.msg;
             } else if ( SwiftBot::appParam("reports_outputs", false).toBool()  && next.group == "REPORTS"  ) {
-                qWarning().noquote() << QDateTime::currentDateTime().time().toString() << next.sender << QString("["+next.group+"]") << next.msg;
+                qInfo().noquote() << next.sender << QString("["+next.group+"]") << next.msg;
             } else if ( SwiftBot::appParam("debugs_outputs", false).toBool()   && next.group == "DEBUG" ) {
-                qWarning().noquote() << QDateTime::currentDateTime().time().toString() << next.sender << QString("["+next.group+"]") << next.msg;
+                qInfo().noquote() << next.sender << QString("["+next.group+"]") << next.msg;
             }
         }
     }
@@ -106,7 +106,9 @@ void Logger::processErrs() {
             const QString m( QJsonDocument ( msg ).toJson( QJsonDocument::Compact ) );
             SwiftBot::publish(FEED_ERRORS, {m});
             if ( SwiftBot::appParam("errors_output", false).toBool()  && next.group == "WARNING") {
-                qWarning().noquote() << QDateTime::currentDateTime().time().toString() << next.sender << QString("["+next.group+"]") << next.msg;
+                qWarning().noquote() << next.sender << QString("["+next.group+"]") << next.msg;
+            } else {
+                qCritical().noquote() << next.sender << QString("["+next.group+"]") << next.msg;
             }
         }
     }

@@ -42,51 +42,10 @@ public slots:
 
     void logRates();
 private:
-    double getRateDiffHour( const quint32& pid ) {
-        if ( _rates_history_data.contains( pid ) && _current_rates.contains( pid ) ) {
-            const quint64 fromtimestamp = QDateTime::currentSecsSinceEpoch() - 3600;
-            QList<double> _valids;
-            QMap<quint64,double> _left_values;
-            QMap<quint64, double> _rates( _rates_history_data.value( pid ) );
-            for( auto it = _rates.begin(); it != _rates.end(); it++ ) {
-                if ( it.key() >= fromtimestamp ) {
-                    _valids.push_back( it.value() );
-                    _left_values.insert( it.key(), it.value() );
-                }
-            }
-            _rates_history_data[ pid ] = _left_values;
-            if ( !_valids.isEmpty() ) {
-                return ( _valids.first() - _current_rates.value( pid ) ) / _current_rates.value( pid ) * 100;
-            }
-
-
-        }
-        return 0;
-    }
+    double getRateDiffHour( const quint32& pid );
     QMap<quint32, QMap<quint64, double>> _rates_history_data;
 
-    QString getReportFormattedMessage() {
-        QString msg("<u><b>Current rates</b></u>\n");
-        QHash<quint32, QList<quint32>> _arb_pairs( SwiftCore::getAssets()->getArbitragePairs() );
-
-        for( auto it = _arb_pairs.begin(); it != _arb_pairs.end(); it++ ) {
-            msg += "\n--\n";
-            msg += QString("<b>"+SwiftCore::getAssets()->getArbitragePairName( it.key() )+"</b>\n");
-            QList<quint32> _pids( it.value() );
-
-            for( auto iat = _pids.begin(); iat != _pids.end(); iat++ ) {
-                quint64 diff = QDateTime::currentSecsSinceEpoch() - _last_updates.value( *iat );
-                double ratechange = getRateDiffHour( *iat );
-                QString rstrtch = QString(ratechange >= 0.0 ? "+" : "")+QString::number( getRateDiffHour( *iat ), 'f', 2 )+"%";
-                msg += QString("<u>"+QString::number( _current_rates.value( *iat ), 'f', 2)+"</u> - "
-                               + SwiftCore::getAssets()->getMarketExchangeName( *iat )+ " ("+rstrtch+") "
-                               + QString(diff > 2 ? QString("(Updated : "+QString::number( QDateTime::currentSecsSinceEpoch() - _last_updates.value( *iat ))+" sec)") : "")+ "\n");
-            }
-
-
-        }
-        return msg;
-    }
+    QString getReportFormattedMessage();
     double getArbitragePairRate( const quint32 & arbpair );
     QMap<quint32, double> _current_rates;
     QMap<quint32, quint64> _last_updates;

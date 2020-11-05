@@ -1,0 +1,7 @@
+Package: swift-pamm
+Version: 1.0.379
+Maintainer: swift.bot
+Architecture: amd64
+Section: misc
+Description: PAMM module
+Pre-Depends: swift-corelib

@@ -30,10 +30,10 @@ OrderBooksProxy::OrderBooksProxy(QObject *parent) : QObject(parent),
 
     connect( send_rates_interval, &QTimer::timeout, this, &OrderBooksProxy::sendRates );
 
-    qWarning() << "Orderbooks valid timer: " << valid_interval;
-    qWarning() << "Orderbooks update interval: " << SwiftCore::getModuleSettings("orderbooks")->value("request_interval", 1500 ).toUInt() ;
-    qWarning() << "Orderbooks publishing interval: " << SwiftCore::getModuleSettings("orderbooks")->value("publish_interval", 1500 ).toUInt() ;
-    qWarning() << "Orderbooks slicing: " << QString::number( limit_records_count );
+    qInfo() << "Orderbooks valid timer: " << valid_interval;
+    qInfo() << "Orderbooks update interval: " << SwiftCore::getModuleSettings("orderbooks")->value("request_interval", 1500 ).toUInt() ;
+    qInfo() << "Orderbooks publishing interval: " << SwiftCore::getModuleSettings("orderbooks")->value("publish_interval", 1500 ).toUInt() ;
+    qInfo() << "Orderbooks slicing: " << QString::number( limit_records_count );
 
     send_rates_interval->start();
 }
@@ -82,7 +82,7 @@ void OrderBooksProxy::onWampSession(Wamp::Session *sess) {
     session = sess;
     reloadTargets();
 
-    qWarning() << _pairs.count() << "active markets";
+    qInfo() << _pairs.count() << "active markets";
 
     // Get actual rates info
     session->provide( RPC_CURRENT_RATES, [=]( const QVariantList&v, const QVariantMap& m ) {
@@ -93,7 +93,9 @@ void OrderBooksProxy::onWampSession(Wamp::Session *sess) {
        QJsonArray ar;
        QJsonArray br;
        for( auto iit = _current_rates.begin(); iit != _current_rates.end(); iit++ ) {
-           r[ QString::number( iit.key() ) ] = QString::number(iit.value(), 'f', 8);
+           if ( SwiftCore::getAssets()->isMarketActive( iit.key() ) ) {
+               r[ QString::number( iit.key() ) ] = QString::number(iit.value(), 'f', 8);
+           }
        }
        const QString rr( QJsonDocument( r ).toJson( QJsonDocument::Compact ) );
        return rr;
@@ -114,7 +116,7 @@ void OrderBooksProxy::onWampSession(Wamp::Session *sess) {
         const quint32 to_coin = v.at(1).toUInt();
         const double amount = v.at(2).toDouble();
 
-        qWarning() << "Converting " << from_coin << to_coin << amount;
+        qInfo() << "Converting " << from_coin << to_coin << amount;
 
         if ( from_coin == to_coin ) {
             return amount;
@@ -308,6 +310,49 @@ void OrderBooksProxy::logRates() {
         }
 
     }
+}
+
+double OrderBooksProxy::getRateDiffHour(const quint32 &pid) {
+    if ( _rates_history_data.contains( pid ) && _current_rates.contains( pid ) ) {
+        const quint64 fromtimestamp = QDateTime::currentSecsSinceEpoch() - 3600;
+        QList<double> _valids;
+        QMap<quint64,double> _left_values;
+        QMap<quint64, double> _rates( _rates_history_data.value( pid ) );
+        for( auto it = _rates.begin(); it != _rates.end(); it++ ) {
+            if ( it.key() >= fromtimestamp ) {
+                _valids.push_back( it.value() );
+                _left_values.insert( it.key(), it.value() );
+            }
+        }
+        _rates_history_data[ pid ] = _left_values;
+        if ( !_valids.isEmpty() ) {
+            return ( _valids.first() - _current_rates.value( pid ) ) / _current_rates.value( pid ) * 100;
+        }
+
+
+    }
+    return 0;
+}
+
+QString OrderBooksProxy::getReportFormattedMessage() {
+    QString msg("<u><b>Current rates</b></u>\n");
+
+    SwiftBot::ArbitragePair::eachPair([&](SwiftBot::ArbitragePair pair ) {
+        msg += "\n--\n";
+        msg += QString("<b>"+pair.name+"</b>\n");
+        pair.eachMarkets([&](SwiftBot::Market market) {
+            if ( market.is_enabled ) {
+                quint64 diff = QDateTime::currentSecsSinceEpoch() - _last_updates.value( market.id );
+                double ratechange = getRateDiffHour( market.id );
+                QString rstrtch = QString(ratechange >= 0.0 ? "+" : "")+QString::number( getRateDiffHour( market.id ), 'f', 2 )+"%";
+                msg += QString("<u>"+QString::number( _current_rates.value( market.id ), 'f', 2)+"</u> - "
+                               + market.exchange().name + " ("+rstrtch+") "
+                               + QString(diff > 2 ? QString("(Updated : "+QString::number( QDateTime::currentSecsSinceEpoch() - _last_updates.value( market.id ))+" sec)") : "")+ "\n");
+            }
+        });
+    });
+
+    return msg;
 }
 
 double OrderBooksProxy::getArbitragePairRate(const quint32 &arbpair) {

@@ -2,8 +2,8 @@
 #define SWIFTAPICLIENTBITTREX_H
 
 #include <QObject>
-#include "../swift-corelib/swiftapiclient.h"
-#include "../swift-corelib/swiftcore.h"
+#include <swiftapiclient.h>
+#include <swiftcore.h>
 #include <QCoreApplication>
 
 class SwiftApiClientBittrex : public SwiftApiClient

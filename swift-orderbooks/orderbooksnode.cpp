@@ -1,5 +1,7 @@
 #include "orderbooksnode.h"
 #include <QMessageAuthenticationCode>
+#include <swiftbot.h>
+#include <swiftcore.h>
 
 OrderbooksNode::OrderbooksNode(QObject *parent) :
     QObject(parent),
@@ -441,7 +443,7 @@ void OrderbooksNode::initLbankInterval() {
 }
 
 void OrderbooksNode::initLbankWs() {
-    qWarning() << "Websocket initiating in LBANK";
+    //qWarning() << "Websocket initiating in LBANK";
     websocket.reset( new QWebSocket() );
     connect( websocket.get(), &QWebSocket::textMessageReceived, [&](const QString &message){
         const QJsonObject j_message( QJsonDocument::fromJson( message.toUtf8() ).object() );
@@ -523,22 +525,25 @@ void OrderbooksNode::initCexioInterval() {
         QJsonArray j_asks = j_resp.value("asks").toArray();
         _asks_indexed.clear();
         _bids_indexed.clear();
-        onRawOrderbooks( j_asks, j_bids );
+        onRawOrderbooks( j_asks, j_bids, reply->property("pair_id").toUInt() );
         reply->deleteLater();
     });
     connect( _request_interval_timer, &QTimer::timeout, [&](){
-        QUrl url("https://cex.io/api/order_book/BTC/USD?depth=20");
-        QUrlQuery urlquery;
-        url.setQuery( urlquery );
-        QNetworkRequest request( url );
-        QNetworkReply * reply = netmanager->get( request );
-        Q_UNUSED(reply)
+        for ( auto it = _target_pairs.begin(); it != _target_pairs.end(); it++ ) {
+            SwiftBot::Market market( it->second );
+            QUrl url("https://cex.io/api/order_book/"+market.baseCurrency().name+"/"+market.quoteCurrency().name+"?depth=20");
+            QUrlQuery urlquery;
+            url.setQuery( urlquery );
+            QNetworkRequest request( url );
+            QNetworkReply * reply = netmanager->get( request );
+            reply->setProperty("pair_id", market.id );
+        }
     });
     _request_interval_timer->start();
 }
 
 void OrderbooksNode::initCexioWs() {
-    qWarning() << "Websocket initiating in cexio";
+    qInfo() << "Websocket initiating in cexio";
     websocket.reset( new QWebSocket() );
     connect( websocket.get(), &QWebSocket::textMessageReceived, [&](const QString &message){
         const QJsonObject j_message( QJsonDocument::fromJson( message.toUtf8() ).object() );
@@ -650,7 +655,7 @@ void OrderbooksNode::initNodeExchange() {
     _request_interval = 5000;
     if ( _exchange_name == "cexio" ) {
         initCexioInterval();
-        initCexioWs();
+       // initCexioWs();
     } else if ( _exchange_name == "bittrex" ) {
         _request_interval = 1000;
         initBittrexInterval();
@@ -737,6 +742,7 @@ void OrderbooksNode::initKrakenInterval() {
     connect( netmanager, &QNetworkAccessManager::finished, [&]( QNetworkReply * reply ){
         const QByteArray data( reply->readAll().constData() );
         const quint32 pair_id( reply->property("pair_id").toUInt() );
+
         QJsonObject j_data;
         if (  QJsonDocument::fromJson( data ).object().value("result").toObject().contains("XBTUSDT") ) {
             j_data = QJsonObject( QJsonDocument::fromJson( data ).object().value("result").toObject().value("XBTUSDT").toObject() );
@@ -755,7 +761,7 @@ void OrderbooksNode::initKrakenInterval() {
     });
     connect( _request_interval_timer, &QTimer::timeout, [&](){
         for ( auto it = _target_pairs.begin(); it != _target_pairs.end(); it++ ) {
-            QUrl url("https://api.kraken.com/0/public/Depth?pair="+it->first.toUtf8()+"&count=15");
+            QUrl url("https://api.kraken.com/0/public/Depth?pair="+it->first.toUtf8()+"&count=25");
             QNetworkRequest request( url );
             QNetworkReply * reply = netmanager->get( request );
             reply->setProperty("pair_id", it->second );
@@ -765,7 +771,7 @@ void OrderbooksNode::initKrakenInterval() {
 }
 
 void OrderbooksNode::initKrakenWs() {
-    qWarning() << "Websocket initiating in kraken";
+    qInfo() << "Websocket initiating in kraken";
     websocket.reset( new QWebSocket() );
     last_pong = QDateTime::currentSecsSinceEpoch();
     connect( websocket.get(), &QWebSocket::textMessageReceived, [&](const QString &message){
@@ -858,7 +864,7 @@ void OrderbooksNode::initBinanceInterval() {
 }
 
 void OrderbooksNode::initBinanceWs() {
-    qWarning() << "Websocket initiating in binance";
+    qInfo() << "Websocket initiating in binance";
     websocket.reset( new QWebSocket() );
     connect( websocket.get(), &QWebSocket::textMessageReceived, [&](const QString &message){
         const QJsonObject j_message( QJsonDocument::fromJson( message.toUtf8() ).object() );

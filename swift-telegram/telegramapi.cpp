@@ -29,7 +29,6 @@ void TelegramApi::onWampSession(Wamp::Session *sess)
     session->provide(RCP_TELEGRAM_NOTIFY, [=]( const QVariantList &v, const QVariantMap&m){
         Q_UNUSED(m);
         if ( v.isEmpty() ) {
-
         } else {
             emit sendMessage( v.at(0).toString() );
         }

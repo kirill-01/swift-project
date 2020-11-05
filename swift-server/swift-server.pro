@@ -22,3 +22,7 @@ HEADERS += \
     procwrapper.h
 
 include( ../shared.pri )
+
+DISTFILES += \
+    deb/opt/swift-bot/modules/server/wamp.json \
+    deb/opt/swift-bot/settings.dist

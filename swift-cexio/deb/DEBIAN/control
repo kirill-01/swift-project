@@ -1,0 +1,7 @@
+Package: swift-cexio
+Version: 1.0.346
+Maintainer: swift.bot
+Architecture: amd64
+Section: misc
+Description: Cexio cryptocurrency exchange API module for SwiftBot
+Pre-Depends: swift-corelib

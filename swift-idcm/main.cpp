@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
     QCoreApplication::setApplicationName("swift-idcm");
-    QCoreApplication::setApplicationVersion("1.0.343");
+    QCoreApplication::setApplicationVersion("1.0.379");
 
     // Allow only one instance per host
     QLockFile lockFile(QDir::temp().absoluteFilePath( QString(QCoreApplication::applicationName()+".lock") ) );
@@ -44,6 +44,7 @@ int main(int argc, char *argv[])
         qWarning() << db.lastError().text();
         return 1;
     }
+
     // Wamp client
     SwiftBot::initWampClient();
 
@@ -55,8 +56,6 @@ int main(int argc, char *argv[])
     SwiftApiClientIDCM * api_client = new SwiftApiClientIDCM(nullptr);
     QObject::connect( wamp_client.data(), &WampClient::clientConnected, api_client, &SwiftApiClient::onWampSession);
     SwiftApiParserIDCM * api_parser = new SwiftApiParserIDCM();
-
-
     QObject::connect( api_client, &SwiftApiClient::parseApiResponse, api_parser, &SwiftApiParser::registerResponse, Qt::QueuedConnection);
     QObject::connect( api_parser,  &SwiftApiParser::resultParsed, api_client, &SwiftApiClient::onApiResponseParsed, Qt::QueuedConnection);
 

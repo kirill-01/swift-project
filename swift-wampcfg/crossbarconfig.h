@@ -7,7 +7,7 @@
 #include <QJsonArray>
 #include <QJsonValue>
 #include <QFile>
-
+#define EXCHS_LIST "bittrex bitfinex binance hitbtc zb kucoin huobi kraken idcm livecoin cexio"
 class CrossbarConfig : public QObject
 {
     Q_OBJECT

@@ -380,7 +380,8 @@ namespace Wamp {
   void Session::publish(const QString &topic, const QVariantList &args, const QVariantMap &kwargs) {
 
     if (!m_sessionId) {
-      throw NoSessionError();
+        return;
+      //throw NoSessionError();
     }
 
     m_requestId += 1;

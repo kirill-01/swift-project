@@ -50,13 +50,12 @@ void MarketsFilter::precessSnapShot(const QJsonObject &j_data) {
             const double amount = it->toArray().at(2).toString().toDouble();
             __asks[ pid ].insert( rate, amount );
         }
+        _orderbooks_processed++;
     }
 
     if ( is_debug ) {
         qWarning() << "Preparing data" << t.elapsed();
     }
-    _orderbooks_processed += bids.count();
-    _orderbooks_processed += asks.count();
 
     QList<QPair<quint32,quint32>> _checked;
 
@@ -103,9 +102,15 @@ void MarketsFilter::precessSnapShot(const QJsonObject &j_data) {
                                             sizes._max_sizes.value( arbp, SwiftCore::getModuleSettings("arbitrage")->value("max_order_size",5.1).toDouble() ),
                                             sizes._stp_sizes.value( arbp, SwiftCore::getModuleSettings("arbitrage")->value("step_order_size",0.1).toDouble() )
                                             );
-                QList<OrderbooksVariant> pp = vars_filter.getProfitable();
-                if ( !pp.isEmpty() ) {
-                    _p[ *it ]=pp;
+                if ( !vars_filter._variants.isEmpty() ) {
+                    QList<OrderbooksVariant> pp = vars_filter.getProfitable();
+                    if ( !pp.isEmpty() ) {
+                        _p[ *it ]=pp;
+                        if ( is_debug ) {
+                            qDebug() << "Variants: " << vars_filter._variants.count() << "Profitable: " << pp.count();
+                        }
+                    }
+
                 }
             }
         }
@@ -228,28 +233,28 @@ void MarketsFilter::precessSnapShot(const QJsonObject &j_data) {
         if ( recommended <= 175 ) {
             recommended = 175;
         }
-        qWarning() << recommended << " interval is being optimal for current settings";
+        addLog( "interval "+QString::number(recommended)+" is being optimal for current settings");
         _last_timings.clear();
         if ( SwiftBot::moduleSettings()->value(SETTINGS_NAME_ORDERBOOKS_ADOPT_INTERVAL,false).toBool() ) {
             SwiftBot::moduleSettings("orderbooks")->setValue("publish_interval", recommended );
-            qWarning() << "Interval changed";
+            addLog( "Interval changed" );
         }
     }
 }
 
 void MarketsFilter::onWindowEventSend(const QJsonObject &j_window) {
     const QString evobject( QJsonDocument( j_window ).toJson( QJsonDocument::Compact ) );
-    SwiftBot::publish( FEED_EVENTS_ARBITRAGE, {"WINDOW", evobject } );
+    session->publish( FEED_EVENTS_ARBITRAGE, {"WINDOW", evobject } );
 }
 
 void MarketsFilter::onWampSession(Wamp::Session * sess) {
     session = sess;
     addLog("Connected and ready to work", "DEBUG");
 
-
+    addLog("Markets filter module connected");
     started_time = QDateTime::currentDateTime();
 
-    SwiftBot::provide("swift.arbitrage.info",[&]( const QVariantList& v, const QVariantMap& m ) {
+    session->provide("swift.arbitrage.info",[&]( const QVariantList& v, const QVariantMap& m ) {
         Q_UNUSED(m)
         Q_UNUSED(v)
         QJsonObject j_ret;
@@ -282,8 +287,6 @@ void MarketsFilter::onWampSession(Wamp::Session * sess) {
         Q_UNUSED(m);
         const QString str( v.at(0).toString() );
         emit orderbooksSnapshot( QJsonObject( QJsonDocument::fromJson( str.toUtf8() ).object() ));
-
-        // Group by arbitrage pair and calculate here!
     });
     QTimer::singleShot( 1500, this, &MarketsFilter::recalcSizeSettings );
 }

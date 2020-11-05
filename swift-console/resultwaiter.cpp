@@ -2,7 +2,7 @@
 
 ResultWaiter::ResultWaiter(QObject *parent) : QObject(parent), session(nullptr)
 {
-
+    QTimer::singleShot( 150, this, &ResultWaiter::loadHistory );
 }
 
 void ResultWaiter::waitFor(const quint64 &uid) {
@@ -31,7 +31,8 @@ void ResultWaiter::onKeyPress(char key) {
         last_commands.push_back( current_command );
         history_index = last_commands.count() - 1;
         std::cout << "> " << std::flush;
-        qWarning() << "cmd: " << current_command;
+        QTimer::singleShot( 150, this, &ResultWaiter::saveHistory );
+        qInfo().noquote() << "\n" << "cmd: " << current_command;
         if ( current_command == "quit" || current_command == "exit" ) {
             qWarning() << "Exiting...";
             qApp->exit(0);
@@ -57,8 +58,16 @@ void ResultWaiter::onKeyPress(char key) {
                     waitFor( re.toULongLong() );
                 } else {
                     qWarning() << "Response: \n";
-                    std::cout << re.toString().toStdString() << std::endl;
-                    std::cout << "> " << std::flush;
+                    if ( re.toList().size() > 1 ) {
+                        const QVariantList l( re.toList() );
+                        for( auto it = l.begin(); it != l.end(); it++ ) {
+                            std::cout << it->toString().toStdString() << std::endl;
+                        }
+                        std::cout << "> " << std::flush;
+                    } else {
+                        std::cout << re.toString().toStdString() << std::endl;
+                        std::cout << "> " << std::flush;
+                    }
                 }
             } else if (cmd.count() > 2 ) {
                 QVariantList prms({ current_command.section(" ", 1 ) });
@@ -69,8 +78,16 @@ void ResultWaiter::onKeyPress(char key) {
                     waitFor( re.toULongLong() );
                 } else {
                     qWarning() << "Response: \n";
-                    std::cout << re.toString().toStdString() << std::endl;
-                    std::cout << "> " << std::flush;
+                    if ( re.toList().size() > 1 ) {
+                        const QVariantList l( re.toList() );
+                        for( auto it = l.begin(); it != l.end(); it++ ) {
+                            std::cout << it->toString().toStdString() << std::endl;
+                        }
+                        std::cout << "> " << std::flush;
+                    } else {
+                        std::cout << re.toString().toStdString() << std::endl;
+                        std::cout << "> " << std::flush;
+                    }
                 }
             }
             else {
@@ -86,31 +103,62 @@ void ResultWaiter::onKeyPress(char key) {
                         std::cout << jdoc.toJson( QJsonDocument::Indented ).toStdString() << std::endl;
                         std::cout << "> " << std::flush;
                     } else {
-                        std::cout << re.toString().toStdString() << std::endl;
-                        std::cout << "> " << std::flush;
+                        if ( re.toList().size() > 1 ) {
+                            const QVariantList l( re.toList() );
+                            for( auto it = l.begin(); it != l.end(); it++ ) {
+                                std::cout << it->toString().toStdString() << std::endl;
+                            }
+                            std::cout << "> " << std::flush;
+                        } else {
+                            std::cout << re.toString().toStdString() << std::endl;
+                            std::cout << "> " << std::flush;
+                        }
                     }
                 }
             }
         }
         current_command = "";
     } else if ( QString( key ) == "\u007F" ) {
-        std::cout << '\b';
-        std::cout << " ";
-        std::cout << '\b';
+        std::cout << "\b" << " " << "\b" << std::flush;
         if ( !current_command.isEmpty() ) {
             current_command.remove( current_command.length() - 1, 1 );
         }
     } else if ( QString( key ) == "\u001B" ) {
+        if ( last_commands.isEmpty() ) {
+            return;
+        }
         if ( history_index > 0 ) {
             history_index--;
         } else {
             history_index = last_commands.count() -1;
         }
+
+        for( int i =0; i < current_command.size() +8 ; i++ ) {
+            std::cout << "\b" << " " << "\b" << std::flush;
+        }
         current_command = last_commands.at( history_index );
         std::cout << "> " << current_command.toStdString() << std::flush;
+    } else if ( QString( key ) == "\u001A" ) {
+        if ( last_commands.isEmpty() ) {
+            return;
+        }
+        if ( history_index < quint32( last_commands.count() ) ) {
+            history_index++;
+        } else {
+            history_index = 0;
+        }
+
+        for( int i =0; i < current_command.size() + 8; i++ ) {
+            std::cout << "\b" << " " << "\b" << std::flush;
+        }
+        current_command = last_commands.at( history_index );
+        std::cout << current_command.toStdString() << std::flush;
     }
     else {
-        current_command += QString( key );
-        std::cout << key << std::flush;
+        const QString itm( key );
+        if ( itm.length() == 1 ) {
+            current_command += itm;
+            std::cout << key << std::flush;
+        }
     }
 }

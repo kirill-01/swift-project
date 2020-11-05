@@ -112,7 +112,7 @@ double BalancesKeeper::getBalanceTotal(const quint32 &cid) const {
 }
 
 void BalancesKeeper::calculateRequirements() {
-    QSqlQuery q("SELECT sell_pair_id as sell_pair, c1.id as sell_currency, SUM(min_amount) / count(*) as sell_amount , buy_pair_id as buy_pair_id, c2.id as buy_currency, ( SUM(min_amount) * AVG(max_buy_rate) ) / count(*) as buy_price,  avg(max_profit) as profit  FROM arbitrage_events e left join pairs m1 on m1.id=sell_pair_id left join currencies c1 on c1.id=m1.base_currency_id left join pairs m2 on m2.id=buy_pair_id left join currencies c2 on c2.id=m2.market_currency_id where ts >  date_sub(NOW(), interval 1 hour) GROUP by sell_pair_id, buy_pair_id");
+    QSqlQuery q("SELECT sell_pair_id as sell_pair, c1.id as sell_currency, SUM(max_amount) / count(*) as sell_amount , buy_pair_id as buy_pair_id, c2.id as buy_currency, ( SUM(max_amount) / count(*) * AVG(max_buy_rate) )  as buy_price,  avg(max_profit) as profit  FROM arbitrage_events e left join pairs m1 on m1.id=sell_pair_id left join currencies c1 on c1.id=m1.base_currency_id left join pairs m2 on m2.id=buy_pair_id left join currencies c2 on c2.id=m2.market_currency_id where ts >  date_sub(NOW(), interval 1 hour) GROUP by sell_pair_id, buy_pair_id");
     if ( q.exec() ) {
         QMap<quint32, double> _curs_req;
         while ( q.next() ) {

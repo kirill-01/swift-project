@@ -1,6 +1,4 @@
 #include "swiftapiclient.h"
-#include <QtConcurrent/QtConcurrent>
-
 
 SwiftApiClient::SwiftApiClient(QObject *parent) : SwiftWorker(parent),
     limits_timer(new QTimer() ),
@@ -9,20 +7,39 @@ SwiftApiClient::SwiftApiClient(QObject *parent) : SwiftWorker(parent),
     _state_timer( new QTimer()),
     netman( new QNetworkAccessManager(this) ),
     _uuids_counter( QDateTime::currentMSecsSinceEpoch() ) ,
-
     request_pause(false)
 {
     debug = SwiftCore::getSettings()->value(SETTINGS_NAME_API_DEBUG, false ).toBool();
     _requests_debug_log = SwiftCore::getSettings()->value(SETTINGS_NAME_API_DEBUG, false ).toBool();
     qRegisterMetaType<SwiftApiClient::AsyncMethods>("SwiftApiClient::AsyncMethods");
-
     connect( netman, &QNetworkAccessManager::finished, this, &SwiftApiClient::onNetworkReply );
-
 }
 
-//
-//
-// order. withdraw. deposits. trade.
+QString SwiftApiClient::getTopic(const SwiftApiClient::WampTopics &topic) const {
+    if ( topic == ApiRpcAsyncResults ) {
+        return FEED_ASYNC_RESULTS;
+    } else if ( topic == LoggerLogs ) {
+        return RPC_SERVER_LOGGER_LOGS ;
+    }  else if ( topic == LoggerErrs ) {
+        return RPC_SERVER_LOGGER_ERRORS;
+    }
+    return FEED_ASYNC_RESULTS;
+}
+
+QString SwiftApiClient::exchangeParamsPath(const QString &exchange_name, const QString &param) {
+    return exchange_name+"/"+param;
+}
+
+bool SwiftApiClient::responseSuccess(QJsonObject *result) const {
+    if ( result->contains("success") ) {
+        if ( result->value("success").isBool() ) {
+            return result->value("success").toBool();
+        }
+        return ( result->value("success").toString() == "true" || result->value("success").toString() == "TRUE" );
+    }
+    return false;
+}
+
 QString SwiftApiClient::getMethodName(const SwiftApiClient::AsyncMethods &method) {
     static QMap<SwiftApiClient::AsyncMethods,QString> _methods;
     if ( _methods.isEmpty() ) {
@@ -57,7 +74,7 @@ quint32 SwiftApiClient::getExchangeId() {
 }
 
 QString SwiftApiClient::getApiVersionString() {
-    return "1.0";
+    return QCoreApplication::applicationVersion();
 }
 
 QString SwiftApiClient::getExchangeApiKey() const {
@@ -77,6 +94,11 @@ void SwiftApiClient::customParser(const SwiftApiClient::AsyncMethods &method, co
     Q_UNUSED(method)
 }
 
+void SwiftApiClient::customMethod(const QJsonObject &j_params, const quint64 &async_uuid) {
+    Q_UNUSED(j_params)
+    Q_UNUSED(async_uuid)
+}
+
 /**
  * @brief SwiftApiClient::createAsyncWaiter
  *
@@ -86,9 +108,6 @@ void SwiftApiClient::customParser(const SwiftApiClient::AsyncMethods &method, co
  * @return
  */
 quint64 SwiftApiClient::createAsyncWaiter(const SwiftApiClient::AsyncMethods &method, const QJsonObject &j_params = QJsonObject() ) {
-
-
-
     // Allow call public methods without api keys
     if ( method != AsyncMethods::GetMarkets && method != AsyncMethods::GetOrderbooks && method != AsyncMethods::GetCurrencies ) {
         if ( api_key.isEmpty() || api_key == "" ) {
@@ -154,17 +173,15 @@ void SwiftApiClient::onWampSession_(Wamp::Session *session ) {
     {
         const SwiftApiClient::AsyncMethods met( static_cast<SwiftApiClient::AsyncMethods> ( i ) );
         const QString rpc_path( "swift.api."+getMethodName( met )+"."+getExchangeName() );
-        SwiftBot::provide( rpc_path, [this, &met](const QVariantList &args, const QVariantMap &kwargs ) {
+        session->provide( rpc_path, [=](const QVariantList &args, const QVariantMap &kwargs ) {
                 Q_UNUSED(kwargs)
                 if ( args.isEmpty() ) {
                     const QJsonObject j_params;
                     const quint64 uuid =  createAsyncWaiter( met, j_params );
-
                     return uuid;
                 } else {
                     const QJsonObject j_params( QJsonDocument::fromJson( args.at(0).toString().toUtf8() ).object() );
                     const quint64 uuid =  createAsyncWaiter( met, j_params );
-                    qWarning() << uuid << met;
                     return uuid;
                 }
             });
@@ -371,14 +388,13 @@ void SwiftApiClient::processAsyncQueue() {
             } else if ( next_method == TimeSyncMethod ) {
                 customMethod( j_params, next_uuid );
             } else {
-                addError("Unknown method to process: " + getMethodName( next_method ) );
+                addError("Unknown method to process: " + QString::number( next_method ) + getMethodName( next_method ) );
             }
         }
     }
 }
 
 QJsonObject &  SwiftApiClient::parseBalancesGroup( QJsonObject  & j_result )  {
-
     QJsonArray j_arr( j_result.value("balances").toArray() );
     for( auto it = j_arr.begin(); it != j_arr.end(); it++ ) {
         setCachedBalance( it->toObject().value("currency_id").toString().toUInt(), it->toObject().value("total").toString().toDouble(), it->toObject().value("reserved").toString().toDouble() );
@@ -469,6 +485,10 @@ QJsonObject & SwiftApiClient::parsePublicGroup( QJsonObject  & j_result ) {
         }
     }
     return j_result;
+}
+
+void SwiftApiClient::initAssets() {
+
 }
 
 void SwiftApiClient::onApiResponseParsed(const quint64 &uuid, const QJsonObject &j_result) {
@@ -579,8 +599,6 @@ void SwiftApiClient::onApiResponseParsed(const quint64 &uuid, const QJsonObject 
         result["exchange_name"] = getExchangeName();
         result["async_uuid"] = QString::number( uuid );
         result["method"] = getMethodName( method );
-
-
         registerAsyncResult( uuid, result );
     }
 }
@@ -620,7 +638,6 @@ void SwiftApiClient::methodState(const SwiftApiClient::AsyncMethods &method, con
     if ( session != nullptr &&  session->isJoined() ) {
         session->call(RPC_API_METHODS_STATE, QVariantList({prefix+SwiftApiClient::getMethodName( method ), result}) );
     }
-
 }
 
 bool SwiftApiClient::publishWamp(const WampTopics &topic, const QJsonObject &obj, const quint64 &async_uuid) {
@@ -648,6 +665,32 @@ void SwiftApiClient::addError(const QString &message, const QString& group) {
     insertError(group, message );
 }
 
+QJsonValue SwiftApiClient::updateCachedOrder(const QJsonArray &j_orders, const quint64 &uuid) const {
+    QJsonArray ret;
+    for( auto it = j_orders.begin(); it != j_orders.end(); it++ ) {
+        ret.push_back( updateCachedOrder( it->toObject(), uuid ).toObject() );
+    }
+    return QJsonValue( ret );
+}
+
+QJsonValue SwiftApiClient::updateCachedOrder(const QJsonObject &j_result, const quint64 &uuid) const {
+    Q_UNUSED( uuid )
+    QJsonObject ret, j_cached_obj;
+    if ( j_result.contains("local_id") ) {
+    }
+    return QJsonValue( ret );
+}
+
+void SwiftApiClient::raiseEvent(const QJsonArray &j_jtems, const QString &event_feed, const QString &event_name) {
+    QJsonObject j_event({{"exchange_id",QString::number( getExchangeId() )},{"items", j_jtems}});
+    const QString _event_data( QJsonDocument( j_event ).toJson( QJsonDocument::Compact ) );
+    if ( session != nullptr && session->isJoined() ) {
+        session->publish(event_feed, { event_name, _event_data } );
+    } else {
+        addError( "Cant ppublish event. WAMP not connected" );
+    }
+}
+
 void SwiftApiClient::registerOrder(const QJsonObject &j, const quint64 &uuid) {
     _regitered_orders_objects[ j.value("local_id").toString() ] = j;
     _regitered_orders[uuid] =  j.value("local_id").toString();
@@ -656,6 +699,16 @@ void SwiftApiClient::registerOrder(const QJsonObject &j, const quint64 &uuid) {
 QJsonObject SwiftApiClient::getRegisteredOrder(const quint64 &uuid) {
     if ( _regitered_orders.contains( uuid ) ) {
         return _regitered_orders_objects.take( _regitered_orders.take( uuid ) );
+    } else {
+        return QJsonObject();
+    }
+}
+
+QJsonObject SwiftApiClient::getRegisteredOrder(const QString &local_uuid) {
+    if ( _regitered_orders.values().contains( local_uuid ) ) {
+        return getRegisteredOrder( _regitered_orders.key( local_uuid ) );
+    } else if ( _regitered_orders_objects.contains( local_uuid ) ) {
+        return _regitered_orders_objects.take( local_uuid );
     } else {
         return QJsonObject();
     }
@@ -695,6 +748,27 @@ quint64 SwiftApiClient::registerAsyncCall(const SwiftApiClient::AsyncMethods &me
     _asyncs.push_back( uuid );
     _async_dictionary.insert( uuid, method );
     return uuid;
+}
+
+QSettings *SwiftApiClient::getSettings() const {
+    return SwiftCore::getModuleSettings( getExchangeName() );
+}
+
+bool SwiftApiClient::isApiDebug() {
+    return SwiftBot::appParam( SETTINGS_NAME_API_DEBUG, false ).toBool();
+}
+
+bool SwiftApiClient::hasOrderRemoteIdRelation(const QString &remote_id) const {
+    return _orders_uids_relations.contains( remote_id );
+}
+
+QString SwiftApiClient::getOrderRemoteIdRelation(const QString &remote_id) const {
+    return _orders_uids_relations.value( remote_id );
+}
+
+QString SwiftApiClient::createOrderRemoteIdRelation(const QString &remote_id) {
+    _orders_uids_relations[ remote_id ] = "loc"+QString::number( getExchangeId() )+remote_id;
+    return getOrderRemoteIdRelation( remote_id );
 }
 
 quint64 SwiftApiClient::getNextUuid() {

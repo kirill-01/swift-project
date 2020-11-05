@@ -23,6 +23,31 @@ signals:
 public slots:
     void onWampSession( Wamp::Session * sess );
     void onKeyPress( char key );
+    void saveHistory() {
+        QFile histfile("/opt/swift-bot/console.history");
+        if ( histfile.open( QFile::ReadWrite ) ) {
+            histfile.resize(0);
+            QString res;
+            for( auto it = last_commands.begin(); it != last_commands.end(); it++ ) {
+                res += *it + "\n";
+            }
+            histfile.write( res.toUtf8() );
+            histfile.close();
+        }
+    }
+    void loadHistory() {
+        QFile histfile("/opt/swift-bot/console.history");
+        if ( histfile.open( QFile::ReadOnly ) ) {
+
+            QString res( histfile.readAll().constData() );
+            const QStringList itms( res.split("\n") );
+            last_commands.clear();
+            for( auto it = itms.begin(); it != itms.end(); it++ ) {
+                last_commands.push_back( *it );
+            }
+            histfile.close();
+        }
+    }
 private:
     QString current_command;
     Wamp::Session * session;

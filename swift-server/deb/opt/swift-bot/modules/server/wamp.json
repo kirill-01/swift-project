@@ -34,7 +34,7 @@
   "module": {
     "name": "templaterole",
     "call": [],
-    "register": ["swift.module.cmd","swift.server.cmd","swift.logger.logs","swift.logger.errors","swift.methodstate","swift.module.list","swift.module.exchanges","swift.assets.get","swift.apimodule.report","swift.methodstate.summary"],
+    "register": ["swift.host.status","swift.module.cmd","swift.server.cmd","swift.logger.logs","swift.logger.errors","swift.methodstate","swift.module.list","swift.module.exchanges","swift.assets.get","swift.apimodule.report","swift.methodstate.summary"],
     "publish": ["swift.system.feed.errors","swift.system.feed.logs"],
     "subscribe": ["swift.arbitrage.windows","swift.watchdog"]
   },
@@ -57,6 +57,12 @@
 	"description":"Run specific command to controll module process. Allowed commands: [START,STOP,RESTART]",
 	"arguments":["MODULENAME","COMMAND"],
 	"response":["OK"]
+      },
+      {
+        "uri":"swift.host.status",
+        "description":"Get current RAM and CPU usage info",
+        "arguments":[],
+        "response":[50.50, 75.12]
       },
       {
 	"uri":"swift.server.cmd",

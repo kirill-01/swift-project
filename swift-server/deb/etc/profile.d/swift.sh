@@ -1,0 +1,1 @@
+export QT_MESSAGE_PATTERN="`echo -e "\033[32m%{time h:mm:ss.zzz} %{if-warning}\033[31m%{message}%{endif}%{if-critical}\033[31m%{message}%{endif}%{if-fatal}\033[31m%{message}%{endif}%{if-info}\033[0m %{message}%{endif}"`"

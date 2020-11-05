@@ -26,9 +26,7 @@
         "swift.system.settings",
         "swift.system.feed.logs",
         "swift.system.feed.errors",
-        "swift.orderbooks",
-        "swift.system.events",
-        "swift.system.settings"
+        "swift.orderbooks"
       ]
     }
   },
@@ -50,103 +48,113 @@
 	"uri":"swift.api.synctime.bitfinex",
 	"description":"If supported by exchange, receiving timestamp from remote server and correct local noncer",
 	"arguments":[],
-	"response":["ASYNC_UUID"]
+	"response":[100000001]
       },
       {
 	"uri":"swift.api.currencies.bitfinex",
 	"description":"Get list of available currencies from exchange API",
 	"arguments":[],
-	"response":["ASYNC_UUID"]
+	"response":[100000001],
+	"async_response":{"currencies":[{"id":"0","name":"BTC"}]}
       },
       {
 	"uri":"swift.api.markets.bitfinex",
 	"description":"Get list of available markets  from exchange API",
 	"arguments":[],
-	"response":["ASYNC_UUID"]
+	"response":[100000001],
+	"async_response":{"markets":[{"id":"0","name":"BTC-USDT","base_currency_id":"1","quote_currency_id":"2", "exchange_id":"1"}]}
       },
       {
 	"uri":"swift.api.orderbooks.bitfinex",
 	"description":"Get orderbooks from exchange. Caution: only one market per request!",
 	"arguments":[{"market_id":"1"}],
-	"response":["ASYNC_UUID"]
+	"response":[100000001],
+	"async_response":{"asks":[["14000.00","0.001"],["14000.00","0.001"],["14000.00","0.001"],["14000.00","0.001"]]
+	,"bids":[["14000.00","0.001"],["14000.00","0.001"],["14000.00","0.001"],["14000.00","0.001"]]}
       },
       {
 	"uri":"swift.api.order.create.bitfinex",
 	"description":"Create new limit order",
 	"arguments":[{"market_id":"1","local_id":"localuuid","type":"0","amount":"1.00000000","rate":"12500.00"}],
-	"response":["ASYNC_UUID"]
+	"response":[100000001],
+	"async_response":{"status":"1","amount":"0.001","amount_left":"0.001", "rate":"14002.01","ext_id":"someExtId","local_id":"localId","ts":"14030234234234"}
       },
       {
 	"uri":"swift.api.order.cancel.bitfinex",
 	"description":"Cancel order",
 	"arguments":[{"remote_id":"1"}],
-	"response":["ASYNC_UUID"]
+	"response":[100000001],
+	"async_response":{"status":"1","amount":"0.001","amount_left":"0.001", "rate":"14002.01","ext_id":"someExtId","local_id":"localId","ts":"14030234234234"}
       },
       {
 	"uri":"swift.api.order.get.bitfinex",
 	"description":"Get order info",
 	"arguments":[{"remote_id":"1"}],
-	"response":["ASYNC_UUID"]
+	"response":[100000001],
+	"async_response":{"status":"1","amount":"0.001","amount_left":"0.001", "rate":"14002.01","ext_id":"someExtId","local_id":"localId","ts":"14030234234234"}
       },
       {
 	"uri":"swift.api.withdraw.history.bitfinex",
 	"description":"Get withdrawals history",
 	"arguments":[{"currency_id":"1"}],
-	"response":["ASYNC_UUID"]
+	"response":[100000001]
       },
       {
 	"uri":"swift.api.withdraw.create.bitfinex",
 	"description":"Create new withdraw",
-	"arguments":["JSONPARAMS"],
-	"response":["ASYNC_UUID"]
+	"arguments":[{"currency_id":"1","amount":"1.05","address":"someAddressInBlockchain"}],
+	"response":[100000001]
       },
       {
 	"uri":"swift.api.withdraw.inner.bitfinex",
 	"description":"Inner move assets between accounts",
-	"arguments":["JSONPARAMS"],
-	"response":["ASYNC_UUID"]
+	"arguments":[{"currency_id":"1","amount":"1.05","from":"trade","to":"main"}],
+	"response":[100000001]
       },
       {
 	"uri":"swift.api.withdraw.fee.bitfinex",
 	"description":"Get withdraw fees",
-	"arguments":["JSONPARAMS"],
-	"response":["ASYNC_UUID"]
+	"arguments":[],
+	"response":[100000001]
       },
       {
 	"uri":"swift.api.balances.bitfinex",
 	"description":"Get balances info",
-	"arguments":["JSONPARAMS"],
-	"response":["ASYNC_UUID"]
+	"arguments":[],
+	"response":[100000001],
+	"async_response":{"balances":[{"currency_id":"1","available":"0.100","total":"0.200","orders":"0.100"}]}
       },
       {
 	"uri":"swift.api.depostist.history.bitfinex",
 	"description":"Get deposits history",
 	"arguments":[{"currency_id":"1"}],
-	"response":["ASYNC_UUID"]
+	"response":[100000001]
       },
       {
 	"uri":"swift.api.deposits.address.bitfinex",
 	"description":"Get deposit address",
 	"arguments":["JSONPARAMS"],
-	"response":["ASYNC_UUID"]
+	"response":[100000001]
       },
       {
 	"uri":"swift.api.trade.history.bitfinex",
 	"description":"Get closed orders history",
 	"arguments":["JSONPARAMS"],
-	"response":["ASYNC_UUID"]
+	"response":[100000001],
+	"async_response":{"orders":[{"status":"2","amount":"0.001","amount_left":"0.001", "rate":"14002.01","ext_id":"someExtId","local_id":"localId","ts":"14030234234234"}]}
       },
       {
 	"uri":"swift.api.trade.active.bitfinex",
 	"description":"Get active orders",
 	"arguments":["JSONPARAMS"],
-	"response":["ASYNC_UUID"]
+	"response":[100000001],
+	"async_response":{"orders":[{"status":"1","amount":"0.001","amount_left":"0.001", "rate":"14002.01","ext_id":"someExtId","local_id":"localId","ts":"14030234234234"}]}
       },
       {
 	"uri":"swift.api.trade.fee.bitfinex",
 	"description":"Get trade fees",
 	"arguments":["JSONPARAMS"],
-	"response":["ASYNC_UUID"]
+	"response":[100000001]
       }
     ]
   }

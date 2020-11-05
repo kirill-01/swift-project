@@ -1,54 +1,144 @@
-# API description for module server
-## Feeds
-### swift.system.feed.logs
+## Feeds:
+
+- [swift.system.feed.logs](#swiftsystemfeedlogs)
+- [swift.system.feed.logs](#swiftsystemfeedlogs)
+
+
+## Methods:
+
+- [swift.module.cmd](#swiftmodulecmd)
+- [swift.host.status](#swifthoststatus)
+- [swift.server.cmd](#swiftservercmd)
+- [swift.logger.logs](#swiftloggerlogs)
+- [swift.logger.errors](#swiftloggererrors)
+- [swift.methodstate](#swiftmethodstate)
+- [swift.module.list](#swiftmodulelist)
+- [swift.module.exchanges](#swiftmoduleexchanges)
+- [swift.apimodule.report](#swiftapimodulereport)
+- [swift.methodstate.summary](#swiftmethodstatesummary)
+- [swift.assets.get](#swiftassetsget)
+
+
+# API for module: server
+
+Main server process
+
+# Feeds
+
+## swift.system.feed.logs
+
 System logs feed (Only messages from logger)
+
 #### Message 
+
 ```json
 [
     "Message object"
 ]
 
-```### swift.system.feed.logs
+```
+
+---
+
+## swift.system.feed.logs
+
 System errors feed (Only messages from logger)
+
 #### Message 
+
 ```json
 [
     "Message object"
 ]
 
-```## Methods
-### swift.module.cmd
+```
+
+---
+
+# Methods
+
+## swift.module.cmd
+
 Run specific command to controll module process. Allowed commands: [START,STOP,RESTART]
+
 #### Arguments 
+
 ```json
 [
     "MODULENAME",
     "COMMAND"
 ]
 
-```#### Response 
+```
+
+#### Response 
+
 ```json
 [
     "OK"
 ]
 
-```### swift.server.cmd
-Run specific shell command on host machine
+```
+
+[Go to top](#methods-1)
+---
+
+## swift.host.status
+
+Get current RAM and CPU usage info
+
 #### Arguments 
+
+```json
+[
+]
+
+```
+
+#### Response 
+
+```json
+[
+    50.5,
+    75.12
+]
+
+```
+
+[Go to top](#methods-1)
+---
+
+## swift.server.cmd
+
+Run specific shell command on host machine
+
+#### Arguments 
+
 ```json
 [
     "COMMAND"
 ]
 
-```#### Response 
+```
+
+#### Response 
+
 ```json
 [
     "OK"
 ]
 
-```### swift.logger.logs
+```
+
+[Go to top](#methods-1)
+---
+
+## swift.logger.logs
+
 Insert log message into Logger component
+
 #### Arguments 
+
 ```json
 [
     "SENDER_NAME",
@@ -56,15 +146,26 @@ Insert log message into Logger component
     "MESSAGE"
 ]
 
-```#### Response 
+```
+
+#### Response 
+
 ```json
 [
     1
 ]
 
-```### swift.logger.errors
+```
+
+[Go to top](#methods-1)
+---
+
+## swift.logger.errors
+
 Insert error into Logger component
+
 #### Arguments 
+
 ```json
 [
     "SENDER_NAME",
@@ -72,35 +173,60 @@ Insert error into Logger component
     "MESSAGE"
 ]
 
-```#### Response 
+```
+
+#### Response 
+
 ```json
 [
     1
 ]
 
-```### swift.methodstate
+```
+
+[Go to top](#methods-1)
+---
+
+## swift.methodstate
+
 Registering api method call result
+
 #### Arguments 
+
 ```json
 [
     "METHOD_URL",
     "TRUE"
 ]
 
-```#### Response 
+```
+
+#### Response 
+
 ```json
 [
     "OK"
 ]
 
-```### swift.module.list
+```
+
+[Go to top](#methods-1)
+---
+
+## swift.module.list
+
 Get all available modules list with status and info
+
 #### Arguments 
+
 ```json
 [
 ]
 
-```#### Response 
+```
+
+#### Response 
+
 ```json
 [
     {
@@ -121,62 +247,114 @@ Get all available modules list with status and info
     }
 ]
 
-```### swift.module.exchanges
+```
+
+[Go to top](#methods-1)
+---
+
+## swift.module.exchanges
+
 Run specific shell command on host machine
+
 #### Arguments 
+
 ```json
 [
 ]
 
-```#### Response 
+```
+
+#### Response 
+
 ```json
 [
     "exchange_name_1,exchange_name_2,exchange_name_3"
 ]
 
-```### swift.apimodule.report
+```
+
+[Go to top](#methods-1)
+---
+
+## swift.apimodule.report
+
 Get api methods usage report
+
 #### Arguments 
+
 ```json
 [
     "MODULENAME",
     "MODULESTATUS"
 ]
 
-```#### Response 
+```
+
+#### Response 
+
 ```json
 [
     1
 ]
 
-```### swift.methodstate.summary
+```
+
+[Go to top](#methods-1)
+---
+
+## swift.methodstate.summary
+
 Run specific command to controll module process. Allowed commands: [START,STOP,RESTART]
+
 #### Arguments 
+
 ```json
 [
     "MODULENAME",
     "COMMAND"
 ]
 
-```#### Response 
-```json
-[
-    "OK"
-]
+```
 
-```### swift.assets.get
-Run specific command to controll module process. Allowed commands: [START,STOP,RESTART]
-#### Arguments 
-```json
-[
-    "MODULENAME",
-    "COMMAND"
-]
+#### Response 
 
-```#### Response 
 ```json
 [
     "OK"
 ]
 
 ```
+
+[Go to top](#methods-1)
+---
+
+## swift.assets.get
+
+Run specific command to controll module process. Allowed commands: [START,STOP,RESTART]
+
+#### Arguments 
+
+```json
+[
+    "MODULENAME",
+    "COMMAND"
+]
+
+```
+
+#### Response 
+
+```json
+[
+    "OK"
+]
+
+```
+
+[Go to top](#methods-1)
+---
+
+
+
+[Back to list](docs/api.md)
+

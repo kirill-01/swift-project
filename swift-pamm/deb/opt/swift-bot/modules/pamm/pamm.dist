@@ -1,0 +1,16 @@
+name=pamm
+description=PAMM module
+version=1.0.75
+binary=/opt/swift-bot/bin/swift-pamm
+is_enabled=true
+is_exchange=false
+cypher_token=
+node_name=swiftbot
+node_description=Official node
+node_domain=node.swiftbot.space
+node_controller_secret=secretphrase
+node_controller_url=https://controller.swiftbot.space
+reports_interval=30000
+max_invest=250000
+telegram_chat_id=
+

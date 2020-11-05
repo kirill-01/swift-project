@@ -26,6 +26,9 @@ void SwiftApiParser::sendResponse(const quint64 &uuid, const QJsonObject &j_resu
         jdebug["async_uuid"] = QString::number( uuid );
         resp["debug"] = jdebug;
     }
+    if ( !j_result.contains("success") ) {
+        resp["success"] = true;
+    }
     resp["async_uuid"] = QString::number( uuid );
     resp["exchange_id"] = QString::number( getExchangeId() );
     emit resultParsed( uuid, resp );

@@ -42,8 +42,12 @@ void ConsoleReader::run()
 {
     forever
     {
-        char key = getch();
-
+        char key = getchar();
+        int kcode = key;
+        if ( kcode == 91 ) {
+            key = getchar();
+            key = getchar();
+        }
         emit KeyPressed(key);
     }
 }

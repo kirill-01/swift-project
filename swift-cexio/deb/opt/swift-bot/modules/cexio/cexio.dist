@@ -1,0 +1,8 @@
+name=bittrex
+description=Cexio API client module
+binary=/opt/swift-bot/bin/swift-cexio
+is_enabled=true
+is_exchange=true
+api_key=
+api_secret=
+api_user=

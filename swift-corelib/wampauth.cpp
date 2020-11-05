@@ -47,18 +47,7 @@ void WampAuth::publishMessage(const QString &topic, const QJsonObject &j) {
         session->publish( topic, QVariantList({res}));
     }
 }
-/*
-void WampAuth::publishMessage(const QString &topic, const QJsonArray &j) {
-    if ( session != nullptr && session->isJoined() ) {
-        const QString res( QJsonDocument( j ).toJson( QJsonDocument::Compact ) );
-        if ( topic == FEED_EVENTS_ARBITRAGE ) {
-            session->publish( topic, QVariantList({"STATS", res}));
-        } else {
-            session->publish( topic, QVariantList({res}));
-        }
 
-    }
-}*/
 
 void WampAuth::startClient() {
     if (debug) {

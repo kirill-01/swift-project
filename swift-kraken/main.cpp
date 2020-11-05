@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
     QCoreApplication::setApplicationName("swift-kraken");
-    QCoreApplication::setApplicationVersion("1.0.343");
+    QCoreApplication::setApplicationVersion("1.0.379");
 
     // Allow only one instance per host
     QLockFile lockFile(QDir::temp().absoluteFilePath( QString(QCoreApplication::applicationName()+".lock") ) );

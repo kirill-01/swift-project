@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
     QCoreApplication::setApplicationName("swift-hitbtc");
-    QCoreApplication::setApplicationVersion("1.0.343");
+    QCoreApplication::setApplicationVersion("1.0.379");
 
     // Allow only one instance per host
     QLockFile lockFile(QDir::temp().absoluteFilePath( QString(QCoreApplication::applicationName()+".lock") ) );
@@ -31,13 +31,7 @@ int main(int argc, char *argv[])
     parser.addHelpOption();
     parser.addVersionOption();
 
-    // Home dir option
-    QCommandLineOption targetDirectoryOption(QStringList() << "d" << "home-dir", "Application home directory","home-dir");
-    targetDirectoryOption.setDefaultValue( APP_DIR );
-    parser.addOption(targetDirectoryOption);
     parser.process(a);
-
-    static QString app_dir( parser.value( targetDirectoryOption ) );
 
     // MySQL db
     QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
@@ -53,12 +47,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    // Wamp client
-    wamp_client.reset( new WampClient(
-                   SwiftBot::appParam(SETTINGS_NAME_WAMP_REALM,"swift").toString(),
-                   SwiftBot::appParam(SETTINGS_NAME_WAMP_HOME,"localhost").toString(),
-                   SwiftBot::appParam(SETTINGS_NAME_WAMP_PORT, 8081).toInt(),
-                   SwiftBot::appParam(SETTINGS_NAME_WAMP_DEBUG, false).toBool() ) );
+    SwiftBot::initWampClient();
 
     QObject::connect( wamp_client.data(), &WampClient::clientdiconnected, [&a](){
         qWarning() << "WAMP client disconnected. Exiting.";

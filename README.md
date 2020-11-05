@@ -1,64 +1,21 @@
-# SwiftBot - не такой, как все :)
+# swift-bot is not like everyone else :)
 
-При помощи **SwiftBot уже построены и успешно функционируют** около десятка персональных систем управления цифровыми активами. 
-Каждая из них уникальна, имеет собственное назначение и специализацию. 
-Вы можете построить **автоматический обменник валют**, распределенный между биржами криптокошелек, **торговую систему с собственными алгоритмими** или просто интегрировать точнейшую информацию о курсах в свои бизнес процессы.
+With the help of **SwiftBot, about a dozen personal digital asset management systems have already been built and are successfully functioning**.
+Each of them is unique, has its own purpose and specialization.
+You can build **an automatic currency exchanger**, a crypto wallet distributed between exchanges, **a trading system with your own algorithms**, or simply integrate the most accurate information about rates into your business processes.
 
-Управляете аккаунтами Ваших криптовалютных бирж через единый унифицированный интерфейс, который полностью находится под вашим контролем.
+Manage the accounts of your cryptocurrency exchanges through a single unified interface that is completely under your control.
 
-* Создание торгового бота под свои нужды в кратчайшие сроки благодаря паттерну микросервисов.
-* Молниеносное выполнение запросов к биржам! Рассчет тысяч комбинаций ордеров  и их успешное размещение за сотые доли секунды.
-* Асинхронная многопоточная архитектура позволяет работать одновременно со множеством бирж
+* Creation of a trading bot for your needs in the shortest possible time thanks to the microservices pattern.
+* Lightning fast execution of requests to exchanges! Calculation of thousands of order combinations and their successful placement in hundredths of a second.
+* Asynchronous multithreaded architecture allows you to work with multiple exchanges simultaneously
 
-## Безопасность
+## Safety
 
-- Каждый модуль системы обладает только теми правами, которые ему указаны
-- При каждом запуске системы все внутренние пароли модулей меняются на новые
-- Вы можете самотоятельно менять настройки прав доступа для каждого модуля
-- Вы можете отключить методы вывода средств для любой из бирж
-
-### Функционал из коробки
-
-#### Арбитражая торговля
-
-Система аггрегирует все изменения котировок на активных биржах и несколько раз в секунду рассчитывает все возможные варианты арбитража. 
-
-Естественно, в рассчетах учитываются:
-
-- Биржемые торговые комиссии
-- Частота появления арбитражного окна и возможность его обратного закрытия
-- Размер ордера подбирается на основании торговых стаканов обеих бирж
-- Возможность отправки средств
-- Уровень доверия к конкретной площадке =)
-
-
-#### Rest + WebSocket API  интерфейсы
+- Each module of the system has only those rights that are indicated to it
+- Each time the system is started, all internal passwords of the modules are changed to new ones
+- You can independently change the access rights settings for each module
+- You can disable withdrawal methods for any of the exchanges
 
 ### [Api reference](docs/api.md)
 
-#### Интеграция с Telegram
-
-#### Биржевые интерфейсы
-
-#### Финансовый модуль
-
-- Хранение истории деплзитов и выводов
-- Адресная книга
-- Проверка корретности вайтлистов на аккаунтах
-- Балансировка средств между аккаунтами всех бирж
-- История портфеля
-- Автоматические рекомендации по распределению портфеля
-
-#### Торговый модуль
-
-- Размещение ордеров
-- История торгов
-- Анализ размера ранков и их динамики
-- Автоматическй анализ предложений по депозиту или изменению комиссий
-
-#### Консольный клиент
-
-
-#### Модуль самодиагностики компонентов
-
-- 

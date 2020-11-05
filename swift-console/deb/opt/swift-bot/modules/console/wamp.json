@@ -33,7 +33,7 @@
   },
   "module": {
     "name": "templaterole",
-    "call": ["swift.arbitrage.info","swift.api.balances.*","swift.api.trade.active.*","swift.api.trade.history.*","swift.pamm.node","swift.pamm.api.user","swift.pamm.api.invest","swift.address.generate","swift.address.balance","swift.address.withdraw","swift.arbitrage.info","swift.api.markets.*","swift.api.status.*","swift.api.currencies.*","swift.api.orderbooks.*","swift.api.order.place.*","swift.api.order.cancel.*","swift.api.order.get.*","swift.api.withdraw.history.*","swift.api.withdraw.create.*","swift.api.withdraw.inner.*","swift.api.deposits.history.*","swift.api.trade.*"],
+    "call": ["swift.arbitrage.volume","swift.host.status","swift.arbitrage.status","swift.arbitrage.info","swift.api.balances.*","swift.api.trade.active.*","swift.api.trade.history.*","swift.pamm.node","swift.pamm.api.user","swift.pamm.api.invest","swift.address.generate","swift.address.balance","swift.address.withdraw","swift.arbitrage.info","swift.api.markets.*","swift.api.status.*","swift.api.currencies.*","swift.api.orderbooks.*","swift.api.order.place.*","swift.api.order.cancel.*","swift.api.order.get.*","swift.api.withdraw.history.*","swift.api.withdraw.create.*","swift.api.withdraw.inner.*","swift.api.deposits.history.*","swift.api.trade.*"],
     "register": [],
     "publish": [],
     "subscribe": ["swift.api.asyncresults"]

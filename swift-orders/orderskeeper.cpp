@@ -32,7 +32,6 @@ OrdersKeeper::OrdersKeeper(QObject *parent) : QObject(parent), is_pause(false),
     if ( active_interval > 0 ) {
         update_active_timer->setInterval( active_interval );
         QObject::connect( update_active_timer, &QTimer::timeout, this, &OrdersKeeper::requestActive );
-
     }
 
 }
@@ -56,7 +55,7 @@ OrdersKeeper::~OrdersKeeper()
 
 void OrdersKeeper::onActiveEvent(const QJsonObject &j_data)
 {
-    const QJsonArray items( j_data.value("orders").toArray() );
+    const QJsonArray items( j_data.value("items").toArray() );
     if ( !items.isEmpty() ) {
         for( auto it = items.begin(); it != items.end(); it++ ) {
             const quint64 locuid( it->toObject().value("local_id").toString().toUInt() );
@@ -83,7 +82,7 @@ void OrdersKeeper::onActiveEvent(const QJsonObject &j_data)
 
 void OrdersKeeper::onHistoryEvent(const QJsonObject &j_data)
 {
-    const QJsonArray items( j_data.value("orders").toArray() );
+    const QJsonArray items( j_data.value("items").toArray() );
 
     if ( !items.isEmpty() ) {
         for( auto it = items.begin(); it != items.end(); it++ ) {
@@ -135,18 +134,18 @@ void OrdersKeeper::requestHistory() {
         for( auto it = _active_clients.begin(); it != _active_clients.end(); it++ ) {
             SwiftBot::Exchange exchange( *it );
             if ( exchange.isRequstsSeparated() ) {
-                exchange.forEachMarket([&exchange](SwiftBot::Market m){
+                exchange.forEachMarket([=](SwiftBot::Market m){
                     QJsonObject j_params({{"market_id",QString::number( m.id ) }});
                     const QString str( QJsonDocument(j_params).toJson( QJsonDocument::Compact ) );
                     const QString methodpath( "swift.api.trade.history."+exchange.name );
-                    quint64 async_uid = SwiftBot::method( methodpath, { str } ).toULongLong();
+                    quint64 async_uid = session->call( methodpath, { str } ).toULongLong();
                     if ( async_uid <= 10 ) {
                         qWarning() << "Error requesting orders history" << j_params << methodpath;
                     }
                 });
             } else {
                 const QString methodpath( "swift.api.trade.history."+exchange.name );
-                quint64 async_uid = SwiftBot::method( methodpath, {}).toULongLong();
+                quint64 async_uid = session->call( methodpath, {}).toULongLong();
                 if ( async_uid <= 10 ) {
                     qWarning() << "Error requesting orders history" << methodpath;
                 }
@@ -165,18 +164,18 @@ void OrdersKeeper::requestActive() {
         for( auto it = _active_clients.begin(); it != _active_clients.end(); it++ ) {
             SwiftBot::Exchange exchange( *it );
             if ( exchange.isRequstsSeparated() ) {
-                exchange.forEachMarket([&exchange](SwiftBot::Market m){
+                exchange.forEachMarket([=](SwiftBot::Market m){
                     QJsonObject j_params({{"market_id",QString::number( m.id ) }});
                     const QString str( QJsonDocument(j_params).toJson( QJsonDocument::Compact ) );
                     const QString methodpath( "swift.api.trade.active."+exchange.name );
-                    quint64 async_uid = SwiftBot::method( methodpath, { str } ).toULongLong();
+                    quint64 async_uid = session->call( methodpath, {str} ).toULongLong();
                     if ( async_uid <= 10 ) {
                         qWarning() << "Error requesting active orders" << async_uid << j_params << methodpath;
                     }
                 });
             } else {
                 const QString methodpath( "swift.api.trade.active."+exchange.name );
-                quint64 async_uid = SwiftBot::method( methodpath, {}).toULongLong();
+                quint64 async_uid = session->call( methodpath, {}).toULongLong();
                 if ( async_uid <= 10 ) {
                     qWarning() << "Error requesting active orders" << async_uid << methodpath;
                 }
@@ -243,14 +242,15 @@ void OrdersKeeper::getConnectedExchanges()
 
             last_check_clients = QDateTime::currentSecsSinceEpoch();
 
-            const QString _targetsstr = SwiftBot::method( RPC_EXCHANGES_LIST_COMMAND, {} ).toString();
+            const QString _targetsstr = session->call( RPC_EXCHANGES_LIST_COMMAND ).toString();
             const QStringList exchsList( _targetsstr.split(",") );
 
             _active_clients.clear();
 
             if ( !exchsList.isEmpty() ) {
                 for( auto it = exchsList.begin(); it!= exchsList.end(); it++ ) {
-                    QVariant res = session->call("swift.api.status."+*it);
+                    const QString path_( "swift.api.status."+*it );
+                    QVariant res = session->call( path_ );
                     const QString res_str( res.toString() );
                     if ( !res_str.isEmpty() ) {
                         const QJsonObject j_api_state( QJsonDocument::fromJson( res_str.toUtf8() ).object() );

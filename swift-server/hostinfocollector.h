@@ -20,14 +20,21 @@ class HostInfoCollector : public QObject
 public:
     explicit HostInfoCollector(QObject *parent = nullptr);
 
-
-
-
+    double getLastCpu() const {
+        return last_cpu_usage;
+    }
+    double getLastRam() const {
+        return last_ram_usage;
+    }
+    unsigned long long lastTotalUser, lastTotalUserLow, lastTotalSys, lastTotalIdle;
 signals:
 public slots:
     void collectInfo();
 
     double getCurrentValue();
+private:
+    double last_cpu_usage;
+    double last_ram_usage;
 
 };
 
