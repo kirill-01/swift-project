@@ -1,8 +1,8 @@
 CONFIG(debug, debug|release) {
     message(DEBUG BUILD  $$TARGET)
     INCLUDEPATH += $$PWD/swift-corelib
-    DEPENDPATH += $$PWD/build-corelib
-    LIBS += -L$$PWD/build-corelib/  -lswift-corelib
+    DEPENDPATH += $$PWD/../build-swift-project/swift-corelib
+    LIBS += -L$$PWD/../build-swift-project/swift-corelib/  -lswift-corelib
 }
 
 CONFIG(release, debug|release) {

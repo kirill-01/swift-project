@@ -1,0 +1,6 @@
+name=swift-gui
+description=GUI
+version=1.0.0
+binary=/usr/bin/swiftbot.sh
+is_enabled=false
+is_exchange=false

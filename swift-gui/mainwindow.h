@@ -10,6 +10,7 @@
 #include <QProcess>
 #include <QDir>
 #include <QTimer>
+#include <swiftbot.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -38,5 +39,6 @@ private:
     QProcess * process;
     Ui::MainWindow *ui;
     QMap<quint32, QSharedPointer<QSettings>> _settings_files;
+    Wamp::Session * session;
 };
 #endif // MAINWINDOW_H

@@ -1,8 +1,10 @@
 #ifndef MODULE_DEFINITIONS_H
 #define MODULE_DEFINITIONS_H
 
+#ifndef SWIFT_MODULE_NAME
 #define SWIFT_MODULE_NAME "swift-gui"
 #define SWIFT_MODULE_VERSION "1.0.0"
 #define SWIFT_MODULE_DESCRIPTION "SwiftBot GUI"
+#endif
 
 #endif // MODULE_DEFINITIONS_H

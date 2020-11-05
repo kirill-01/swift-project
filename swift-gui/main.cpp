@@ -8,12 +8,10 @@
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
-    QApplication::setApplicationName( SWIFT_MODULE_NAME );
+    QApplication::setApplicationName( "swift-gui" );
     QApplication::setApplicationVersion( SWIFT_MODULE_VERSION );
 
-    SwiftBot::initWampClient();
     MainWindow window;
-
     QStringList _modules_files;
     QDirIterator it("/opt/swift-bot/modules", QStringList() << "*.ini", QDir::Files, QDirIterator::Subdirectories);
     while (it.hasNext()) {
@@ -42,7 +40,6 @@ int main(int argc, char *argv[]) {
     window.show();
 
 
-
 #ifdef SWIFT_SINGLE_INSTANCE
     // Allow only one instance per host
     QLockFile lockFile(QDir::temp().absoluteFilePath( QString(QCoreApplication::applicationName()+".lock") ) );
@@ -52,7 +49,6 @@ int main(int argc, char *argv[]) {
     }
 
 #endif
-    SwiftBot::addLog( "Starting module : " + QString( SWIFT_MODULE_NAME ) + QString( SWIFT_MODULE_VERSION ) );
 
     // App commandline options
     QCommandLineParser parser;
@@ -72,19 +68,7 @@ int main(int argc, char *argv[]) {
         SwiftBot::addError( "MySQL database error: " +  db.lastError().text() );
         return 1;
     }
-#ifdef SWIFT_MODULE_INITIAL_SQL
-    if ( SwiftBot::hasSqlMigrationsDir() ) {
-        SwiftBot::addLog( "Trying to apply SQL migrations" );
-        SwiftBot::applySqlMigrations();
-    }
 #endif
-#endif
-
-    QObject::connect( wamp_client.data(), &WampClient::clientdiconnected, [&a](){
-        SwiftBot::addLog( "WAMP client disconnected. Exiting." );
-        a.quit();
-    });
-    wamp_client->startClient();
 
     return a.exec();
 }

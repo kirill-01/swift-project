@@ -14,11 +14,17 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    , ui(new Ui::MainWindow),session(nullptr)
 {
     ui->setupUi(this);
+
+
     process = new QProcess( this );
+    process->setProcessChannelMode( QProcess::MergedChannels );
     process->setProgram("/usr/bin/swift-server");
+    connect( process, &QProcess::readyReadStandardOutput, [=](){
+        ui->textBrowser->append( process->readAll().constData());
+    });
     connect( process, &QProcess::stateChanged, [=](QProcess::ProcessState state){
         if ( state == QProcess::ProcessState::NotRunning ) {
             QPalette pal = ui->pushButton->palette();
@@ -26,10 +32,18 @@ MainWindow::MainWindow(QWidget *parent)
             ui->pushButton->setAutoFillBackground(true);
             ui->pushButton->setPalette(pal);
             ui->pushButton->update();
-
             ui->pushButton->setText("Start server");
+        } else if ( state == QProcess::Running ) {
+            QTimer::singleShot( 10000, [=](){
+                SwiftBot::initWampClient();
+                wamp_client->onClientConnected([=](Wamp::Session * sess) {
+                    session = sess;
+                });
+                QTimer::singleShot( 1000, wamp_client.data(), &WampClient::startClient );
+            });
         }
     });
+
 }
 
 MainWindow::~MainWindow()
@@ -81,17 +95,6 @@ void MainWindow::setModules(const QJsonArray &modules) {
     });
 
     QTimer::singleShot( 7500, this, &MainWindow::updateModulesStatus );
-
-    SwiftBot::subscribe( FEED_LOGS, [=]( const QVariantList& v, const QVariantMap&m) {
-        Q_UNUSED( m );
-        ui->textBrowser->append( v.at(0).toString() );
-    });
-
-    SwiftBot::subscribe( FEED_ERRORS, [=]( const QVariantList& v, const QVariantMap&m) {
-        Q_UNUSED( m );
-        ui->textBrowser->append( v.at(0).toString() );
-    });
-
 }
 
 void MainWindow::updateModulesStatus() {
@@ -99,6 +102,13 @@ void MainWindow::updateModulesStatus() {
     for( int i = 0; i < ui->tableWidget->rowCount(); i++ ) {
         const QString name( ui->tableWidget->item( i, 0 )->text() );
         ui->tableWidget->item(i, 0 )->setBackground( isModuleRunning(  name ) ? Qt::green : Qt::red );
+    }
+    if (session != nullptr && session->isJoined() ) {
+        QVariantList hostinfo = session->call("swift.host.status", {}).toList();
+        if ( !hostinfo.isEmpty() ) {
+            ui->cpu_usage->setValue( quint32( hostinfo.at(0).toDouble() ));
+            ui->mem_usage->setValue( quint32( hostinfo.at(1).toDouble() ));
+        }
     }
     QTimer::singleShot( 7500, this, &MainWindow::updateModulesStatus );
 }
@@ -137,8 +147,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
                  this,
                  "Server is still runing","If you close this window, server process will be terminated too. Sure?")
          ) {
-            QProcess::startDetached("killall -9 swift-*");
-            QProcess::startDetached("killall -9 crossbar-controller");
+
             event->accept();
         } else {
             event->ignore();
