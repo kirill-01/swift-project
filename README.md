@@ -1,21 +1,25 @@
-# swift-bot is not like everyone else :)
+# Extremely fast and scalable standalone cryptocurrency trading platform
 
-With the help of **SwiftBot, about a dozen personal digital asset management systems have already been built and are successfully functioning**.
-Each of them is unique, has its own purpose and specialization.
-You can build **an automatic currency exchanger**, a crypto wallet distributed between exchanges, **a trading system with your own algorithms**, or simply integrate the most accurate information about rates into your business processes.
+A compleate sulution to access market data, implement trading strategies or anything else, what you need.
 
-Manage the accounts of your cryptocurrency exchanges through a single unified interface that is completely under your control.
+It is intended to be used by coders, developers, technically-skilled traders, data-scientists and financial analysts for building trading algorithms.
 
-* Creation of a trading bot for your needs in the shortest possible time thanks to the microservices pattern.
-* Lightning fast execution of requests to exchanges! Calculation of thousands of order combinations and their successful placement in hundredths of a second.
-* Asynchronous multithreaded architecture allows you to work with multiple exchanges simultaneously
+## Safety first
 
-## Safety
+- Manage access rights for each module.
+- Use safe start option, to generate new auth credentials for modules before server start.
+- No external code depencies.
 
-- Each module of the system has only those rights that are indicated to it
-- Each time the system is started, all internal passwords of the modules are changed to new ones
-- You can independently change the access rights settings for each module
-- You can disable withdrawal methods for any of the exchanges
+## Speed really matters
+
+- Async API clients without response awaiters
+- Arbitrage variants calculation by orderbooks for 2 markets on 12 exchanges takes about 125 msecs! ( Including all fees calculations )
+- Each module ( API client, for example ) running in their own process
+
+## Fault safe
+
+- Microservices architecture. Start, stop, restart any module at any time
+- Change any config options at runtime
 
 ### [Api reference](docs/api.md)
 
