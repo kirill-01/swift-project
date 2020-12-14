@@ -148,12 +148,7 @@
 static QSqlDatabase db;
 #endif
 
-#ifdef SWIFT_USE_WAMP_AUTH
-static QSharedPointer<WampAuth> wamp_client;
-#else
 static QSharedPointer<WampClient> wamp_client = nullptr;
-#endif
-
 
 namespace SwiftBot {
 
@@ -421,7 +416,6 @@ static QSettings * appSettings() {
 
 
 static QSettings * moduleSettings( const QString& m   ) {
-
     static QMap<QString,QSharedPointer<QSettings>> _inst;
     if ( !_inst[m].isNull() ) {
         return _inst[m].data();
@@ -445,7 +439,7 @@ static QSettings * moduleSettings( const QString& m   ) {
                 _inst[m]->setValue( *it, dist_settings.value( *it ) );
             }
         }
-        SwiftBot::addLog("Removing distr config");
+        SwiftBot::addLog("Removing distr config for module : " + m );
         QFile::remove( filepath_dist );
     }
     return _inst[m].data();

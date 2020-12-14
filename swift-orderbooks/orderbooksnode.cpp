@@ -639,7 +639,7 @@ void OrderbooksNode::initHuobiInterval() {
     });
     connect( _request_interval_timer, &QTimer::timeout, [&](){
         for ( auto it = _target_pairs.begin(); it != _target_pairs.end(); it++ ) {
-            QUrl url("https://www.huobi.com.ru/api/market/depth?symbol="+it->first.toUtf8()+"&type=step0" );
+            QUrl url("https://api.huobi.pro/market/depth?symbol="+it->first.toUtf8()+"&type=step0" );
             QNetworkRequest request( url );
             QNetworkReply * reply = netmanager->get( request );
             reply->setProperty("pair_id", it->second );

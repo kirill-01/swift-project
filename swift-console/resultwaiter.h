@@ -2,7 +2,7 @@
 #define RESULTWAITER_H
 
 #include <QObject>
-#include "../swift-corelib/wampclient.h"
+#include <wampclient.h>
 #include "../swift-corelib/swiftcore.h"
 #include <QJsonDocument>
 #include <QJsonObject>

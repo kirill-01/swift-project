@@ -473,10 +473,6 @@ void AssetsStorage::loadAssets() {
                 data->_market_arbitrage_pair[ pair_id ] = arbitrage_pair;
             }
             data->_market_name[ pair_id ] = name;
-
-
-
-
         }
     }
     if ( q.exec("SELECT * FROM currencies c LEFT JOIN exchanges e ON c.exchange_id=e.id WHERE c.is_enabled=1") ) {

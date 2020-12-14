@@ -1,7 +1,7 @@
 #include <QCoreApplication>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
-#include "../swift-corelib/wampclient.h"
+#include <wampclient.h>
 #include <QSettings>
 #include <QDebug>
 #include <QList>

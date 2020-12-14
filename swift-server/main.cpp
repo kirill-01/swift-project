@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
     QCoreApplication::setApplicationName("swift-server");
-    QCoreApplication::setApplicationVersion("1.0.379");
+    QCoreApplication::setApplicationVersion("1.0.392");
 
     // Allow only one instance per host
     QLockFile lockFile( QDir::temp().absoluteFilePath( QString(QCoreApplication::applicationName()+".lock") ) );
@@ -94,29 +94,31 @@ int main(int argc, char *argv[])
     if ( !db.open() ) {
         qWarning() << "MySQL database error: ";
         qWarning() << db.lastError().text();
-        return 1;
+        qApp->exit(1);
     }
 
     applySqlMigrations();
 
     if ( SwiftBot::appParam( SETTINGS_NAME_SECURE_START, true ).toBool() ) {
+        qInfo() << "Secured start processing";
         QProcess proc;
         proc.setProgram("/opt/swift-bot/bin/swift-wampcfg" );
         proc.start();
-        if ( !proc.waitForFinished() ) {
+        if ( !proc.waitForFinished(60000) ) {
             qWarning() << "Error while recreating security rules!";
-            return 1;
+            qApp->exit(1);
         }
+        qInfo() << "WAMP configs is updated";
     }
 
     static QProcess * crossbar_process = new QProcess();
 
-    if ( !QFile::exists( SwiftBot::appParam("crossbar_binary", "/home/kkuznetsov/.local/bin/crossbar").toString() )) {
-        qWarning() << "Crossbar.io binary is not found at path :("+SwiftBot::appParam("crossbar_binary", "/home/kkuznetsov/.local/bin/crossbar").toString()+").\n\nPLease install it or change settings value";
-        return 1;
+    if ( !QFile::exists( SwiftBot::appParam("crossbar_binary", "/usr/local/bin/crossbar").toString() )) {
+        qWarning() << "Crossbar.io binary is not found at path :("+SwiftBot::appParam("crossbar_binary", "/usr/local/bin/crossbar").toString()+").\n\nPLease install it or change settings value";
+        qApp->exit(1);
     }
 
-    crossbar_process->setProgram( SwiftBot::appParam("crossbar_binary", "/home/kkuznetsov/.local/bin/crossbar").toString() );
+    crossbar_process->setProgram( SwiftBot::appParam("crossbar_binary", "/usr/local/bin/crossbar").toString() );
     crossbar_process->setArguments({"start","--cbdir=/opt/swift-bot/crossbar","--logtofile","--logdir=/opt/swift-bot/crossbar"});
 
     QObject::connect( crossbar_process, &QProcess::stateChanged, [&]( QProcess::ProcessState state ) {

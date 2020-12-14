@@ -3,7 +3,7 @@
 #include "swiftapiparserbittrex.h"
 #include <QCommandLineOption>
 #include <QCommandLineParser>
-#include "../swift-corelib/wampclient.h"
+#include <wampclient.h>
 #include <QLockFile>
 #include <QDir>
 #include <QThread>
@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
     QCoreApplication::setApplicationName("swift-bittrex");
-    QCoreApplication::setApplicationVersion("1.0.379");
+    QCoreApplication::setApplicationVersion("1.0.392");
 
     // Allow only one instance per host
     QLockFile lockFile(QDir::temp().absoluteFilePath( QString(QCoreApplication::applicationName()+".lock") ) );

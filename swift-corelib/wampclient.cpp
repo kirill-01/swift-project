@@ -197,16 +197,21 @@ void WampClient::onConnected() {
         Q_UNUSED(realm)
         Q_UNUSED(authid)
         Q_UNUSED(credentials)
-        session->authenticate( settings->value( SETTINGS_NAME_WAMP_PASS ).toString() );
+        const QString uauth( settings->value( SETTINGS_NAME_WAMP_PASS ).toString() );
+        if (debug ) {
+            qWarning() << "Using auth credentials: " << uauth;
+        }
+        session->authenticate( uauth );
     });
 
     // При начале сессии
     connect(session, &Wamp::Session::started, [&]() {
+        const QString authid( settings->value( SETTINGS_NAME_WAMP_USER ).toString() );
         if (debug ) {
-            qWarning() << "Session started on realm" << p_realmname;
+            qWarning() << "Session started on realm" << p_realmname << "with authid: "<<authid;
         }
 
-        session->join(p_realmname, settings->value( SETTINGS_NAME_WAMP_USER ).toString(), QStringList({"ticket"}));
+        session->join(p_realmname, authid, QStringList({"ticket"}));
     });
 
     // При завершении сессии инциируем отключение

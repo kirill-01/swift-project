@@ -2,7 +2,7 @@ QT -= gui
 QT += network websockets sql
 
 TEMPLATE = lib
-VERSION = 1.0.379
+VERSION = 1.0.392
 DEFINES += SWIFTCORELIB_LIBRARY
 
 CONFIG += c++11

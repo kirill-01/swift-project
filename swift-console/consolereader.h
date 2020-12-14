@@ -2,7 +2,7 @@
 #define CONSOLEREADER_H
 
 #include <QThread>
-#include "../swift-corelib/wampclient.h"
+#include <wampclient.h>
 
 class ConsoleReader : public QThread
 {

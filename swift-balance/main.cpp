@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
     QCoreApplication::setApplicationName("swift-balance");
-    QCoreApplication::setApplicationVersion("1.0.379");
+    QCoreApplication::setApplicationVersion("1.0.392");
 
     // Allow only one instance per host
     QLockFile lockFile(QDir::temp().absoluteFilePath( QString(QCoreApplication::applicationName()+".lock") ) );
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
     QTimer * watchdog = new QTimer();
     watchdog->setInterval( 30000 );
     QObject::connect( watchdog, &QTimer::timeout, [](){
-        wamp_client->publish( FEED_WATCHDOG, { QCoreApplication::applicationName().replace("swift-","")});
+        wamp_client->publish( FEED_WATCHDOG, {"balance"});
     });
     watchdog->start();
 

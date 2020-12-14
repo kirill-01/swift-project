@@ -2,6 +2,8 @@
 
 echo "Building packages..."
 rm -rf *.deb > /dev/null
+rm -rf packages/* > /dev/null
+
 find . -type d -name 'bin' -exec echo rm -rf {}/* \; > /dev/null
 
 str=$(cat VERSION)

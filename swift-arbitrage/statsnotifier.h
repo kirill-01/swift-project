@@ -13,7 +13,7 @@
 #include <swiftcore.h>
 #include <QTimer>
 
-#include "../swift-corelib/wampclient.h"
+#include <wampclient.h>
 
 #include "../swift-corelib/assetsstorage.h"
 

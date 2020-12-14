@@ -2,7 +2,7 @@
 #define MARKETSFILTER_H
 
 
-#include "../swift-corelib/wampclient.h"
+#include <wampclient.h>
 #include <swiftcore.h>
 #include "../swift-corelib/assetsstorage.h"
 

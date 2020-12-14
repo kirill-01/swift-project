@@ -5,7 +5,7 @@
 
 
 #include "../swift-corelib/swiftcore.h"
-#include "../swift-corelib/wampclient.h"
+#include <wampclient.h>
 
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>

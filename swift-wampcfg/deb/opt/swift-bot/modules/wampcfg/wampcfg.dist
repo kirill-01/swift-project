@@ -1,7 +1,7 @@
 name=wampcfg
 description=Build, manage crossbar config rules
-version=1.0.75
+version=1.0
 binary=/opt/swift-bot/bin/swift-wampcfg
-is_enabled=true
+is_enabled=false
 is_exchange=false
 

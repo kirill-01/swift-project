@@ -143,7 +143,18 @@ void BalancesKeeper::calculateRequirements() {
             const QString cname( SwiftCore::getAssets()->getCoinName( SwiftCore::getAssets()->getCurrencyCoin( curid ) ) );
 
             if ( required > 0 ) {
-                msg+="<u>"+ename+"</u>: "+QString::number( required,'f',2)+" "+cname+"\n";
+                msg+="<u>"+ename+"</u>: "+QString::number( required,'f',4)+" "+cname+"\n";
+            }
+        }
+        msg += "\n<u><b>Total balances:</b></u>\n\n";
+        const QMap<quint32,double> _ab( data->_total );
+        for( auto it = _ab.begin(); it != _ab.end(); it++ ) {
+            const quint32 curid( it.key() );
+            const double available( it.value() );
+            const QString ename( SwiftCore::getAssets()->getCurrencyExchangeName( curid ) );
+            const QString cname( SwiftCore::getAssets()->getCoinName( SwiftCore::getAssets()->getCurrencyCoin( curid ) ) );
+            if ( available > 0 ) {
+                msg+="<u>"+ename+"</u>: "+QString::number( available,'f',6)+" "+cname+"\n";
             }
         }
         session->call( RCP_TELEGRAM_NOTIFY, {msg} );
@@ -152,7 +163,8 @@ void BalancesKeeper::calculateRequirements() {
 
 void BalancesKeeper::onUpdateEvent(const QJsonObject &j_data)
 {
-    const QJsonArray items( j_data.value("balances").toArray() );
+    qInfo() << "Balances" << j_data;
+    const QJsonArray items( j_data.value("items").toArray() );
     if ( !items.isEmpty() ) {
         for( auto it = items.begin(); it != items.end(); it++ ) {
             SwiftBot::Balance bal = it->toObject();
@@ -166,7 +178,8 @@ void BalancesKeeper::onUpdateEvent(const QJsonObject &j_data)
 
 void BalancesKeeper::onDepositsEvent(const QJsonObject &j_data)
 {
-    const QJsonArray items( j_data.value("deposits").toArray() );
+    qInfo() << "Deposits" << j_data;
+    const QJsonArray items( j_data.value("items").toArray() );
     if ( !items.isEmpty() ) {
         for( auto it = items.begin(); it != items.end(); it++ ) {
             SwiftBot::Deposit dep = it->toObject();
@@ -179,7 +192,8 @@ void BalancesKeeper::onDepositsEvent(const QJsonObject &j_data)
 
 void BalancesKeeper::onWithdrawsEvent(const QJsonObject &j_data)
 {
-    const QJsonArray items( j_data.value("withdraws").toArray() );
+    qInfo() << "Withdraws" << j_data;
+    const QJsonArray items( j_data.value("items").toArray() );
     if ( !items.isEmpty() ) {
         for( auto it = items.begin(); it != items.end(); it++ ) {
              SwiftBot::Withdraw record = it->toObject();
@@ -190,7 +204,9 @@ void BalancesKeeper::onWithdrawsEvent(const QJsonObject &j_data)
 }
 
 void BalancesKeeper::requestBals() {
+    qInfo() << "Requesting updated balances";
     if ( !_active_clients.isEmpty() ) {
+
         for( auto it = _active_clients.begin(); it != _active_clients.end(); it++ ) {
             if ( session != nullptr && session->isJoined() ) {
                 QVariant resp = session->call("swift.api.balances."+*it);
@@ -200,6 +216,9 @@ void BalancesKeeper::requestBals() {
                 }
             }
         }
+    } else {
+        qWarning() << "Updating clients list";
+        _active_clients = getConnectedExchanges();
     }
 }
 
@@ -299,6 +318,7 @@ void BalancesKeeper::onWampSession(Wamp::Session *sess) {
     });
 
     QTimer::singleShot( 15000, this, &BalancesKeeper::calculateRequirements );
+    QTimer::singleShot( 10000, this, &BalancesKeeper::checkPauseCancel );
     update_deposits_timer->start();
     update_bals_timer->start();
     update_withdraws_timer->start();
@@ -355,13 +375,16 @@ void BalancesKeeper::pauseModule() {
 
 QStringList BalancesKeeper::getConnectedExchanges() {
     QMutexLocker lock( &m );
+    qWarning() << "Updating active exchanges list";
     if ( session != nullptr && session->isJoined() ) {
         const QString _targetsstr = session->call( RPC_EXCHANGES_LIST_COMMAND ).toString();
         const QStringList exchsList( _targetsstr.split(",") );
+        qWarning() << "Updating active exchanges list : " << _targetsstr;
         if ( !exchsList.isEmpty() ) {
             for( auto it = exchsList.begin(); it!= exchsList.end(); it++ ) {
                 QVariant res = session->call("swift.api.status."+*it );
                 const QString res_str( res.toString() );
+                qWarning() << res_str;
                 if ( !res_str.isEmpty() ) {
                     const QJsonObject j_api_state( QJsonDocument::fromJson( res_str.toUtf8() ).object() );
                     if ( j_api_state.value("public_methods").toBool( false ) &&

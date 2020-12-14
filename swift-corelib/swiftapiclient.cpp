@@ -547,6 +547,7 @@ void SwiftApiClient::onApiResponseParsed(const quint64 &uuid, const QJsonObject 
             || method == SwiftApiClient::AsyncMethods::WithdrawInner
             || method == SwiftApiClient::AsyncMethods::WithdrawCreate
             || method == SwiftApiClient::AsyncMethods::WithdrawHistory
+            || method == SwiftApiClient::AsyncMethods::GetBalances
             ) {
             parseBalancesGroup( result );
 
