@@ -53,6 +53,7 @@ private:
     QList<quint64> _results;
     quint64 results_per_sec;
     quint64 midrate;
+    bool clickhouse_enabled;
 
 };
 

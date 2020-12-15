@@ -112,6 +112,18 @@ SwiftBot::Coin SwiftBot::Currency::coin() {
     return Coin( coin_id );
 }
 
+double SwiftBot::Currency::totalUsd() {
+    static double _r = 0;
+    static quint64 last_update = 0;
+    if ( QDateTime::currentSecsSinceEpoch() - last_update > 10 ) {
+        if ( wamp_client != nullptr && wamp_client && wamp_client->isConnected() ) {
+            _r = SwiftBot::method( RPC_BALANCE_GET, {id} ).toDouble();
+            last_update = QDateTime::currentSecsSinceEpoch();
+        }
+    }
+    return _r;
+}
+
 double SwiftBot::Currency::balance() {
     static double _r = 0;
     static quint64 last_update = 0;

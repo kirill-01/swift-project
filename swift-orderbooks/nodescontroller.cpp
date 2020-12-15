@@ -3,18 +3,20 @@
 #include <QSqlError>
 #include <swiftcore.h>
 
-NodesController::NodesController(QObject *parent) : QObject(parent)
+NodesController::NodesController(QObject *parent) : QObject(parent), clickhouse_enabled( SwiftBot::appParam( SETTINGS_NAME_CLICKHOUSE_ENABLED, false ).toBool() )
 {
-  /*  _ch = QSqlDatabase::addDatabase("QMYSQL", "clickhouse-def");
-    _ch.setHostName( SwiftLib::getSettings()->value(SETTINGS_MYSQL_HOST ).toString() );
-    _ch.setPort( 9004 );
 
-    _ch.setUserName( "default" );
-    _ch.setPassword( "clickhouse" );
-    _ch.setDatabaseName( "default" );
-    if ( !_ch.open() ) {
-        qWarning() << _ch.lastError().text();
-    }*/
+    if ( clickhouse_enabled ) {
+        _ch = QSqlDatabase::addDatabase("QMYSQL", "clickhouse-def");
+        _ch.setHostName( SwiftBot::appParam( SETTINGS_NAME_CLICKHOUSE_HOST, "localhost" ).toString() );
+        _ch.setPort(SwiftBot::appParam( SETTINGS_NAME_CLICKHOUSE_PORT, 9004 ).toUInt() );
+        _ch.setUserName(  SwiftBot::appParam( SETTINGS_NAME_CLICKHOUSE_USER, "default" ).toString()  );
+        _ch.setPassword(  SwiftBot::appParam( SETTINGS_NAME_CLICKHOUSE_PASSWORD, "clickhouse" ).toString()  );
+        _ch.setDatabaseName( SwiftBot::appParam( SETTINGS_NAME_CLICKHOUSE_DBNAME, "default" ).toString()  );
+        if ( !_ch.open() ) {
+            qWarning() << _ch.lastError().text();
+        }
+    }
 }
 
 void NodesController::sendRates() {
@@ -220,31 +222,57 @@ void NodesController::sendStats() {
     emit summaryStats( "swiftbot.orderbooks.status", stat );
 }
 
-void NodesController::sendOrderbooks() {
+void NodesController::sendOrderbooks() {       
     QElapsedTimer timer;
-       timer.start();
-    QSqlQuery q( _ch );
-    QJsonArray accresa;
-    QJsonArray accresb;
 
+    timer.start();
     const QList<QJsonArray> _allasks( _asks.values() );
     const QList<QJsonArray> _allbids( _bids.values() );
     if ( _allasks.isEmpty() && _allbids.isEmpty() ) {
         return;
     }
+    QJsonArray accresa;
+    QJsonArray accresb;
 
+    if ( clickhouse_enabled ) {
+        QSqlQuery q( _ch );
+        QString _q_asks("INSERT INTO `asks` (d,ts,pair,rate,amount) VALUES ");
+        QStringList _asksparts;
+        QString _q_bids("INSERT INTO `bids` (d,ts,pair,rate,amount) VALUES ");
+        QStringList _bidsparts;
 
-    for( auto it = _allasks.begin(); it != _allasks.end(); it++ ) {
-
-        accresa.push_back( *it );
-    }
-    for( auto it = _allbids.begin(); it != _allbids.end(); it++ ) {
-
-        accresb.push_back( *it );
-    }
-
-    if ( timer.elapsed() > 100 ) {
-        qWarning() << "The slow operation took" << timer.elapsed() << "milliseconds";
+        for( auto it = _allasks.begin(); it != _allasks.end(); it++ ) {
+            QJsonArray _i( *it );
+            for( auto rit = _i.begin(); rit != _i.end(); rit++ ) {
+                _asksparts.push_back("(toDate(now()),now(),"+QString::number( rit->toArray().at(0).toString().toUInt())+","+QString::number( rit->toArray().at(1).toString().toDouble(),'f',8)+","+QString::number( rit->toArray().at(2).toString().toDouble(),'f',8)+")");
+            }
+            accresa.push_back( *it );
+        }
+        for( auto it = _allbids.begin(); it != _allbids.end(); it++ ) {
+            QJsonArray _i( *it );
+            for( auto rit = _i.begin(); rit != _i.end(); rit++ ) {
+                _bidsparts.push_back("(toDate(now()),now(),"+QString::number( rit->toArray().at(0).toString().toUInt())+","+QString::number( rit->toArray().at(1).toString().toDouble(),'f',8)+","+QString::number( rit->toArray().at(2).toString().toDouble(),'f',8)+")");
+            }
+            accresb.push_back( *it );
+        }
+        _q_asks += _asksparts.join(",");
+        _q_bids += _bidsparts.join(",");
+        if ( !q.exec( _q_asks ) ) {
+            qWarning() << q.lastError().text();
+        }
+        if ( !q.exec( _q_bids ) ) {
+            qWarning() << q.lastError().text();
+        }
+        if ( timer.elapsed() > 100 ) {
+            qWarning() << "The slow operation took" << timer.elapsed() << "milliseconds";
+        }
+    } else {
+        for( auto it = _allasks.begin(); it != _allasks.end(); it++ ) {
+            accresa.push_back( *it );
+        }
+        for( auto it = _allbids.begin(); it != _allbids.end(); it++ ) {
+            accresb.push_back( *it );
+        }
     }
     QJsonObject j_res;
     j_res["asks"] = accresa;

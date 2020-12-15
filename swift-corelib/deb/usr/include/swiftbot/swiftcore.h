@@ -294,6 +294,7 @@ class Exchange;
 
         Coin coin();
 
+        double totalUsd();
         double balance();
 
         Currency( const quint32& currency_id );

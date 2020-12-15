@@ -107,6 +107,13 @@
 #define SETTINGS_NAME_MYSQL_PASSWORD "mysql_password"
 #define SETTINGS_NAME_MYSQL_DBNAME "mysql_db"
 
+#define SETTINGS_NAME_CLICKHOUSE_ENABLED "clickhouse_enabled"
+#define SETTINGS_NAME_CLICKHOUSE_HOST "clickhouse_host"
+#define SETTINGS_NAME_CLICKHOUSE_PORT "clickhouse_port"
+#define SETTINGS_NAME_CLICKHOUSE_USER "clickhouse_user"
+#define SETTINGS_NAME_CLICKHOUSE_PASSWORD "clickhouse_password"
+#define SETTINGS_NAME_CLICKHOUSE_DBNAME "clickhouse_db"
+
 #define SETTINGS_NAME_ORDERBOOKS_VALID_TIMER "orderbooks_valid_time"
 #define SETTINGS_NAME_ORDERBOOKS_ADOPT_INTERVAL "adopt_orderbooks_interval"
 #define SETTINGS_NAME_SECURE_START "startup_secured"

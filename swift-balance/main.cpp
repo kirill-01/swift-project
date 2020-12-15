@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
     QCoreApplication::setApplicationName("swift-balance");
-    QCoreApplication::setApplicationVersion("1.0.394");
+    QCoreApplication::setApplicationVersion("1.0.395");
 
     // Allow only one instance per host
     QLockFile lockFile(QDir::temp().absoluteFilePath( QString(QCoreApplication::applicationName()+".lock") ) );
