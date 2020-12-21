@@ -41,6 +41,7 @@ public:
     quint32 getExchangeId( const QString& exchange_name ) const;
     quint32 getCurrencyExchangeId(const quint32& currency_id ) const;
     QString getCurrencyExchangeName(const quint32& currency_id ) const;
+    QString getCurrencyAddress( const quint32& currency_id ) const;
     QString getCurrencyName( const quint32& currency_id  ) const;
     quint32 getCurrencyIdByName( const QString& currency_name, const quint32& exchange_id );
     quint32 getCurrencyCoin( const quint32& currency_id ) const;
@@ -51,6 +52,8 @@ public:
     bool isMarketActive( const quint32& market_id ) const;
 
     bool isCurrencyActive( const quint32& currency_id ) const;
+
+    QList<quint32> getCurrenciesByCoin( const quint32 & coin ) const;
     QString getMarketExchangeName(const quint32& pair_id ) const;
     quint32 getMarketExchangeId(const quint32& pair_id, const bool& onlyvalid = true ) const;
     quint32 getMarketIdByName( const QString& market_name, const quint32& exchange_id );

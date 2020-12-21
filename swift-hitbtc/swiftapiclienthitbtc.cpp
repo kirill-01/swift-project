@@ -79,16 +79,15 @@ void SwiftApiClientHitbtc::getOrderbooks(const QJsonObject &j_params, const quin
 
 void SwiftApiClientHitbtc::orderPlace(const QJsonObject &j_params, const quint64 &async_uuid)
 {
-
+    SwiftBot::Market market( j_params.value("market_id").toString().toUInt() );
     QMap<QString,QString> _params;
     _params["clientOrderId"] = j_params.value("local_id").toString();
-    _params["symbol"] = SwiftCore::getAssets()->getMarketName( j_params.value("market_id").toString().toUInt() );
+    _params["symbol"] = market.name;
     _params["side"] = j_params.value("type").toString();
-    _params["quantity"] = j_params.value("amount").toString();
-    _params["price"] = j_params.value("rate").toString();
+    _params["quantity"] = QString::number( j_params.value("amount").toString().toDouble(), 'f', market.amount_precision );
+    _params["price"] = QString::number( j_params.value("rate").toString().toDouble(), 'f', market.price_precision );
     QNetworkReply * reply = sendRequest("order", "POST", _params );
     reply->setProperty("uuid", async_uuid );
-    Q_UNUSED(j_params)
 }
 
 void SwiftApiClientHitbtc::orderCancel(const QJsonObject &j_params, const quint64 &async_uuid)
@@ -129,20 +128,10 @@ void SwiftApiClientHitbtc::withdrawCreate(const QJsonObject &j_params, const qui
 {
     // account/crypto/withdraw
     // get if dosnt have on bank acc -> transfer
-    const double reserved = getSession()->call("swiftbot.balances.get.reserved", {j_params.value("currency_id").toString().toUInt() }).toDouble();
-    if ( reserved < j_params.value("amount").toString().toDouble() ) {
-        QJsonObject j_inner_withdraw_params;
-        j_inner_withdraw_params["currency_id"] = j_params.value("currency_id");
-        j_inner_withdraw_params["amount"] = QString::number( j_params.value("amount").toString().toDouble() - reserved, 'f', 8 );
-        j_inner_withdraw_params["type"] = "exchangeToBank";
-        withdrawInner( j_inner_withdraw_params, 50000 );
-    }
-
-
+    SwiftBot::Currency currency( j_params.value("currency_id").toString().toUInt() );
     QMap<QString,QString> _params;
-    const QString currency_name = SwiftCore::getAssets()->getCurrencyName( j_params.value("currency_id").toString().toUInt() );
-    _params["currency"] = SwiftCore::getAssets()->getCurrencyName( j_params.value("currency_id").toString().toUInt() );
-    _params["amount"] = j_params.value("amount").toString();
+    _params["currency"] = currency.name;
+    _params["amount"] = QString::number( j_params.value("amount").toString().toDouble(), 'f', 8);
     _params["address"] = j_params.value("address").toString();
     _params["includeFee"] = "true";
     QNetworkReply * reply = sendRequest("account/crypto/withdraw", "POST", _params );

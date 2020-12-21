@@ -288,6 +288,7 @@ void SwiftApiParserKraken::parseResponse( const quint64& uuid, const SwiftApiCli
             }  else {
                 order_item["rate"] = item.value("price").toString();
             }
+            order_item["price"] = QString::number( order_item.value("rate").toString().toDouble() * order_item.value("amount").toString().toDouble(), 'f', 8);
             order_item["status"] = orderStatus(item.value("status").toString());
             order_item["amount_left"] = QString::number(
                         item.value("vol").toString().toDouble() - item.value("vol_exec").toString().toDouble(),

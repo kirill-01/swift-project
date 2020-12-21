@@ -2,7 +2,7 @@
 
 SwiftApiParser::SwiftApiParser(QObject *parent) : QObject(parent)
 {
- qRegisterMetaType<SwiftApiClient::AsyncMethods>("SwiftApiClient::AsyncMethods");
+    qRegisterMetaType<SwiftApiClient::AsyncMethods>("SwiftApiClient::AsyncMethods");
 }
 
 quint32 SwiftApiParser::getExchangeId() const {
@@ -14,14 +14,14 @@ quint32 SwiftApiParser::getExchangeId() const {
 }
 
 bool SwiftApiParser::isApiDebug() const {
-    return SwiftCore::getSettings()->value( SETTINGS_NAME_API_DEBUG, false ).toBool();
+    return SwiftBot::appParam( SETTINGS_NAME_API_DEBUG, false ).toBool();
 }
 
 void SwiftApiParser::sendResponse(const quint64 &uuid, const QJsonObject &j_result) {
     QJsonObject resp( j_result );
     if ( isApiDebug() ) {
         QJsonObject jdebug;
-        //jdebug["raw"] = QString( _rawdatas.take( uuid ) );
+        jdebug["raw"] = QString( _rawdatas.take( uuid ) );
         jdebug["ts"] = QString::number( QDateTime::currentMSecsSinceEpoch() );
         jdebug["async_uuid"] = QString::number( uuid );
         resp["debug"] = jdebug;

@@ -78,7 +78,7 @@ void SwiftApiParserHuobi::parseResponse( const quint64& uuid, const SwiftApiClie
                     const QJsonArray j_result_a( j_obj.value("data").toArray() );
                     for( auto it = j_result_a.begin(); it != j_result_a.end(); it++ ) {
                         if ( it->toObject().value("type").toString() == "spot" ) {
-                            SwiftCore::getSettings()->setValue( "api_nodes/huobi/username", QString::number( it->toObject().value("id").toInt() ));
+                            SwiftBot::moduleSettings( getExchangeName() )->setValue( "api_user", QString::number( it->toObject().value("id").toInt() ) );
                         }
                     }
                 }

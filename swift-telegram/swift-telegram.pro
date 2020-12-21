@@ -12,20 +12,13 @@ SOURCES += \
 
 target.path = /opt/swift-bot/bin
 
-CONFIG(debug, debug|release) {
-    message(DEBUG BUILD)
-    INCLUDEPATH += $$PWD/../swift-corelib
-    DEPENDPATH += $$PWD/../build-corelib
-    LIBS += -L$$PWD/../build-corelib/  -lswift-corelib
-}
+include(../shared.pri)
 
-CONFIG(release, debug|release) {
-    message(RELEASE build)
-    INCLUDEPATH += /usr/include/swiftbot
-    DEPENDPATH += /usr/include/swiftbot
-    LIBS += -lswift-corelib
-}
 HEADERS += \
     telegramapi.h
+
+DISTFILES += \
+    deb/opt/swift-bot/modules/telegram/telegram.dist \
+    deb/opt/swift-bot/modules/telegram/wamp.json
 
 

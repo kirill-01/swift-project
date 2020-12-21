@@ -46,12 +46,16 @@ void SwiftApiClientBitfinex::orderPlace(const QJsonObject &j_params, const quint
     if ( isDebug() ) {
        addLog("Placing order " + QJsonDocument( j_params ).toJson( QJsonDocument::Compact ) );
     }
+
     QUrl url(QStringList({url_auth, "v2", "auth", "w", "order", "submit"}).join("/"));
     QJsonObject j_body;
+
+    SwiftBot::Market market( j_params.value("market_id").toString().toUInt() );
     j_body["type"] = "EXCHANGE LIMIT";
-    j_body["symbol"] = SwiftCore::getAssets()->getMarketName(j_params.value("market_id").toString().toUInt());
-    j_body["price"] = j_params.value("rate").toString();
-    j_body["amount"] = ( j_params.value("type").toString() == "sell" ? "-" : "" ) + j_params.value("amount").toString();
+    j_body["symbol"] = market.name;
+    j_body["price"] = QString::number( j_params.value("rate").toString().toDouble(), 'f', market.price_precision );
+    const double amount = j_params.value("amount").toString().toDouble();
+    j_body["amount"] = ( j_params.value("type").toString() == "sell" ? "-" : "" ) + QString::number( amount, 'f', market.amount_precision );
     QNetworkReply* reply = authPostRequest(url, url.path(), QString( QJsonDocument( j_body ).toJson( QJsonDocument::Compact ) ) );
     reply->setProperty("uuid", async_uuid);
 }

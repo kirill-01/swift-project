@@ -80,9 +80,7 @@ void MarketsFilter::precessSnapShot(const QJsonObject &j_data) {
         sizes._min_sizes = _order_min_sizes;
         sizes._stp_sizes = _order_step_sizes;
         QMap<QPair<quint32,quint32>, QList<OrderbooksVariant>> _p;
-        if ( is_debug ) {
-            qWarning() << "Filtering" << t.elapsed();
-        }
+
         for( auto it = _checked.begin(); it != _checked.end();it++ ) {
 
             const quint32 arbp = SwiftCore::getAssets()->getMarketArbitragePairId( it->first );
@@ -113,11 +111,6 @@ void MarketsFilter::precessSnapShot(const QJsonObject &j_data) {
 
                 }
             }
-        }
-        if ( is_debug ) {
-            _msg += " checked";
-            qWarning() << t.elapsed();
-
         }
 
         QMap<QPair<quint32,quint32>,QList<OrderbooksVariant>> _profitable = _p;
@@ -174,33 +167,32 @@ void MarketsFilter::precessSnapShot(const QJsonObject &j_data) {
                 event_data["max_buy_price"] = QString::number( _vars.first().buyPrice(), 'f', 8 );
                 event_data["max_buy_fee"] = QString::number( _vars.first().buyFee(), 'f', 8 );
 
-                if ( is_debug ) {
-                    qWarning() << "Send event" << t.elapsed();
-                }
-                emit sendWindowEvent( event_data );
 
-                if ( is_debug ) {
-                    qWarning() << "before get balance" << t.elapsed();
-                }
+                emit sendWindowEvent( event_data );
                 const quint32 bcid = SwiftCore::getAssets()->getMarketBaseCurrency( it.key().first );
                 const quint32 mcid = SwiftCore::getAssets()->getMarketPriceCurrency( it.key().second );
 
+                SwiftBot::Currency sell_currency( bcid );
+                SwiftBot::Currency sell_currency( bcid );
                 const double sell_balance = SwiftBot::Currency(bcid).balance();
                 const double buy_balance = SwiftBot::Currency(mcid).balance();
 
-                if ( is_debug ) {
-                    qWarning() << t.elapsed();
-                }
+                QString logbalsmsg("---> Balances: ");
+                logbalsmsg += Sw
+                qWarning() << " ------>>>> ------>>>>>" << sell_balance << buy_balance << " -> Balances";
                 if ( sell_balance > 0 && buy_balance > 0 ) {
                     // Calculate max order and send placing it
                     for( auto it2 = _vars.begin(); it2 != _vars.end(); it2++) {
                         if ( it2->amount <= sell_balance && it2->buyPrice() <= buy_balance ) {
+                            qWarning() << "--- PLACING ORDERS ---";
                             SwiftBot::Order sell_order = SwiftBot::Order::create( it.key().first, it2->amount, it2->sell_rate, 0 );
                             if ( sell_order.place() ) {
                                 SwiftBot::Order buy_order = SwiftBot::Order::create( it.key().second, it2->amount, it2->buy_rate, 0 );
                                 if ( !buy_order.place() ) {
                                     qWarning() << "Error placing order";
                                 }
+                            } else {
+                                qWarning() << "Error placing order";
                             }
                             return;
                         }

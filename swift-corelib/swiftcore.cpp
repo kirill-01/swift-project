@@ -93,7 +93,6 @@ SwiftBot::Market::Market(const quint32 &market_id):
     id( market_id ),
     _storage( SwiftCore::getAssets() )
 {
-    name = _storage->getMarketName( id );
     exchange_id = _storage->getMarketExchangeId( id );
     arbitrage_pair_id = _storage->getMarketArbitragePairId( id );
     base_currency_id = _storage->getMarketBaseCurrency( id );
@@ -101,6 +100,7 @@ SwiftBot::Market::Market(const quint32 &market_id):
     is_enabled = _storage->isMarketActive( id );
     amount_precision = _storage->getMarketAmountPrecision( id );
     price_precision = _storage->getMarketPricePrecision( id );
+    name = _storage->getMarketName( id );
 }
 
 SwiftBot::Coin::Coin(const quint32 &coin_id) : id( coin_id ), _storage( SwiftCore::getAssets() ) {
@@ -110,6 +110,10 @@ SwiftBot::Coin::Coin(const quint32 &coin_id) : id( coin_id ), _storage( SwiftCor
 
 SwiftBot::Coin SwiftBot::Currency::coin() {
     return Coin( coin_id );
+}
+
+SwiftBot::Exchange SwiftBot::Currency::exchange() {
+    return Exchange( exchange_id );
 }
 
 double SwiftBot::Currency::totalUsd() {
@@ -216,6 +220,17 @@ SwiftBot::ArbitragePair::ArbitragePair(const quint32 &arbitrage_pair_id) : id(ar
 
 }
 
+SwiftBot::AritrageWindowEvents SwiftBot::ArbitragePair::dailyEvents() {
+    AritrageWindowEvents r;
+    QSqlQuery q("SELECT * FROM arbitrage_events WHERE arbitrage_pair_id="+QString::number( id )+" AND ts >= date_sub(NOW(), interval 24 hour) ");
+    if ( q.exec() ) {
+        while( q.next() ) {
+            r.push_back( SwiftBot::ArbitrageWindowEvent( q.record() ) );
+        }
+    }
+    return r;
+}
+
 SwiftBot::Order::Order() {
 
 }
@@ -223,6 +238,9 @@ SwiftBot::Order::Order() {
 SwiftBot::Order SwiftBot::Order::create(const quint32 &market_id, const double &amount, const double &rate, const quint32 &type)
 {
     Order o( market_id, amount, rate, type );
+    if ( SwiftBot::appParam("is_debug", false ).toBool() ) {
+        addLog("Creating order: " + QJsonDocument( o.toJson() ).toJson( QJsonDocument::Compact ), "DEBUG");
+    }
     o.save();
     return o;
 }
@@ -231,24 +249,52 @@ void SwiftBot::Order::update() {
     if ( local_id == 0 ) {
         save();
     } else {
-        QSqlQuery q("");
+        QSqlQuery q("UPDATE `orders` SET `remote_id` = '"+remote_id+"', \
+                    `status` = "+QString::number( status )+", \
+                    `amount_left` = "+QString::number( amount_left, 'f', 8 )+", \
+                    `completed_at` = '"+completed_at.toString("yyyy-MM-dd hh:mm:ss")+"', \
+                    `fee_amount` = "+QString::number( fee_amount , 'f', 8 )+" \
+                    WHERE `id` = "+QString::number( local_id ) );
         if ( !q.exec() ) {
-            qWarning() << q.lastError().text();
+            qWarning() << "Cant save update for order object:" << q.lastError().text();
+            SwiftBot::addError( "Cant save update for order object: "+q.lastError().text(), "CRITICAL" );
         }
     }
 }
 
 SwiftBot::Market SwiftBot::Order::market() {
-    static Market _cache( market_id );
-    return _cache;
+    return Market( market_id );
 }
 
 void SwiftBot::Order::save() {
-    QSqlQuery q("");
+    QSqlQuery q("INSERT INTO `orders` (`remote_id`,`exchange_id`,`market_id`,`type`,`status`,`created_at`,`amount_left`,`completed_at`,`amount`,`rate`,`price`,`fee`,`fee_amount`) VALUES "
+                "('"+remote_id+"',\
+                "+QString::number( exchange_id )+",\
+                "+QString::number( market_id )+",\
+                "+QString::number( type )+",\
+                "+QString::number( status )+",\
+                '"+created_at.toString("yyyy-MM-dd hh:mm:ss")+"',\
+                "+QString::number( amount_left, 'f', 8 )+",\
+                '"+completed_at.toString("yyyy-MM-dd hh:mm:ss")+"',\
+                "+QString::number( amount, 'f', 8 )+",\
+                "+QString::number( rate, 'f', 8 )+",\
+                "+QString::number( price, 'f', 8 )+",\
+                "+QString::number( fee, 'f', 4 )+",\
+                "+QString::number( fee_amount, 'f', 8 )+") ON DUPLICATE KEY UPDATE status=VALUES(status),amount_left=VALUES(amount_left),completed_at=VALUES(completed_at);");
     if ( !q.exec() ) {
-        qWarning() << q.lastError().text();
+        qWarning() << "Cant save new order object:" << q.lastError().text();
+        SwiftBot::addError( "Cant save new order object: "+q.lastError().text(), "CRITICAL" );
     } else {
-        local_id = q.lastInsertId().toUInt();
+        if ( q.numRowsAffected() > 0 ) {
+            local_id = q.lastInsertId().toUInt();
+        } else {
+            QSqlQuery qs("SELECT id FROM `orders` WHERE `exchange_id`="+QString::number(exchange_id)+" AND remote_id='"+remote_id+"'");
+            if ( qs.exec() && qs.next() ) {
+                local_id = qs.value("id").toUInt();
+            } else {
+                qWarning() << qs.lastError().text();
+            }
+        }
     }
 }
 
@@ -273,12 +319,14 @@ SwiftBot::Order::Order(const QSqlRecord &q) {
     rate = q.value("rate").toDouble();
     price = q.value("price").toDouble();
     fee = q.value("fee").toDouble();
+    fee_amount = q.value("fee_amount").toDouble();
     created_at = q.value("created_at").toDateTime();
     completed_at = q.value("completed_at").toDateTime();
     market_id = q.value("market_id").toUInt();
     exchange_id = q.value("exchange_id").toUInt();
     type = q.value("type").toUInt();
     status = q.value("status").toUInt();
+    fixvals();
 }
 
 SwiftBot::Order::Order(const quint32 &id) {
@@ -291,6 +339,7 @@ SwiftBot::Order::Order(const quint32 &id) {
         rate = q.value("rate").toDouble();
         price = q.value("price").toDouble();
         fee = q.value("fee").toDouble();
+        fee_amount = q.value("fee_amount").toDouble();
         created_at = q.value("created_at").toDateTime();
         completed_at = q.value("completed_at").toDateTime();
         market_id = q.value("market_id").toUInt();
@@ -298,11 +347,19 @@ SwiftBot::Order::Order(const quint32 &id) {
         type = q.value("type").toUInt();
         status = q.value("status").toUInt();
     }
+    fixvals();
+}
+
+SwiftBot::Order::Order(const QJsonObject &j_data) {
+    update( j_data );
 }
 
 QJsonObject SwiftBot::Order::toJson() {
     QJsonObject j_obj;
     j_obj["market_id"] = QString::number( market_id );
+    j_obj["market_name"] = SwiftCore::getAssets()->getMarketName( market_id );
+    j_obj["exchange_name"] = exchange().name;
+    j_obj["exchange_id"] = QString::number( exchange_id );
     j_obj["local_id"] = QString::number( local_id );
     j_obj["remote_id"] = remote_id;
     j_obj["type"] = type == 0 ? "sell" : "buy";
@@ -313,19 +370,28 @@ QJsonObject SwiftBot::Order::toJson() {
     j_obj["rate"] = QString::number( rate, 'f', market().price_precision );
     j_obj["price"] = QString::number( price, 'f', market().price_precision );
     j_obj["status"] = QString::number( status );
+    j_obj["fee"] = QString::number( fee, 'f', 4 );
+    j_obj["fee_amount"] = QString::number( fee_amount, 'f', 4 );
     return j_obj;
 }
 
 void SwiftBot::Order::update(const QJsonObject &j_data) {
+    market_id = j_data.value("market_id").toString().toUInt();
+    local_id = j_data.contains("local_id") && j_data.value("local_id").toString().toUInt() > 0 ? j_data.value("local_id").toString().toUInt() : 0;
     remote_id = j_data.value("remote_id").toString();
     type = j_data.value("type").toString() == "sell" ? 0 : 1;
     status = j_data.value("status").toString().toUInt();
-    created_at = QDateTime::fromTime_t( j_data.value("created_at").toString().toUInt() );
-    completed_at = QDateTime::fromTime_t( j_data.value("completed_at").toString().toUInt() );
+    quint64 ctime = j_data.value("created_at").toVariant().toULongLong();
+    quint64 utime = j_data.value("updated_at").toVariant().toULongLong() > 100000 ? j_data.value("updated_at").toVariant().toULongLong() : j_data.value("completed_at").toVariant().toULongLong();
+    if ( utime < 1000000 && status >= 2 ) {
+        utime = ctime;
+    }
+    created_at = QDateTime::fromSecsSinceEpoch( ctime > 1000000000000 ? ctime / 1000 : ctime );
+    completed_at = QDateTime::fromSecsSinceEpoch( utime > 1000000000000 ? utime / 1000 : utime );
     amount = j_data.value("amount").toString().toDouble();
     amount_left = j_data.value("amount_left").toString().toDouble();
     rate = j_data.value("rate").toString().toDouble();
     price = j_data.value("price").toString().toDouble();
-    exchange_id = market().exchange_id;
-    update();
+    exchange_id = j_data.value("exchange_id").toString().toUInt();
+    fixvals();
 }

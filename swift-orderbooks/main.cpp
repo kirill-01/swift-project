@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
     QCoreApplication::setApplicationName("orderbooks");
-    QCoreApplication::setApplicationVersion("1.0.395");
+    QCoreApplication::setApplicationVersion("1.0.451");
 
     // Allow only one instance per host
     QLockFile lockFile(QDir::temp().absoluteFilePath( QString(QCoreApplication::applicationName()+".lock") ) );
@@ -61,7 +61,17 @@ int main(int argc, char *argv[])
     SwiftBot::initWampClient();
 
     NodesController * node_controller = new NodesController();
-    //QObject::connect( node_controller, &NodesController::pairsRate, writer, &RatesWriter::onRates, Qt::QueuedConnection );
+    QObject::connect( node_controller, &NodesController::pairsRate, [&]( const QMap<quint32,double> &rates ) {
+       QString prep_query("INSERT INTO `rates` (`pair_id`,`rate`) VALUES ");
+       QStringList parts;
+       for ( auto it = rates.begin(); it != rates.end(); it++ ) {
+           parts.push_back( "("+QString::number(it.key() )+", "+QString::number(it.value(), 'f', 8 )+")" );
+       }
+       QSqlQuery q( prep_query + parts.join(",") );
+       if ( !q.exec() ) {
+           qWarning() << q.lastError().text();
+       }
+    });
     //QObject::connect( node_controller, &NodesController::clientExited, &a, &QCoreApplication::quit );
     //QObject::connect( &a, &QCoreApplication::aboutToQuit, ratesThread, &QThread::quit );
 

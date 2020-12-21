@@ -6,7 +6,8 @@
 
 #include <wampclient.h>
 #include <swiftcore.h>
-#include "../swift-corelib/assetsstorage.h"
+#include <QDateTime>
+#include <assetsstorage.h>
 
 class BalancesKeeperData;
 
@@ -36,6 +37,7 @@ signals:
     void updateEvent( const QJsonObject& j_data );
     void depositsEvent( const QJsonObject& j_data );
     void withdrawsEvent( const QJsonObject& j_data );
+    void sendBalanceInfo( const double &b, const double& p );
 public slots:
     void calculateRequirements();
 
@@ -48,6 +50,9 @@ public slots:
     void requestDeposits();
     void onWampSession( Wamp::Session * sess );
     void checkPauseCancel();
+
+    void saveBalancesHistory( const double &b, const double& p );
+    void saveBalsInterval();
 private:
 
     void pauseModule();
@@ -65,7 +70,10 @@ private:
     QTimer * requirements_timer;
 
     bool is_active_module;
+    bool is_debug;
     QMutex m;
+
+    QDateTime last_bals_saved_ts;
 };
 
 #endif // BALANCESKEEPER_H

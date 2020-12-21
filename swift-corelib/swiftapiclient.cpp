@@ -412,6 +412,8 @@ QJsonObject & SwiftApiClient::parseTradingGroup( QJsonObject & j_result)  {
         QJsonArray _items_updated;
         for( auto it = _items.begin(); it != _items.end(); it++ ) {
            QJsonObject _order_obj( it->toObject() );
+           SwiftBot::Order order( _order_obj );
+
            if ( _order_obj.contains("remote_id") && !_order_obj.contains("local_id") ) {
                if ( hasOrderRemoteIdRelation( _order_obj.value("remote_id").toString() ) ) {
                    _order_obj["local_id"] = getOrderRemoteIdRelation( _order_obj.value("remote_id").toString() );
@@ -497,6 +499,10 @@ void SwiftApiClient::onApiResponseParsed(const quint64 &uuid, const QJsonObject 
 
         QJsonObject result( j_result );
         const SwiftApiClient::AsyncMethods method( _async_dictionary.value(uuid) );
+
+        if ( isDebug() ) {
+            qDebug() << getExchangeName() << method << j_result;
+        }
 
         if ( !responseSuccess( &result ) ) {
             result["success"] = false;
@@ -589,9 +595,9 @@ void SwiftApiClient::onApiResponseParsed(const quint64 &uuid, const QJsonObject 
                     raiseEvent( QJsonArray({result}), FEED_EVENTS_ORDERS, EVENTS_NAME_ORDER_UPDATED );
                 }
             } else if ( method == SwiftApiClient::AsyncMethods::TradeHistory ) {
-                raiseEvent( result.value("orders").toArray(), FEED_EVENTS_ORDERS, EVENTS_NAME_ORDERS_HISTORY );
+                raiseEvent( j_result.value("orders").toArray(), FEED_EVENTS_ORDERS, EVENTS_NAME_ORDERS_HISTORY );
             } else if ( method == SwiftApiClient::AsyncMethods::TradeOpenOrders ) {
-                raiseEvent( result.value("orders").toArray(), FEED_EVENTS_ORDERS, EVENTS_NAME_ORDERS_ACTIVE );
+                raiseEvent( j_result.value("orders").toArray(), FEED_EVENTS_ORDERS, EVENTS_NAME_ORDERS_ACTIVE );
             }
         }
 
@@ -683,7 +689,8 @@ QJsonValue SwiftApiClient::updateCachedOrder(const QJsonObject &j_result, const 
 }
 
 void SwiftApiClient::raiseEvent(const QJsonArray &j_jtems, const QString &event_feed, const QString &event_name) {
-    QJsonObject j_event({{"exchange_id",QString::number( getExchangeId() )},{"items", j_jtems}});
+    QJsonObject j_event({{"exchange_id",QString::number( getExchangeId() )}});
+    j_event["items"] = j_jtems;
     const QString _event_data( QJsonDocument( j_event ).toJson( QJsonDocument::Compact ) );
     if ( session != nullptr && session->isJoined() ) {
         session->publish(event_feed, { event_name, _event_data } );

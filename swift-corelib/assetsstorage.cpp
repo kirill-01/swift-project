@@ -198,6 +198,14 @@ QString AssetsStorage::getCurrencyExchangeName(const quint32 &currency_id) const
     return data->_exchange_name[ data->_currency_exchange[currency_id ] ];
 }
 
+QString AssetsStorage::getCurrencyAddress(const quint32 &currency_id) const {
+    if ( data->_currency_addresses.contains( currency_id ) ) {
+        return data->_currency_addresses.value(currency_id).values().first();
+    } else {
+        return "No address data";
+    }
+}
+
 QString AssetsStorage::getCurrencyName(const quint32 &currency_id) const {
     return data->_currency_name.value( currency_id, "???" );
 }
@@ -232,6 +240,10 @@ bool AssetsStorage::isMarketActive(const quint32 &market_id) const {
 
 bool AssetsStorage::isCurrencyActive(const quint32 &currency_id) const {
     return data->_enabled_currencies.contains( currency_id );
+}
+
+QList<quint32> AssetsStorage::getCurrenciesByCoin( const quint32 & coin ) const {
+    return data->_coin_currencies.value( coin );
 }
 
 quint32 AssetsStorage::getTokenCurrencyIdByCoinExchange(const quint32 &coin_id, const quint32 &exchange_id) const {

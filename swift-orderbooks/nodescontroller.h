@@ -20,6 +20,7 @@ signals:
     void pairsRate( const QMap<quint32,double> &rates );
 public slots:
     void sendRates();
+    void maintanceRates();
     void nodeThreadStarted();
     void nodeThreadFinished();
     void startAllNodes();

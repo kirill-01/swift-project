@@ -32,15 +32,57 @@
     }
   },
   "module": {
-    "call": ["swift.api.status.*","swift.api.trade.active.*","swift.api.trade.history.*","swift.api.order.get.*"],
-    "register": [],
+    "call": ["swift.balance.sendinfo","swift.api.status.*","swift.api.trade.active.*","swift.api.trade.history.*","swift.api.order.get.*", "swift.balance.all"],
+    "register": ["swift.orders.active", "swift.orders.history", "swift.orders.today", "swift.telegram.cmd.balances", "swift.telegram.cmd.trades", "swift.telegram.cmd.stats","swift.telegram.callback"],
     "publish": [],
     "subscribe": ["swift.api.asyncresults","swift.orders.events"]
   },
   "provide": {
     "feeds":[],
     "methods":[
-     
+        {
+            "uri":"swift.orders.active",
+            "description":"Get list of currently open and active orders",
+            "arguments":[],
+            "response":["ORDERS OBJECTS ARRAY"]
+        },
+        {
+            "uri":"swift.orders.history",
+            "description":"Get list of all closed orders",
+            "arguments":[],
+            "response":["ORDERS OBJECTS ARRAY"]
+        },
+        {
+            "uri":"swift.orders.today",
+            "description":"Get today trading summary",
+            "arguments":[],
+            "response":[{"arbitrage_pair_id":"1","sell_total":"0.00000000","buy_total":"0.00000000","sell_price":"0.00000000","buy_price":"0.00000000"}]
+        },
+        {
+            "uri":"swift.telegram.cmd.stats",
+            "description":"Sending current trading stats to telegram",
+            "arguments":[],
+            "response":["1"]
+        },
+        {
+            "uri":"swift.telegram.cmd.trades",
+            "description":"Sending current trading items list to telegram",
+            "arguments":[],
+            "response":["1"]
+        },
+        {
+            "uri":"swift.telegram.cmd.balances",
+            "description":"Sending current balances to telegram",
+            "arguments":[],
+            "response":["1"]
+        },
+        {
+            "uri":"swift.telegram.callback",
+            "description":"Webhooks entrypoint from telegtam bot",
+            "arguments":["CALLBACK DATA"],
+            "response":["1"]
+        }
+
     ]
   }
 }

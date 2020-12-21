@@ -15,7 +15,7 @@
 #include <QMutex>
 #include "../swift-corelib/swiftbot.h"
 
-#define SUPPORTED_EXCHANGES "cexio,bittrex,lbank,kucoin,binance,kraken,livecoin,lakebtc,exmo,hitbtc,bitfinex,okcoin,zb,huobi,idcm"
+#define SUPPORTED_EXCHANGES "cexio,bittrex,kucoin,binance,kraken,hitbtc,bitfinex,okcoin,zb,huobi,idcm"
 #define RECORDS_LIMIT 20
 
 class OrderbooksNode : public QObject

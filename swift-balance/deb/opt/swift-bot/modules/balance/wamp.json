@@ -33,7 +33,7 @@
   },
   "module": {
     "call": ["swift.api.status.*","swift.api.balances.*","swift.api.withdraw.history.*","swift.api.deposits.history.*"],
-    "register": ["swift.balance", "swift.balance.total","swift.balance.all","swift.deposits","swift.withdraws"],
+    "register": ["swift.balance.sendinfo","swift.balance", "swift.balance.total","swift.balance.all","swift.deposits","swift.withdraws"],
     "publish": ["swift.api.asyncresults"],
     "subscribe": ["swift.api.asyncresults","swift.balance.events"]
   },
@@ -69,7 +69,14 @@
 	"description":"Withdraws list",
 	"arguments":["JSONPARAMS"],
 	"response":["ASYNC_UUID"]
-      }
+      },
+      {
+       "uri":"swift.balance.sendinfo",
+       "description":"Calculate balances and send info",
+       "arguments":[],
+       "response":["1"]
+     }
+
     ]
   }
 }

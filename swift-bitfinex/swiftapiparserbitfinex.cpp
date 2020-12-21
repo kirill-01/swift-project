@@ -230,7 +230,7 @@ const QJsonObject SwiftApiParserBitfinex::parseBitfinexOrder(const QJsonArray& s
     QJsonObject result;
     const QString market_name = src.at(3).toString();
     result["market_id"] = QString::number(SwiftCore::getAssets()->getMarketIdByName( market_name, getExchangeId() ));
-    result["remote_id"] = QString::number( src.at(0).toVariant().toUInt() );
+    result["remote_id"] = QString::number( src.at(0).toVariant().toULongLong() );
     double amount = src.at(6).toDouble();
     double price = src.at(16).toDouble();
     result["amount"] = QString::number( abs(src.at(7).toDouble()), 'f', 8);
@@ -240,9 +240,9 @@ const QJsonObject SwiftApiParserBitfinex::parseBitfinexOrder(const QJsonArray& s
     result["price"] = QString::number(abs(price * amount), 'f', 8);
     result["exchange_id"] = QString::number( getExchangeId() );
     QString status( src.at(13).toString() );
-    result["status"] = status == "ACTIVE" ? "1" : status == "PARTIALLY" ? "1" : status == "EXECUTED" ? "2" : "3";
-    result["created_at"] = QString::number(src.at(4).toVariant().toLongLong() );
-    result["updated_at"] = QString::number(src.at(5).toVariant().toLongLong() );
+    result["status"] = status.contains("ACTIVE") ? "1" : status.contains("PARTIALLY") ? "1" : status.contains("EXECUTED") ? "2" : "3";
+    result["created_at"] = QString::number(src.at(4).toVariant().toLongLong() / 1000 );
+    result["updated_at"] = QString::number(src.at(5).toVariant().toLongLong() / 1000 );
     return result;
 }
 

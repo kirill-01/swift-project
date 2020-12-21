@@ -207,7 +207,7 @@ int main(int argc, char *argv[])
     }
     config.addUser( "pamm_caller", QJsonObject({{"ticket","pamm_caller"},{"role","pamm_ext"}}) );
     QJsonArray j_perms;
-    QStringList calls({"swift.pamm.node","swift.pamm.api.user","swift.pamm.api.invest"});
+    QStringList calls({"swift.pamm.node","swift.pamm.api.user","swift.pamm.api.invest", "swift.orders.active", "swift.orders.history", "swift.orders.today","swift.telegram.callback"});
     for( auto it = calls.begin(); it != calls.end(); it++ ) {
         QJsonObject j_rule( CrossbarConfig::getRuleObj( *it ) );
         QJsonObject j_allow( j_rule.value("allow").toObject() );

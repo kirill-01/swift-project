@@ -75,9 +75,17 @@ void NodesController::sendRates() {
     }
 }
 
+void NodesController::maintanceRates() {
+    QSqlQuery q("INSERT INTO rates_history SELECT * FROM rates WHERE ts <= ( CURDATE() - INTERVAL 2 DAY ); DELETE FROM rates WHERE ts <= ( CURDATE() - INTERVAL 2 DAY );");
+    if ( !q.exec() ) {
+        qWarning() << q.lastError().text();
+    }
+    QTimer::singleShot( 360000, this, &NodesController::maintanceRates );
+}
+
 void NodesController::nodeThreadStarted() {
     const QString targetname = qobject_cast<QThread*>( sender() )->objectName();
-   // qWarning() << targetname << "thread started";
+    // qWarning() << targetname << "thread started";
 }
 
 void NodesController::nodeThreadFinished() {
@@ -109,17 +117,12 @@ void NodesController::startAllNodes() {
         pubtimer->start();
     } );
     settingstimer->start();
-    /*
-    stattimer = new QTimer(this);
-    stattimer->setInterval( 5000 );
-    connect( stattimer, &QTimer::timeout, this, &NodesController::sendStats );
-    stattimer->start();
 
     ratestimer = new QTimer(this);
-    ratestimer->setInterval( 1000 );
+    ratestimer->setInterval( 60000 );
     connect( ratestimer, &QTimer::timeout, this, &NodesController::sendRates );
     ratestimer->start();
-*/
+
     emit startNodes();
 }
 
@@ -224,7 +227,6 @@ void NodesController::sendStats() {
 
 void NodesController::sendOrderbooks() {       
     QElapsedTimer timer;
-
     timer.start();
     const QList<QJsonArray> _allasks( _asks.values() );
     const QList<QJsonArray> _allbids( _bids.values() );
