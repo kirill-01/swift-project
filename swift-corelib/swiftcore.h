@@ -634,13 +634,18 @@ class ArbitrageWindowEvent;
 
         QJsonObject toJson();
 
-        bool place() {
+        bool place( Wamp::Session * session = nullptr ) {
             if ( SwiftBot::appParam("is_debug", false ).toBool() ) {
                 addLog("Placing order: " + QJsonDocument( toJson() ).toJson( QJsonDocument::Compact ), "DEBUG");
             }
             QString str( QJsonDocument( toJson() ).toJson( QJsonDocument::Compact ));
-            quint64 uid = SwiftBot::method( "swift.api.order.create."+exchange().name, {str} ).toULongLong();
-            return ( uid > 100 );
+            if ( session != nullptr ) {
+                quint64 uid = session->call("swift.api.order.create."+exchange().name, {str} ).toULongLong();
+                return ( uid > 100 );
+            } else {
+                quint64 uid = SwiftBot::method( "swift.api.order.create."+exchange().name, {str} ).toULongLong();
+                return ( uid > 100 );
+            }
         }
 
         void update ( const QJsonObject & j_data );

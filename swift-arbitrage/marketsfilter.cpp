@@ -172,13 +172,10 @@ void MarketsFilter::precessSnapShot(const QJsonObject &j_data) {
                 const quint32 bcid = SwiftCore::getAssets()->getMarketBaseCurrency( it.key().first );
                 const quint32 mcid = SwiftCore::getAssets()->getMarketPriceCurrency( it.key().second );
 
-                SwiftBot::Currency sell_currency( bcid );
-                SwiftBot::Currency sell_currency( bcid );
-                const double sell_balance = SwiftBot::Currency(bcid).balance();
-                const double buy_balance = SwiftBot::Currency(mcid).balance();
 
-                QString logbalsmsg("---> Balances: ");
-                logbalsmsg += Sw
+                const double sell_balance = session->call(RPC_BALANCE_GET, {bcid} ).toDouble();
+                const double buy_balance = session->call(RPC_BALANCE_GET, {mcid} ).toDouble();
+
                 qWarning() << " ------>>>> ------>>>>>" << sell_balance << buy_balance << " -> Balances";
                 if ( sell_balance > 0 && buy_balance > 0 ) {
                     // Calculate max order and send placing it
@@ -186,9 +183,9 @@ void MarketsFilter::precessSnapShot(const QJsonObject &j_data) {
                         if ( it2->amount <= sell_balance && it2->buyPrice() <= buy_balance ) {
                             qWarning() << "--- PLACING ORDERS ---";
                             SwiftBot::Order sell_order = SwiftBot::Order::create( it.key().first, it2->amount, it2->sell_rate, 0 );
-                            if ( sell_order.place() ) {
+                            if ( sell_order.place( session ) ) {
                                 SwiftBot::Order buy_order = SwiftBot::Order::create( it.key().second, it2->amount, it2->buy_rate, 0 );
-                                if ( !buy_order.place() ) {
+                                if ( !buy_order.place( session ) ) {
                                     qWarning() << "Error placing order";
                                 }
                             } else {
