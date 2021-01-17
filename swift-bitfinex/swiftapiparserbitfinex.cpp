@@ -39,7 +39,7 @@ void SwiftApiParserBitfinex::parseResponse( const quint64& uuid, const SwiftApiC
                     BALANCE_AVAILABLE,
                     */
                     const QString currency_name( j_curr.at(1).toString()  );
-                    const quint32 currency_id = SwiftCore::getAssets()->getCurrencyIdByName( currency_name, getExchangeId() );
+                    const quint32 currency_id = assets->getCurrencyIdByName( currency_name, getExchangeId() );
                     if ( currency_id > 0  ) {
                         j_item["currency_id"] = QString::number( currency_id );
                         j_item["name"] = currency_name;
@@ -64,7 +64,7 @@ void SwiftApiParserBitfinex::parseResponse( const quint64& uuid, const SwiftApiC
                 QJsonArray j_items;
                 for( auto it = j_r.begin(); it != j_r.end(); it++ ) {
                     QJsonObject j_item;
-                    const quint32 cid = SwiftCore::getAssets()->getCurrencyIdByName( it->toString(), getExchangeId() );
+                    const quint32 cid = assets->getCurrencyIdByName( it->toString(), getExchangeId() );
                     j_item["id"] = QString::number( cid );
                     j_item["exchange_id"] = QString::number( getExchangeId() );
                     j_item["name"] = parseCurrencyName( it->toString() );
@@ -87,12 +87,12 @@ void SwiftApiParserBitfinex::parseResponse( const quint64& uuid, const SwiftApiC
                     const QString mcurname( parseCurrencyName( name.right( 3 ) ) );
 
                     const QJsonArray params( it->toArray().at(1).toArray() );
-                    const quint32 cid = SwiftCore::getAssets()->getMarketIdByName( it->toString(), getExchangeId() );
+                    const quint32 cid = assets->getMarketIdByName( it->toString(), getExchangeId() );
                     j_item["id"] = QString::number( cid );
                     j_item["exchange_id"] = QString::number( getExchangeId() );
                     j_item["name"] = name;
-                    j_item["base_currency_id"] = QString::number( SwiftCore::getAssets()->getCurrencyIdByName( bcurname, getExchangeId() ) );
-                    j_item["market_currency_id"] = QString::number( SwiftCore::getAssets()->getCurrencyIdByName( mcurname, getExchangeId() ) );
+                    j_item["base_currency_id"] = QString::number( assets->getCurrencyIdByName( bcurname, getExchangeId() ) );
+                    j_item["market_currency_id"] = QString::number( assets->getCurrencyIdByName( mcurname, getExchangeId() ) );
                     j_items.push_back( j_item );
                 }
                 j_ret["success"] = true;
@@ -164,7 +164,7 @@ void SwiftApiParserBitfinex::parseResponse( const quint64& uuid, const SwiftApiC
             } else if(SwiftApiClient::AsyncMethods::GetDepositAddress == method){
                 QJsonArray deposit = j_resp.at(4).toArray();
                 const QString currency_name( deposit.at(2).toString()  );
-                const quint32 currency_id = SwiftCore::getAssets()->getCurrencyIdByName( currency_name, getExchangeId() );
+                const quint32 currency_id = assets->getCurrencyIdByName( currency_name, getExchangeId() );
                 j_ret["exchange_id"] = QString::number( currency_id );
                 j_ret["currency_id"] = QString::number( currency_id );
                 j_ret["deposit_address"] = deposit.at(4).toString();
@@ -229,7 +229,7 @@ const QJsonArray SwiftApiParserBitfinex::unpackArrayIf(const QJsonObject &data, 
 const QJsonObject SwiftApiParserBitfinex::parseBitfinexOrder(const QJsonArray& src) const {
     QJsonObject result;
     const QString market_name = src.at(3).toString();
-    result["market_id"] = QString::number(SwiftCore::getAssets()->getMarketIdByName( market_name, getExchangeId() ));
+    result["market_id"] = QString::number(assets->getMarketIdByName( market_name, getExchangeId() ));
     result["remote_id"] = QString::number( src.at(0).toVariant().toULongLong() );
     double amount = src.at(6).toDouble();
     double price = src.at(16).toDouble();
@@ -249,7 +249,7 @@ const QJsonObject SwiftApiParserBitfinex::parseBitfinexOrder(const QJsonArray& s
 const QJsonObject SwiftApiParserBitfinex::parseBitfinexMove(const QJsonArray& src) const {
     QJsonObject result;
     const QString currency_name(src.at(1).toString());
-    const quint32 currency_id = SwiftCore::getAssets()->getCurrencyIdByName( currency_name, getExchangeId() );
+    const quint32 currency_id = assets->getCurrencyIdByName( currency_name, getExchangeId() );
     const QString status = src.at(9).toString();
     result["currency_id"] = QString::number( currency_id );
     result["exchange_id"] = QString::number( getExchangeId() );
@@ -278,7 +278,7 @@ const QJsonObject SwiftApiParserBitfinex::parseBitfinexWallet(const QJsonArray &
     BALANCE_AVAILABLE,
     */
     const QString currency_name( src.at(1).toString()  );
-    const quint32 currency_id = SwiftCore::getAssets()->getCurrencyIdByName( currency_name, getExchangeId() );
+    const quint32 currency_id = assets->getCurrencyIdByName( currency_name, getExchangeId() );
     if ( currency_id > 0  ) {
         result["currency_id"] = QString::number( currency_id );
         result["name"] = currency_name;
@@ -297,7 +297,7 @@ const QJsonObject SwiftApiParserBitfinex::parseBitfinexDeposit(const QJsonArray 
     Q_UNUSED(src)
     QJsonObject result;
     /*const QString currency_name( src.value("Currency").toString()  );
-    const quint32 currency_id = SwiftCore::getAssets()->getCurrencyIdByName( currency_name, getExchangeId() );
+    const quint32 currency_id = assets->getCurrencyIdByName( currency_name, getExchangeId() );
     double balance = src.value("BALANCE").toDouble();
     double balance_av = src.value("BALANCE_AVAILABLE").toDouble();
     result["currency_id"] = QString::number( currency_id );

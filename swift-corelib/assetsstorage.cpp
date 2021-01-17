@@ -4,6 +4,7 @@
 #include <QJsonArray>
 #include <QJsonValue>
 #include <QDebug>
+#include <QThread>
 #include "swiftcore.h"
 
 class AssetsStorageData : public QSharedData
@@ -407,6 +408,7 @@ QString AssetsStorage::getDepositAddress(const quint32 &currency_id, const QStri
 
 
 void AssetsStorage::loadAssets() {
+
 
     QSqlQuery q;
     if ( q.exec("SELECT * FROM exchanges") ) {

@@ -595,8 +595,10 @@ void SwiftApiClient::onApiResponseParsed(const quint64 &uuid, const QJsonObject 
                     raiseEvent( QJsonArray({result}), FEED_EVENTS_ORDERS, EVENTS_NAME_ORDER_UPDATED );
                 }
             } else if ( method == SwiftApiClient::AsyncMethods::TradeHistory ) {
+                result["orders"] = j_result.value("orders").toArray();
                 raiseEvent( j_result.value("orders").toArray(), FEED_EVENTS_ORDERS, EVENTS_NAME_ORDERS_HISTORY );
             } else if ( method == SwiftApiClient::AsyncMethods::TradeOpenOrders ) {
+                result["orders"] = j_result.value("orders").toArray();
                 raiseEvent( j_result.value("orders").toArray(), FEED_EVENTS_ORDERS, EVENTS_NAME_ORDERS_ACTIVE );
             }
         }

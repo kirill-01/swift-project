@@ -9,4 +9,6 @@ min_order_size=0.25
 max_order_size=65.01
 stats_show_interval=30000
 adopt_orderbooks_interval=true
+pair_lock_seconds=45
+size_recalc_interval=120000
 

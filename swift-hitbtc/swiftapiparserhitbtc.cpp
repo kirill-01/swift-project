@@ -19,7 +19,7 @@ void SwiftApiParserHitbtc::parseResponse(const quint64 &uuid, const SwiftApiClie
         j_order_data["amount_left"] = QString::number( j_data.value("quantity").toString().toDouble() - j_data.value("cumQuantity").toString().toDouble(), 'f', 8 );
         j_order_data["rate"] = j_data.value("price").toString();
         j_order_data["status"] = j_data.value("status").toString() == "new" ? "1" : j_data.value("status").toString() == "canceled" ? "3" : "2";
-        j_order_data["market_id"] = QString::number( SwiftCore::getAssets()->getMarketIdByName( j_data.value("symbol").toString(), getExchangeId() ) );
+        j_order_data["market_id"] = QString::number( assets->getMarketIdByName( j_data.value("symbol").toString(), getExchangeId() ) );
         j_order_data["exchange_id"] = QString::number( getExchangeId() );
         j_order_data["type"] = j_data.value("side").toString();
         j_order_data["success"] = true;
@@ -52,11 +52,11 @@ void SwiftApiParserHitbtc::parseResponse(const quint64 &uuid, const SwiftApiClie
         for( auto it = j_data.begin(); it != j_data.end(); it++ ) {
             QJsonObject item = it->toObject();
             QJsonObject pair_obj;
-            const quint32 bcid = SwiftCore::getAssets()->getCurrencyIdByName( item.value("baseCurrency").toString(), getExchangeId() );
-            const quint32 mcid = SwiftCore::getAssets()->getCurrencyIdByName( QString( item.value("quoteCurrency").toString() == "USD" ? "USDT20" : item.value("quoteCurrency").toString() ), getExchangeId() );
+            const quint32 bcid = assets->getCurrencyIdByName( item.value("baseCurrency").toString(), getExchangeId() );
+            const quint32 mcid = assets->getCurrencyIdByName( QString( item.value("quoteCurrency").toString() == "USD" ? "USDT20" : item.value("quoteCurrency").toString() ), getExchangeId() );
             pair_obj["exchange_id"] = QString::number(getExchangeId());
             pair_obj["name"] = item.value("id").toString();
-            pair_obj["id"] = QString::number( SwiftCore::getAssets()->getMarketIdByName( item.value("id").toString(), getExchangeId() ) );
+            pair_obj["id"] = QString::number( assets->getMarketIdByName( item.value("id").toString(), getExchangeId() ) );
             pair_obj["base_currency_id"] = QString::number( bcid );
             pair_obj["market_currency_id"] = QString::number( mcid );
             if ( bcid > 0 && mcid > 0 ) {
@@ -76,7 +76,7 @@ void SwiftApiParserHitbtc::parseResponse(const quint64 &uuid, const SwiftApiClie
             QJsonObject currency_obj;
             currency_obj["exchange_id"] = QString::number(getExchangeId());
             currency_obj["name"] = item.value("id").toString();
-            currency_obj["id"] = QString::number( SwiftCore::getAssets()->getCurrencyIdByName( item.value("id").toString(), getExchangeId() ) );
+            currency_obj["id"] = QString::number( assets->getCurrencyIdByName( item.value("id").toString(), getExchangeId() ) );
             currency_obj["withdraw_fee"] = QString::number(item.value("payoutFee").toString().toDouble(), 'f', 8 );
             currencies_list.push_back(currency_obj);
         }
@@ -95,7 +95,7 @@ void SwiftApiParserHitbtc::parseResponse(const quint64 &uuid, const SwiftApiClie
         j_order_data["amount_left"] = QString::number( j_data.value("quantity").toString().toDouble() - j_data.value("cumQuantity").toString().toDouble(), 'f', 8 );
         j_order_data["rate"] = j_data.value("price").toString();
         j_order_data["status"] = j_data.value("status").toString() == "canceled" ? "3" : "4";
-        j_order_data["market_id"] = QString::number( SwiftCore::getAssets()->getMarketIdByName( j_data.value("symbol").toString(), getExchangeId() ) );
+        j_order_data["market_id"] = QString::number( assets->getMarketIdByName( j_data.value("symbol").toString(), getExchangeId() ) );
         j_order_data["exchange_id"] = QString::number( getExchangeId() );
         j_order_data["type"] = j_data.value("side").toString();
         j_order_data["success"] = true;
@@ -117,7 +117,7 @@ void SwiftApiParserHitbtc::parseResponse(const quint64 &uuid, const SwiftApiClie
                 j_order_data["amount_left"] = QString::number( j_data.value("quantity").toString().toDouble() - j_data.value("cumQuantity").toString().toDouble(), 'f', 8 );
                 j_order_data["rate"] = j_data.value("price").toString();
                 j_order_data["status"] = j_data.value("status").toString() == "new" ? "1" : j_data.value("status").toString() == "canceled" ? "3" : "2";
-                j_order_data["market_id"] = QString::number( SwiftCore::getAssets()->getMarketIdByName( j_data.value("symbol").toString(), getExchangeId() ) );
+                j_order_data["market_id"] = QString::number( assets->getMarketIdByName( j_data.value("symbol").toString(), getExchangeId() ) );
                 j_order_data["exchange_id"] = QString::number( getExchangeId() );
                 j_order_data["type"] = j_data.value("side").toString();
                 openorders.push_back( j_order_data );
@@ -144,7 +144,7 @@ void SwiftApiParserHitbtc::parseResponse(const quint64 &uuid, const SwiftApiClie
                 j_order_data["amount_left"] = QString::number( j_data.value("quantity").toString().toDouble() - j_data.value("cumQuantity").toString().toDouble(), 'f', 8 );
                 j_order_data["rate"] = j_data.value("price").toString();
                 j_order_data["status"] = j_data.value("status").toString() == "new" ? "1" : j_data.value("status").toString() == "canceled" ? "3" : "2";
-                j_order_data["market_id"] = QString::number( SwiftCore::getAssets()->getMarketIdByName( j_data.value("symbol").toString(), getExchangeId() ) );
+                j_order_data["market_id"] = QString::number( assets->getMarketIdByName( j_data.value("symbol").toString(), getExchangeId() ) );
                 j_order_data["exchange_id"] = QString::number( getExchangeId() );
                 j_order_data["type"] = j_data.value("side").toString();
                 if ( j_data.value("status").toString() == "filled" ||  j_data.value("status").toString() == "canceled" ) {
@@ -164,7 +164,7 @@ void SwiftApiParserHitbtc::parseResponse(const quint64 &uuid, const SwiftApiClie
         if ( !j_resp_arr.isEmpty() ) {
             for ( auto it = j_resp_arr.begin(); it != j_resp_arr.end(); it++ ) {
                 const QJsonObject j_itm( it->toObject() );
-                const quint32 currid = SwiftCore::getAssets()->getCurrencyIdByName(j_itm.value("currency").toString(), getExchangeId() );
+                const quint32 currid = assets->getCurrencyIdByName(j_itm.value("currency").toString(), getExchangeId() );
                 if ( currid > 0 ) {
                     QJsonObject j_item;
                     j_item["exchange_id"] = QString::number( getExchangeId() );
@@ -199,7 +199,7 @@ void SwiftApiParserHitbtc::parseResponse(const quint64 &uuid, const SwiftApiClie
         if ( !j_resp_arr.isEmpty() ) {
             for ( auto it = j_resp_arr.begin(); it != j_resp_arr.end(); it++ ) {
                 const QJsonObject j_itm( it->toObject() );
-                const quint32 currid = SwiftCore::getAssets()->getCurrencyIdByName(j_itm.value("currency").toString(), getExchangeId() );
+                const quint32 currid = assets->getCurrencyIdByName(j_itm.value("currency").toString(), getExchangeId() );
                 if ( currid > 0 && j_itm.value("type").toString() != "bankToExchange" && j_itm.value("type").toString() != "exchangeToBank" ) {
                     QJsonObject j_item;
                     j_item["exchange_id"] = QString::number( getExchangeId() );
@@ -227,7 +227,7 @@ void SwiftApiParserHitbtc::parseResponse(const quint64 &uuid, const SwiftApiClie
         if ( !j_resp_arr.isEmpty() ) {
             for ( auto it = j_resp_arr.begin(); it != j_resp_arr.end(); it++ ) {
                 const QJsonObject j_itm( it->toObject() );
-                const quint32 currid = SwiftCore::getAssets()->getCurrencyIdByName(j_itm.value("currency").toString(), getExchangeId() );
+                const quint32 currid = assets->getCurrencyIdByName(j_itm.value("currency").toString(), getExchangeId() );
                 if ( currid > 0 && j_itm.value("type").toString() != "bankToExchange" && j_itm.value("type").toString() != "exchangeToBank" ) {
                     QJsonObject j_item;
                     j_item["exchange_id"] = QString::number( getExchangeId() );
@@ -281,7 +281,7 @@ void SwiftApiParserHitbtc::parseResponse(const quint64 &uuid, const SwiftApiClie
         if ( !j_resp_arr.isEmpty() ) {
             for ( auto it = j_resp_arr.begin(); it != j_resp_arr.end(); it++ ) {
                 const QJsonObject j_itm( it->toObject() );
-                const quint32 currid = SwiftCore::getAssets()->getCurrencyIdByName(j_itm.value("currency").toString(), getExchangeId() );
+                const quint32 currid = assets->getCurrencyIdByName(j_itm.value("currency").toString(), getExchangeId() );
                 if ( currid > 0 ) {
                     _account_balances_storage[ currid ] =  j_itm.value("available").toString().toDouble() +  j_itm.value("reserved").toString().toDouble();
                 }

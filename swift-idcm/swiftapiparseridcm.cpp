@@ -64,7 +64,7 @@ void SwiftApiParserIDCM::parseResponse(const quint64 &uuid, const SwiftApiClient
                 parsed_result["created_at"] = data.value("timestamp").toString(); // !!! /1000
                 parsed_result["updated_at"] = data.value("timestamp").toString();
                 parsed_result["remote_id"] = data.value("orderid").toString();
-                parsed_result["market_id"] = QString::number(SwiftCore::getAssets()->getMarketIdByName(data.value("symbol").toString(), getExchangeId()));
+                parsed_result["market_id"] = QString::number(assets->getMarketIdByName(data.value("symbol").toString(), getExchangeId()));
                 parsed_result["amount"] = QString::number(data.value("amount").toDouble(), 'f', 8);
                 parsed_result["rate"] = QString::number(data.value("price").toDouble(), 'f', 8);  // !!! price or avgprice
                 parsed_result["status"] = orderStatus(data.value("status").toInt());
@@ -97,7 +97,7 @@ void SwiftApiParserIDCM::parseResponse(const quint64 &uuid, const SwiftApiClient
                 QJsonArray data = j_obj.value("data").toArray();
                 for(auto it = data.cbegin(); it != data.cend(); ++it){
                     QJsonObject item(it->toObject());
-                    auto currency_id = SwiftCore::getAssets()->getCurrencyIdByName(item.value("code").toString(), getExchangeId());
+                    auto currency_id = assets->getCurrencyIdByName(item.value("code").toString(), getExchangeId());
                     if(currency_id == 0)
                         continue;
                     auto free = item.value("free").toDouble();
@@ -121,7 +121,7 @@ void SwiftApiParserIDCM::parseResponse(const quint64 &uuid, const SwiftApiClient
                          {"created_at", item.value("timestamp").toString()}, // !!! /1000
                          {"updated_at", item.value("timestamp").toString()},
                          {"remote_id", item.value("orderid").toString()},
-                         {"market_id", QString::number(SwiftCore::getAssets()->getMarketIdByName(item.value("symbol").toString(), getExchangeId()))},
+                         {"market_id", QString::number(assets->getMarketIdByName(item.value("symbol").toString(), getExchangeId()))},
                          {"amount", QString::number(item.value("amount").toDouble(), 'f', 8)},
                          {"rate", QString::number(item.value("price").toDouble(), 'f', 8)},  // !!! price or avgprice
                          {"status", orderStatus(item.value("status").toInt())},
@@ -140,7 +140,7 @@ void SwiftApiParserIDCM::parseResponse(const quint64 &uuid, const SwiftApiClient
                         {"created_at", item.value("timestamp").toString()}, // !!! /1000
                         {"updated_at", item.value("timestamp").toString()},
                         {"remote_id", item.value("orderid").toString()},
-                        {"market_id", QString::number(SwiftCore::getAssets()->getMarketIdByName(item.value("symbol").toString(), getExchangeId()))},
+                        {"market_id", QString::number(assets->getMarketIdByName(item.value("symbol").toString(), getExchangeId()))},
                         {"amount", QString::number(item.value("amount").toDouble(), 'f', 8)},
                         {"rate", QString::number(item.value("price").toDouble(), 'f', 8)},  // !!! price or avgprice
                         {"status", orderStatus(item.value("status").toInt())},

@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
     QCoreApplication::setApplicationName("swift-server");
-    QCoreApplication::setApplicationVersion("1.0.451");
+    QCoreApplication::setApplicationVersion("1.0.479");
 
     // Allow only one instance per host
     QLockFile lockFile( QDir::temp().absoluteFilePath( QString(QCoreApplication::applicationName()+".lock") ) );
@@ -173,7 +173,7 @@ int main(int argc, char *argv[])
     // Execute shell command on host
     SwiftBot::provide( RPC_SERVER_COMMAND, [](const QVariantList& v, const QVariantMap&m) {
         Q_UNUSED(m)
-        QProcess::startDetached( v.at(0).toString() );
+        QProcess::startDetached( v.at(0).toString(), {} );
         return "OK";
     });
 
@@ -295,23 +295,23 @@ VALUES (:sell_pair_id,:buy_pair_id,:min_amount,:min_profit,:min_sell_rate,:min_b
        _watchdog[ v.at(0).toString() ] = QDateTime::currentDateTime();
     });
 
-    QTimer * check_watchdog_timer = new QTimer();
-    check_watchdog_timer->setInterval( SwiftBot::appParam("whatchdog_interval", 60 ).toUInt() * 1000 );
-    QObject::connect( check_watchdog_timer, &QTimer::timeout,[&a](){
-       for( auto it = _watchdog.begin(); it != _watchdog.end(); it++ ) {
-           if ( QDateTime::currentSecsSinceEpoch() - it.value().toSecsSinceEpoch() >= SwiftBot::appParam("whatchdog_alive_time", 50 ).toUInt() ) {
-               if ( _running_modules.contains( it.key() ) ) {
-                    _running_modules[ it.key() ].reset( new ProcWrapper( modules[ it.key() ].binary , {} ));
-                    QObject::connect( &a, &QCoreApplication::aboutToQuit, _running_modules[it.key()].data(), &ProcWrapper::stop );
-               } else {
-                   qWarning() << it.key() << "Unknown process module";
+    if ( SwiftBot::appParam("watchdog_enabled", false ).toBool() ) {
+        QTimer * check_watchdog_timer = new QTimer();
+        check_watchdog_timer->setInterval( SwiftBot::appParam("whatchdog_interval", 60 ).toUInt() * 1000 );
+
+        QObject::connect( check_watchdog_timer, &QTimer::timeout,[&a](){
+           for( auto it = _watchdog.begin(); it != _watchdog.end(); it++ ) {
+               if ( QDateTime::currentSecsSinceEpoch() - it.value().toSecsSinceEpoch() >= SwiftBot::appParam("whatchdog_alive_time", 50 ).toUInt() ) {
+                   if ( _running_modules.contains( it.key() ) ) {
+                        _running_modules[ it.key() ].reset( new ProcWrapper( modules[ it.key() ].binary , {} ));
+                        QObject::connect( &a, &QCoreApplication::aboutToQuit, _running_modules[it.key()].data(), &ProcWrapper::stop );
+                   }
                }
            }
-       }
 
-    });
-    check_watchdog_timer->start();
-
+        });
+        check_watchdog_timer->start();
+    }
     wamp_client->onClientConnected([&a, &logger]( Wamp::Session * session ) {
         Q_UNUSED(session)
         logger.init();

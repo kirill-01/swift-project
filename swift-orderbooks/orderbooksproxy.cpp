@@ -3,7 +3,8 @@
 OrderBooksProxy::OrderBooksProxy(QObject *parent) : QObject(parent),
     send_rates_interval(new QTimer(this)),session(nullptr),
     pub_timer(nullptr),  limit_records_count(10),
-    _rates_logger( new QTimer )
+    _rates_logger( new QTimer ),
+    assets( SwiftCore::getAssets() )
 {
 
     _rates_logger->setInterval( 3600000 );
@@ -78,7 +79,7 @@ void OrderBooksProxy::onRequestOrderBooks(const quint32 &_pair) {
 }
 
 void OrderBooksProxy::onWampSession(Wamp::Session *sess) {
-    _pairs = SwiftCore::getAssets()->getActiveMarkets();
+    _pairs = assets->getActiveMarkets();
     session = sess;
     reloadTargets();
 
@@ -93,7 +94,7 @@ void OrderBooksProxy::onWampSession(Wamp::Session *sess) {
        QJsonArray ar;
        QJsonArray br;
        for( auto iit = _current_rates.begin(); iit != _current_rates.end(); iit++ ) {
-           if ( SwiftCore::getAssets()->isMarketActive( iit.key() ) ) {
+           if ( assets->isMarketActive( iit.key() ) ) {
                r[ QString::number( iit.key() ) ] = QString::number(iit.value(), 'f', 8);
            }
        }
@@ -123,13 +124,13 @@ void OrderBooksProxy::onWampSession(Wamp::Session *sess) {
         } else if ( from_coin == 0 || to_coin == 0 ) {
             return 0.0;
         } else {
-            const quint32 arb_pair = SwiftCore::getAssets()->getArbitragePairByCoins( from_coin, to_coin );
+            const quint32 arb_pair = assets->getArbitragePairByCoins( from_coin, to_coin );
             if ( arb_pair == 0 ) {
-                const quint32 arb_pair2 = SwiftCore::getAssets()->getArbitragePairByCoins( to_coin, from_coin );
+                const quint32 arb_pair2 = assets->getArbitragePairByCoins( to_coin, from_coin );
                 if ( arb_pair2 == 0 ) {
                     return 0.0;
                 } else {
-                    QList<quint32> _pairs( SwiftCore::getAssets()->getArbitragePairs().value( arb_pair ) );
+                    QList<quint32> _pairs( assets->getArbitragePairs().value( arb_pair ) );
                     if ( _pairs.isEmpty() ) {
                         return 0.0;
                     } else {
@@ -142,7 +143,7 @@ void OrderBooksProxy::onWampSession(Wamp::Session *sess) {
                     }
                 }
             } else {
-                QList<quint32> _pairs( SwiftCore::getAssets()->getArbitragePairs().value( arb_pair ) );
+                QList<quint32> _pairs( assets->getArbitragePairs().value( arb_pair ) );
                 if ( _pairs.isEmpty() ) {
                     return 0.0;
                 } else {
@@ -295,8 +296,8 @@ void OrderBooksProxy::logRates() {
                 const double diff = ( currate - _rates_history[ pairid ].first() ) / _rates_history[ pairid ].first() * 100;
                 if ( diff > 10 ) {
 
-                    const QString arbname( SwiftCore::getAssets()->getArbitragePairName( SwiftCore::getAssets()->getMarketArbitragePairId( pairid ) ));
-                    const QString exchname( SwiftCore::getAssets()->getMarketExchangeName( pairid ) );
+                    const QString arbname( assets->getArbitragePairName( assets->getMarketArbitragePairId( pairid ) ));
+                    const QString exchname( assets->getMarketExchangeName( pairid ) );
                     const double rate = currate;
                     const QString message( "<b>" + arbname + ":</b> "+exchname+" \nRate changed to <i>"+QString::number( rate, 'f', 2 )+"</i> ("+QString::number( diff, 'f', 2 )+"%)\n" );
                     QVariant ret = session->call(RCP_TELEGRAM_NOTIFY, QVariantList({message}));
@@ -356,7 +357,7 @@ QString OrderBooksProxy::getReportFormattedMessage() {
 }
 
 double OrderBooksProxy::getArbitragePairRate(const quint32 &arbpair) {
-    QList<quint32> _markets( SwiftCore::getAssets()->getArbitragePairs().value( arbpair ) );
+    QList<quint32> _markets( assets->getArbitragePairs().value( arbpair ) );
     if ( _markets.isEmpty() ) {
         return 0.0;
     } else {

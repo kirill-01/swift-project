@@ -72,7 +72,7 @@ void SwiftApiParserBinance::parseResponse(const quint64 &uuid, const SwiftApiCli
                 const QString market_name( j_curr.value("symbol").toString()  );
                 const quint32 market_id = SwiftCore::getAssets( true )->getMarketIdByName(market_name, getExchangeId() );
                 const quint32 bcid = SwiftCore::getAssets(  )->getCurrencyIdByName( j_curr.value("baseAsset").toString(), getExchangeId() );
-                const quint32 mcid = SwiftCore::getAssets()->getCurrencyIdByName( j_curr.value("quoteAsset").toString(), getExchangeId() );
+                const quint32 mcid = assets->getCurrencyIdByName( j_curr.value("quoteAsset").toString(), getExchangeId() );
                 QJsonObject itm;
                 itm["exchange_id"] = QString::number( getExchangeId() );
                 itm["name"] =  market_name;
@@ -112,7 +112,7 @@ void SwiftApiParserBinance::parseResponse(const quint64 &uuid, const SwiftApiCli
             j_ret["success"] = true;
            j_ret["async_uuid"] = QString::number( uuid );
            const QString market_name( j_curr.value("symbol").toString()  );
-           const quint32 market_id = SwiftCore::getAssets()->getMarketIdByName( market_name, getExchangeId() );
+           const quint32 market_id = assets->getMarketIdByName( market_name, getExchangeId() );
                j_ret["exchange_id"] = QString::number( getExchangeId() );
                j_ret["market_id"] = QString::number( market_id );
                j_ret["created_at"] = QString::number( j_curr.value("time").toVariant().toULongLong() );
@@ -135,7 +135,7 @@ void SwiftApiParserBinance::parseResponse(const quint64 &uuid, const SwiftApiCli
                 const QJsonObject j_curr( it->toObject() );
                 QJsonObject j_item;
                 const QString market_name( j_curr.value("symbol").toString()  );
-                const quint32 market_id = SwiftCore::getAssets()->getMarketIdByName( market_name, getExchangeId() );
+                const quint32 market_id = assets->getMarketIdByName( market_name, getExchangeId() );
                 if ( market_id > 0  ) {
                     j_item["exchange_id"] = QString::number( getExchangeId() );
                     j_item["market_id"] = QString::number( market_id );
@@ -165,7 +165,7 @@ void SwiftApiParserBinance::parseResponse(const quint64 &uuid, const SwiftApiCli
                 const QJsonObject j_curr( it->toObject() );
                 QJsonObject j_item;
                 const QString market_name( j_curr.value("symbol").toString()  );
-                const quint32 market_id = SwiftCore::getAssets()->getMarketIdByName( market_name, getExchangeId() );
+                const quint32 market_id = assets->getMarketIdByName( market_name, getExchangeId() );
                 if ( parseStatus( j_curr.value("status").toString() ) != "1" ) {
                     j_item["exchange_id"] = QString::number( getExchangeId() );
                     j_item["market_id"] = QString::number( market_id );
@@ -216,7 +216,7 @@ void SwiftApiParserBinance::parseResponse(const quint64 &uuid, const SwiftApiCli
                 const QJsonObject j_curr( it->toObject() );
                 QJsonObject j_item;
                 const QString currency_name( j_curr.value("asset").toString()  );
-                const quint32 currency_id = SwiftCore::getAssets()->getCurrencyIdByName( currency_name, getExchangeId() );
+                const quint32 currency_id = assets->getCurrencyIdByName( currency_name, getExchangeId() );
                 if ( currency_id > 0  ) {
                     j_item["currency_id"] = QString::number( currency_id );
                     j_item["exchange_id"] = QString::number( getExchangeId() );
@@ -243,7 +243,7 @@ void SwiftApiParserBinance::parseResponse(const quint64 &uuid, const SwiftApiCli
                 const QJsonObject j_curr( it->toObject() );
                 QJsonObject j_item;
                 const QString currency_name( j_curr.value("asset").toString()  );
-                const quint32 currency_id = SwiftCore::getAssets()->getCurrencyIdByName( currency_name, getExchangeId() );
+                const quint32 currency_id = assets->getCurrencyIdByName( currency_name, getExchangeId() );
                 if ( currency_id > 0  ) {
                     j_item["exchange_id"] = QString::number( getExchangeId() );
                     j_item["currency_id"] = QString::number( currency_id );
@@ -275,7 +275,7 @@ void SwiftApiParserBinance::parseResponse(const quint64 &uuid, const SwiftApiCli
                 const QJsonObject j_curr( it->toObject() );
 
                 const QString currency_name( j_curr.value("asset").toString()  );
-                const quint32 currency_id = SwiftCore::getAssets()->getCurrencyIdByName( currency_name, getExchangeId() );
+                const quint32 currency_id = assets->getCurrencyIdByName( currency_name, getExchangeId() );
                 if ( currency_id > 0  ) {
                     QJsonObject j_item;
                     j_item["exchange_id"] = QString::number( getExchangeId() );
@@ -304,7 +304,7 @@ void SwiftApiParserBinance::parseResponse(const quint64 &uuid, const SwiftApiCli
             QJsonArray items;
             for ( auto it = j_objects.begin(); it != j_objects.end(); it++ ) {
                 const QString cname(  it->toObject().value("coin").toString() );
-                const quint32 cid = SwiftCore::getAssets()->getCurrencyIdByName(cname, getExchangeId() );
+                const quint32 cid = assets->getCurrencyIdByName(cname, getExchangeId() );
                 if ( cid > 0 ) {
                    QJsonObject j_it;
                    QJsonArray networks( it->toObject().value("networkList").toArray() );
@@ -331,7 +331,7 @@ void SwiftApiParserBinance::parseResponse(const quint64 &uuid, const SwiftApiCli
              QJsonArray j_objects( j_resp.value("tradeFee").toArray() );
              QJsonArray items;
              for ( auto it = j_objects.begin(); it != j_objects.end(); it++ ) {
-                 const quint32 pid = SwiftCore::getAssets()->getMarketIdByName( it->toObject().value("symbol").toString(), getExchangeId() );
+                 const quint32 pid = assets->getMarketIdByName( it->toObject().value("symbol").toString(), getExchangeId() );
                  if ( pid > 0 ) {
                     QJsonObject j_it;
                     j_it["id"] = QString::number( pid );

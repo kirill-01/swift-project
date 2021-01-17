@@ -48,7 +48,7 @@ void SwiftApiClientBittrex::getOrderbooks(const QJsonObject &j_params, const qui
 void SwiftApiClientBittrex::orderPlace(const QJsonObject &j_params, const quint64 &async_uuid)
 {
     const quint64 nnc = QDateTime::currentSecsSinceEpoch();
-    if ( j_params.value("type").toString() == "sell" ) {
+    if ( j_params.value("type").toString() == "sell" || j_params.value("type").toString() == "0" ) {
         QUrl url("https://api.bittrex.com/api/v1.1/market/selllimit");
         QUrlQuery urlquery;
         urlquery.addQueryItem("apikey", getExchangeApiKey() );
@@ -62,7 +62,7 @@ void SwiftApiClientBittrex::orderPlace(const QJsonObject &j_params, const quint6
         request.setRawHeader("apisign", msg_hash.toUtf8() );
         QNetworkReply * reply = getManager()->get(request);
         reply->setProperty("uuid", async_uuid);
-    } else if ( j_params.value("type").toString() == "buy" ) {
+    } else if ( j_params.value("type").toString() == "buy" || j_params.value("type").toString() == "1" ) {
         QUrl url("https://api.bittrex.com/api/v1.1/market/buylimit");
         QUrlQuery urlquery;
         urlquery.addQueryItem("apikey", getExchangeApiKey() );

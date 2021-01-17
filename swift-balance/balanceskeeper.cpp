@@ -439,16 +439,18 @@ void BalancesKeeper::pauseModule() {
 
 QStringList BalancesKeeper::getConnectedExchanges() {
     QMutexLocker lock( &m );
-    qWarning() << "Updating active exchanges list";
+    if ( is_debug ) {
+        qWarning() << "Balances" << "Updating active exchanges list";
+    }
     if ( session != nullptr && session->isJoined() ) {
         const QString _targetsstr = session->call( RPC_EXCHANGES_LIST_COMMAND ).toString();
         const QStringList exchsList( _targetsstr.split(",") );
-        qWarning() << "Updating active exchanges list : " << _targetsstr;
+
         if ( !exchsList.isEmpty() ) {
             for( auto it = exchsList.begin(); it!= exchsList.end(); it++ ) {
                 QVariant res = session->call("swift.api.status."+*it );
                 const QString res_str( res.toString() );
-                qWarning() << res_str;
+
                 if ( !res_str.isEmpty() ) {
                     const QJsonObject j_api_state( QJsonDocument::fromJson( res_str.toUtf8() ).object() );
                     if ( j_api_state.value("public_methods").toBool( false ) &&

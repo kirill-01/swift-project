@@ -32,8 +32,8 @@
     }
   },
   "module": {
-    "call": ["swift.balance.sendinfo","swift.api.status.*","swift.api.trade.active.*","swift.api.trade.history.*","swift.api.order.get.*", "swift.balance.all"],
-    "register": ["swift.orders.active", "swift.orders.history", "swift.orders.today", "swift.telegram.cmd.balances", "swift.telegram.cmd.trades", "swift.telegram.cmd.stats","swift.telegram.callback"],
+    "call": ["swift.balance.sendinfo","swift.api.status.*","swift.api.trade.active.*","swift.api.order.cancel.*","swift.api.trade.history.*","swift.api.order.get.*", "swift.balance.all"],
+    "register": ["swift.orders.active", "swift.orders.closeall", "swift.orders.history", "swift.orders.today", "swift.telegram.cmd.balances", "swift.telegram.cmd.trades", "swift.telegram.cmd.stats","swift.telegram.callback"],
     "publish": [],
     "subscribe": ["swift.api.asyncresults","swift.orders.events"]
   },
@@ -51,6 +51,12 @@
             "description":"Get list of all closed orders",
             "arguments":[],
             "response":["ORDERS OBJECTS ARRAY"]
+        },
+        {
+            "uri":"swift.orders.closeall",
+            "description":"Close all active orders",
+            "arguments":[],
+            "response":["1"]
         },
         {
             "uri":"swift.orders.today",

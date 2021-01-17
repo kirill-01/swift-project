@@ -54,8 +54,8 @@ void SwiftApiParserKuCoin::parseResponse(const quint64 &uuid, const SwiftApiClie
             const QJsonObject j_curr( it->toObject() );
             const QString market_name( j_curr.value("symbol").toString() );
             const quint32 market_id = SwiftCore::getAssets( true )->getMarketIdByName( market_name, getExchangeId() );
-            const quint32 bcid = SwiftCore::getAssets()->getCurrencyIdByName( j_curr.value("baseCurrency").toString(), getExchangeId() );
-            const quint32 mcid = SwiftCore::getAssets()->getCurrencyIdByName( j_curr.value("quoteCurrency").toString(), getExchangeId() );
+            const quint32 bcid = assets->getCurrencyIdByName( j_curr.value("baseCurrency").toString(), getExchangeId() );
+            const quint32 mcid = assets->getCurrencyIdByName( j_curr.value("quoteCurrency").toString(), getExchangeId() );
             if ( bcid > 0 && mcid > 0) {
                 QJsonObject itm;
                 itm["exchange_id"] = QString::number( getExchangeId() );
@@ -175,7 +175,7 @@ void SwiftApiParserKuCoin::parseResponse(const quint64 &uuid, const SwiftApiClie
         for ( auto it = j_data.begin(); it != j_data.end(); it++ ) {
             const QJsonObject j_cur( it->toObject( ) );
             const QString curname( j_cur.value("name").toString() );
-            const quint32 currency_id = SwiftCore::getAssets()->getCurrencyIdByName( curname, getExchangeId() );
+            const quint32 currency_id = assets->getCurrencyIdByName( curname, getExchangeId() );
             QJsonObject itm;
             itm["exchange_id"] = QString::number( getExchangeId() );
             itm["name"] = curname;
@@ -206,7 +206,7 @@ void SwiftApiParserKuCoin::parseResponse(const quint64 &uuid, const SwiftApiClie
             for( auto it = j_data.begin(); it != j_data.end(); it++ ) {
                 const QJsonObject j_curr( it->toObject() );
                 const QString acc_type = j_curr.value("type").toString();
-                const quint32 cid = SwiftCore::getAssets()->getCurrencyIdByName(j_curr.value("currency").toString(), getExchangeId() );
+                const quint32 cid = assets->getCurrencyIdByName(j_curr.value("currency").toString(), getExchangeId() );
                 if ( !_processed_bals.contains ( cid ) ) { _processed_bals.push_back( cid ); }
 
                 const double balance( j_curr.value("available").toString().toDouble() );
@@ -231,7 +231,7 @@ void SwiftApiParserKuCoin::parseResponse(const quint64 &uuid, const SwiftApiClie
                     j_item["currency_id"] = QString::number( cid );
                     j_item["main_uuid"] = _main_accs_ids.value( cid );
                     j_item["trade_uuid"] = _trading_accs_ids.value( cid );
-                    j_item["name"] =  SwiftCore::getAssets()->getCurrencyName( cid );
+                    j_item["name"] =  assets->getCurrencyName( cid );
                     const double totalbalance = _balances_main.value( cid, 0 ) + _balances_trading.value( cid, 0 );
                     j_item["total"] = QString::number( totalbalance, 'f', 8 );
                     j_item["available"] = QString::number( _balances_trading_available.value( cid, 0 ), 'f', 8 );
@@ -265,7 +265,7 @@ void SwiftApiParserKuCoin::parseResponse(const quint64 &uuid, const SwiftApiClie
                 if ( j_itm.value("isInner").toBool(false) == false ) {
                     QJsonObject j_dep_rec;
                     j_dep_rec["exchange_id"] = QString::number( getExchangeId() );
-                    j_dep_rec["currency_id"] = QString::number( SwiftCore::getAssets()->getCurrencyIdByName( j_itm.value("currency").toString(), getExchangeId() ) );
+                    j_dep_rec["currency_id"] = QString::number( assets->getCurrencyIdByName( j_itm.value("currency").toString(), getExchangeId() ) );
                     j_dep_rec["created_at"] = QString::number( j_itm.value("createdAt").toVariant().toULongLong() / 1000 );
                     j_dep_rec["confirmed_at"] = j_itm.value("updatedAt");
                     j_dep_rec["status"] = j_itm.value("status").toString() == "SUCCESS" ? "done" : ( j_itm.value("status").toString() == "FAILURE" ? "error": "pending");
@@ -293,7 +293,7 @@ void SwiftApiParserKuCoin::parseResponse(const quint64 &uuid, const SwiftApiClie
                 if ( j_itm.value("isInner").toBool(false) == false ) {
                     QJsonObject j_dep_rec;
                     j_dep_rec["exchange_id"] = QString::number( getExchangeId() );
-                    j_dep_rec["currency_id"] = QString::number( SwiftCore::getAssets()->getCurrencyIdByName( j_itm.value("currency").toString(), getExchangeId() ) );
+                    j_dep_rec["currency_id"] = QString::number( assets->getCurrencyIdByName( j_itm.value("currency").toString(), getExchangeId() ) );
                     j_dep_rec["created_at"] = QString::number( j_itm.value("createdAt").toVariant().toULongLong() / 1000 );
                     j_dep_rec["confirmed_at"] = j_itm.value("updatedAt");
                     j_dep_rec["status"] = j_itm.value("status").toString() == "SUCCESS" ? "done" : ( j_itm.value("status").toString() == "FAILURE" ? "error": "pending");

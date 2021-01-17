@@ -75,16 +75,16 @@
       {
 	"uri":"swift.api.order.create.livecoin",
 	"description":"Create new limit order",
-	"arguments":[{"market_id":"1","local_id":"localuuid","type":"0","amount":"1.00000000","rate":"12500.00"}],
+	"arguments":[{"market_id":"1","local_id":"localuuid","type":"sell","amount":"1.00000000","rate":"12500.00"}],
 	"response":[100000001],
-	"async_response":{"status":"1","amount":"0.001","amount_left":"0.001", "rate":"14002.01","ext_id":"someExtId","local_id":"localId","ts":"14030234234234"}
+        "async_response":{"status":"1","amount":"0.001","amount_left":"0.001", "rate":"14002.01","remote_id":"someExtId","local_id":"localId","created_at":"14030234234234"}
       },
       {
 	"uri":"swift.api.order.cancel.livecoin",
 	"description":"Cancel order",
-	"arguments":[{"remote_id":"1"}],
+        "arguments":[{"remote_id":"UNIQUE_REMOTE_ID"}],
 	"response":[100000001],
-	"async_response":{"status":"1","amount":"0.001","amount_left":"0.001", "rate":"14002.01","ext_id":"someExtId","local_id":"localId","ts":"14030234234234"}
+        "async_response":{"status":"3","amount":"0.001","amount_left":"0.001", "rate":"14002.01","ext_id":"someExtId","local_id":"localId","ts":"14030234234234"}
       },
       {
 	"uri":"swift.api.order.get.livecoin",

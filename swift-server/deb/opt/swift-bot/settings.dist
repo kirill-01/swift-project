@@ -25,11 +25,12 @@ max_log_events=1000
 max_logfile_size_mb=1024
 exclude_pairs="ETH-BTC"
 modules_debug=false
-crossbar_binary=/home/kkuznetsov/.local/bin/crossbar
+crossbar_binary=/usr/local/bin/crossbar
 startup_secured=true
 danger_mem_usage_pcnt=75
 danger_cpu_usage_pcnt=75
 before_exchanges_delay=5000
+watchdog_enabled=false
 whatchdog_interval=60
 whatchdog_alive_time=50
 

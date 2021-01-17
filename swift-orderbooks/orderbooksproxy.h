@@ -85,6 +85,7 @@ private:
 
 
     QQueue<QPair<quint32, QJsonObject>> _merge_queue;
+    AssetsStorage * assets;
 };
 
 #endif // ORDERBOOKSPROXY_H

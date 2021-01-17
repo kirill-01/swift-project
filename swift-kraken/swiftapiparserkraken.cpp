@@ -71,9 +71,9 @@ void SwiftApiParserKraken::parseResponse( const quint64& uuid, const SwiftApiCli
                 QJsonObject pair_obj;
                 pair_obj["exchange_id"] = QString::number(getExchangeId());
                 pair_obj["name"] = name;
-                pair_obj["id"] = QString::number( SwiftCore::getAssets()->getMarketIdByName( it.key(), getExchangeId() ) );
-                pair_obj["base_currency_id"] = QString::number( SwiftCore::getAssets()->getCurrencyIdByName( item.value("base").toString(), getExchangeId() ) );
-                pair_obj["market_currency_id"] = QString::number( SwiftCore::getAssets()->getCurrencyIdByName( item.value("quote").toString(), getExchangeId() ) );
+                pair_obj["id"] = QString::number( assets->getMarketIdByName( it.key(), getExchangeId() ) );
+                pair_obj["base_currency_id"] = QString::number( assets->getCurrencyIdByName( item.value("base").toString(), getExchangeId() ) );
+                pair_obj["market_currency_id"] = QString::number( assets->getCurrencyIdByName( item.value("quote").toString(), getExchangeId() ) );
                 pair_list.push_back(pair_obj);
             }
         }
@@ -168,7 +168,7 @@ void SwiftApiParserKraken::parseResponse( const quint64& uuid, const SwiftApiCli
             QJsonObject item = it->toObject();
             QJsonObject withdraw_item;
             withdraw_item["exchange_id"] = QString::number(getExchangeId());
-            withdraw_item["currency_id"] = QString::number( SwiftCore::getAssets()->getCurrencyIdByName(item.value("asset").toString(), getExchangeId()) );
+            withdraw_item["currency_id"] = QString::number( assets->getCurrencyIdByName(item.value("asset").toString(), getExchangeId()) );
             withdraw_item["created_at"] = QString::number(item.value("time").toInt());
             withdraw_item["status"] = ioStatus(item.value("status").toString());
             withdraw_item["tx"] = item.value("txid").toString();
@@ -186,7 +186,7 @@ void SwiftApiParserKraken::parseResponse( const quint64& uuid, const SwiftApiCli
 
         // ??? Возвращает лишь refid
         j_ret["exchange_id"] = QString::number(getExchangeId());
-        //withdraw_item["currency_id"] = QString::number( SwiftCore::getAssets()->getCurrencyIdByName(item.value("asset").toString(), getExchangeId()) );
+        //withdraw_item["currency_id"] = QString::number( assets->getCurrencyIdByName(item.value("asset").toString(), getExchangeId()) );
         //withdraw_item["created_at"] = QString::number(item.value("time").toInt());
         //withdraw_item["confirmed_at"] = ;
         //withdraw_item["status"] = item.value("status").toString();
@@ -202,7 +202,7 @@ void SwiftApiParserKraken::parseResponse( const quint64& uuid, const SwiftApiCli
         QJsonObject withdraw_item;
         // ??? Возвращает лишь refid
         j_ret["exchange_id"] = QString::number(getExchangeId());
-        //j_ret["currency_id"] = QString::number( SwiftCore::getAssets()->getCurrencyIdByName(item.value("asset").toString(), getExchangeId()) );
+        //j_ret["currency_id"] = QString::number( assets->getCurrencyIdByName(item.value("asset").toString(), getExchangeId()) );
         //j_ret["from"] = ;
         //j_ret["to"] = ;
         //j_ret["type"] = "internal";
@@ -217,7 +217,7 @@ void SwiftApiParserKraken::parseResponse( const quint64& uuid, const SwiftApiCli
         for(auto it = result.constBegin(); it != result.constEnd(); ++it){
             QJsonObject balance_item;
             QJsonObject item = it.value().toObject();
-            balance_item["currency_id"] = QString::number(SwiftCore::getAssets()->getCurrencyIdByName(it.key(), getExchangeId()));
+            balance_item["currency_id"] = QString::number(assets->getCurrencyIdByName(it.key(), getExchangeId()));
             balance_item["total"] = QString::number(it.value().toString().toDouble(), 'f', 8);
             balance_item["exchange_id"] = QString::number(getExchangeId());
             balance_item["available"] = QString::number(it.value().toString().toDouble(), 'f', 8);
@@ -240,7 +240,7 @@ void SwiftApiParserKraken::parseResponse( const quint64& uuid, const SwiftApiCli
             deposit_item["exchange_id"] = QString::number(getExchangeId());
             deposit_item["status"] = ioStatus(item.value("status").toString());
             deposit_item["tx"] = item.value("txid").toString();
-            deposit_item["currency_id"] = QString::number( SwiftCore::getAssets()->getCurrencyIdByName(item.value("asset").toString(), getExchangeId()) );
+            deposit_item["currency_id"] = QString::number( assets->getCurrencyIdByName(item.value("asset").toString(), getExchangeId()) );
             deposit_item["deposit_address"] = item.value("info").toString();
             deposit_list.push_back(deposit_item);
         }
@@ -343,7 +343,7 @@ void SwiftApiParserKraken::parseResponse( const quint64& uuid, const SwiftApiCli
 }
 
 int SwiftApiParserKraken::GetMarketId(const QString& market) const {
-    int result = SwiftCore::getAssets()->getMarketIdByName(market, getExchangeId());
+    int result = assets->getMarketIdByName(market, getExchangeId());
     return result;
 }
 

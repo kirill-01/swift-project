@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
     QCoreApplication::setApplicationName("orderbooks");
-    QCoreApplication::setApplicationVersion("1.0.451");
+    QCoreApplication::setApplicationVersion("1.0.479");
 
     // Allow only one instance per host
     QLockFile lockFile(QDir::temp().absoluteFilePath( QString(QCoreApplication::applicationName()+".lock") ) );
@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 
     OrderBooksProxy * orderbooks_proxy = new OrderBooksProxy();
     QObject::connect( wamp_client.data(), &WampClient::clientConnected, orderbooks_proxy, &OrderBooksProxy::onWampSession );
-    QObject::connect( wamp_client.data(), &WampClient::clientdiconnected, [&a](){
+    QObject::connect( wamp_client.data(), &WampClient::clientdiconnected, [&a]() {
         qWarning() << "WAMP client disconnected. Exiting.";
         a.quit();
     });
@@ -92,17 +92,17 @@ int main(int argc, char *argv[])
     watchdog->start();
 
     QObject::connect( node_controller, &NodesController::orderbooksAccumulated, orderbooks_proxy, &OrderBooksProxy::mergeOrderbooks, Qt::QueuedConnection );
-    wamp_client->startClient();
+
 
     QStringList exchanges;
-    QSqlQuery q("SELECT * FROM exchanges WHERE is_enabled=1");
-    if ( q.exec() ) {
+    QSqlQuery q;
+    if ( q.exec("SELECT * FROM exchanges WHERE is_enabled=1") ) {
         while ( q.next() ) {
             exchanges.push_back( q.value("name").toString() );
         }
     }
     q.finish();
-
+    wamp_client->startClient();
     for ( auto it = exchanges.begin(); it != exchanges.end(); it++ ) {
         const quint32 eid = SwiftCore::getAssets()->getExchangeId( *it );
         const QList<quint32> _pids( SwiftCore::getAssets()->getExchangePairs( eid ) );

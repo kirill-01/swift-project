@@ -25,6 +25,8 @@ OrdersKeeper::OrdersKeeper(QObject *parent) : QObject(parent), is_pause(false),i
     connect( this, &OrdersKeeper::callTelegtamTrades, this, &OrdersKeeper::sendTradesMsg );
     connect( this, &OrdersKeeper::callTelegtamBalances, this, &OrdersKeeper::sendBalancesMsg );
 
+    connect( this, &OrdersKeeper::closeAll, this, &OrdersKeeper::onCloseAll );
+
     QSettings * settings( SwiftBot::moduleSettings() );
     const quint32 history_interval = settings->value("history_update_interval", 360000).toUInt();
     if ( history_interval > 0 ) {
@@ -142,6 +144,18 @@ void OrdersKeeper::onOrderEvent(const QString& event_name, const QJsonObject &j_
     data->orders[ locuid ].update( j_order_object );
 }
 
+void OrdersKeeper::onCloseAll() {
+    SwiftBot::Orders _orders = data->orders;
+    if ( is_debug ) {
+        qWarning() << "Canceling all available orders";
+    }
+    for( auto it = _orders.begin(); it != _orders.end(); it++ ) {
+        if ( it->status <= 1 ) {
+            it->cancel( session );
+        }
+    }
+}
+
 void OrdersKeeper::requestHistory() {
     if ( is_pause ) {
         return;
@@ -236,6 +250,12 @@ void OrdersKeeper::onWampSession(Wamp::Session *sess) {
        Q_UNUSED(m)
        Q_UNUSED(v)
        QJsonArray j_ret;
+       SwiftBot::Orders _orders = data->orders;
+       for( auto it = _orders.begin(); it != _orders.end(); it++ ) {
+           if ( it->status < 2 ) {
+               j_ret.push_back( it->toJson() );
+           }
+       }
        const QString str_ret( QJsonDocument( j_ret ).toJson( QJsonDocument::Compact ) );
        return str_ret;
     });
@@ -244,8 +264,21 @@ void OrdersKeeper::onWampSession(Wamp::Session *sess) {
         Q_UNUSED(m)
         Q_UNUSED(v)
         QJsonArray j_ret;
+        SwiftBot::Orders _orders = data->orders;
+        for( auto it = _orders.begin(); it != _orders.end(); it++ ) {
+            if ( it->status >= 2 ) {
+                j_ret.push_back( it->toJson() );
+            }
+        }
         const QString str_ret( QJsonDocument( j_ret ).toJson( QJsonDocument::Compact ) );
         return str_ret;
+    });
+
+    session->provide( "swift.orders.closeall", [=]( const QVariantList&v, const QVariantMap& m ) {
+        Q_UNUSED(m)
+        Q_UNUSED(v)
+        emit closeAll();
+        return 1;
     });
 
     session->provide( "swift.orders.today", [=]( const QVariantList&v, const QVariantMap& m ) {
@@ -313,7 +346,7 @@ void OrdersKeeper::onWampSession(Wamp::Session *sess) {
                     ji["market_name"] = SwiftCore::getAssets()->getMarketName( q.value("sell_pair_id").toUInt() );
                     ji["min_am"] = QString::number( q.value("min_am").toDouble(), 'f', 8 );
                     ji["max_am"] = QString::number( q.value("max_am").toDouble(), 'f', 8 );
-                    ji["min_sr"] = QString::number( q.value("min_st").toDouble(), 'f', 8 );
+                    ji["min_sr"] = QString::number( q.value("min_sr").toDouble(), 'f', 8 );
                     ji["max_sr"] = QString::number( q.value("max_sr").toDouble(), 'f', 8 );
                     ji["min_br"] = QString::number( q.value("min_br").toDouble(), 'f', 8 );
                     ji["max_br"] = QString::number( q.value("max_br").toDouble(), 'f', 8 );

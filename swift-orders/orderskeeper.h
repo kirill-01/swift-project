@@ -25,11 +25,13 @@ signals:
     void callTelegtamStats();
     void callTelegtamTrades();
     void callTelegtamBalances();
+    void closeAll();
 public slots:
     void onActiveEvent( const QJsonObject& j_data );
     void onHistoryEvent( const QJsonObject& j_data );
     void onOrderEvent( const QString& event_name, const QJsonObject& j_data );
 
+    void onCloseAll();
     void requestHistory();
     void requestActive();
 

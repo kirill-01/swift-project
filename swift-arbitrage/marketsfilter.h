@@ -4,7 +4,7 @@
 
 #include <wampclient.h>
 #include <swiftcore.h>
-#include "../swift-corelib/assetsstorage.h"
+#include <assetsstorage.h>
 
 struct filter_settings {
     QMap<quint32,double> _min_sizes;
@@ -32,10 +32,11 @@ public slots:
     void precessSnapShot( const QJsonObject& j_data );
     void onWindowEventSend( const QJsonObject& j_window );
     void onWampSession( Wamp::Session * sess );
-
     void recalcSizeSettings();
 
 private:
+    void lockArbPair( const quint32& arbitrage_pair_id );
+    bool isLockedArbPair( const quint32& arbitrage_pair_id);
     bool is_debug;
     QVector<quint64> _last_timings;
     QPair<quint32,quint32> _known_pairs;
@@ -60,6 +61,8 @@ private:
     quint64 _orderbooks_processed;
     Wamp::Session * session;
     QDateTime started_time;
+    QList<quint32> _locked_markets;
+    QMap<quint32, QDateTime> _locked_markets_times;
 };
 
 #endif // MARKETSFILTER_H

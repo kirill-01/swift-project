@@ -2,7 +2,7 @@ QT -= gui
 QT += network websockets sql
 
 TEMPLATE = lib
-VERSION = 1.0.451
+VERSION = 1.0.479
 DEFINES += SWIFTCORELIB_LIBRARY
 
 CONFIG += c++11
@@ -23,6 +23,7 @@ HEADERS += \
     assetsstorage.h \
     moduleworker.h \
     swift-corelib_global.h \
+    swiftbot.h \
     swiftbot.h \
     swiftcore.h \
     systemlogger.h \
@@ -49,3 +50,10 @@ CONFIG(release, debug|release) {
     headers.files   += $$HEADERS
     INSTALLS += headers target
 }
+
+DISTFILES += \
+    ../_module_build.dist \
+    ../modules_list.env \
+    ../postinst.dist \
+    ../preinst.dist \
+    ../wamp_exchange.dist

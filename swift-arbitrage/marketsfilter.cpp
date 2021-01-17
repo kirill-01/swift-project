@@ -176,18 +176,17 @@ void MarketsFilter::precessSnapShot(const QJsonObject &j_data) {
                 const double sell_balance = session->call(RPC_BALANCE_GET, {bcid} ).toDouble();
                 const double buy_balance = session->call(RPC_BALANCE_GET, {mcid} ).toDouble();
 
-                qWarning() << " ------>>>> ------>>>>>" << sell_balance << buy_balance << " -> Balances";
-                if ( sell_balance > 0 && buy_balance > 0 ) {
+
+                if ( !isLockedArbPair(_arbpairs_rel.value( it.key() )) && sell_balance > 0 && buy_balance > 0 ) {
                     // Calculate max order and send placing it
+                    lockArbPair( _arbpairs_rel.value( it.key() ) );
                     for( auto it2 = _vars.begin(); it2 != _vars.end(); it2++) {
                         if ( it2->amount <= sell_balance && it2->buyPrice() <= buy_balance ) {
                             qWarning() << "--- PLACING ORDERS ---";
                             SwiftBot::Order sell_order = SwiftBot::Order::create( it.key().first, it2->amount, it2->sell_rate, 0 );
-                            if ( sell_order.place( session ) ) {
-                                SwiftBot::Order buy_order = SwiftBot::Order::create( it.key().second, it2->amount, it2->buy_rate, 0 );
-                                if ( !buy_order.place( session ) ) {
-                                    qWarning() << "Error placing order";
-                                }
+                            SwiftBot::Order buy_order = SwiftBot::Order::create( it.key().second, it2->amount, it2->buy_rate, 1 );
+                            if ( sell_order.place( session ) && buy_order.place( session ) ) {
+                                qWarning() << "Orders placed";
                             } else {
                                 qWarning() << "Error placing order";
                             }
@@ -281,9 +280,9 @@ void MarketsFilter::onWampSession(Wamp::Session * sess) {
 }
 
 void MarketsFilter::recalcSizeSettings() {
-    double btc_size_min = SwiftCore::getModuleSettings("arbitrage")->value("min_order_size",0.01).toDouble();
-    double btc_size_max = SwiftCore::getModuleSettings("arbitrage")->value("max_order_size",65.00).toDouble();
-    double btc_size_step = SwiftCore::getModuleSettings("arbitrage")->value("step_order_size",0.05).toDouble();
+    double btc_size_min = SwiftBot::moduleParam("min_order_size",0.01).toDouble();
+    double btc_size_max = SwiftBot::moduleParam("max_order_size",65.00).toDouble();
+    double btc_size_step = SwiftBot::moduleParam("step_order_size",0.05).toDouble();
 
     _arbitrage_pairs = SwiftCore::getAssets()->getArbitragePairs();
     const QList<quint32> _apids( _arbitrage_pairs.keys( ) );
@@ -344,7 +343,34 @@ void MarketsFilter::recalcSizeSettings() {
         }
     }
 
-    QTimer::singleShot( 120000, this, &MarketsFilter::recalcSizeSettings );
+    QTimer::singleShot( SwiftBot::moduleParam("size_recalc_interval",120000).toUInt(), this, &MarketsFilter::recalcSizeSettings );
+}
+
+void MarketsFilter::lockArbPair(const quint32 &arbitrage_pair_id) {
+    if ( is_debug ) {
+        qWarning() << "Arbitrage" << "Locking arbitrage pair" << QString::number( arbitrage_pair_id );
+    }
+    _locked_markets.push_back( arbitrage_pair_id );
+    _locked_markets_times.insert( arbitrage_pair_id, QDateTime::currentDateTime() );
+}
+
+bool MarketsFilter::isLockedArbPair(const quint32 &arbitrage_pair_id) {
+    if ( _locked_markets.contains( arbitrage_pair_id ) ) {
+        const quint32 lock_time = QDateTime::currentDateTime().toSecsSinceEpoch() - _locked_markets_times.value( arbitrage_pair_id ).toMSecsSinceEpoch();
+        const quint32 wait_time = SwiftBot::moduleParam("pair_lock_seconds", 45 ).toUInt();
+        if ( lock_time >= wait_time ) {
+            _locked_markets_times.remove( arbitrage_pair_id );
+            _locked_markets.removeAll( arbitrage_pair_id );
+            return false;
+        } else {
+            if ( is_debug ) {
+                qWarning() << "Pair locked for next " << QString::number( wait_time - lock_time ) << "seconds";
+            }
+            return true;
+        }
+    } else {
+        return false;
+    }
 }
 
 quint64 MarketsFilter::getFilerRate() {

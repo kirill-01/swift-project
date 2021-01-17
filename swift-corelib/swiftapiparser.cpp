@@ -1,14 +1,15 @@
 #include "swiftapiparser.h"
 
-SwiftApiParser::SwiftApiParser(QObject *parent) : QObject(parent)
+SwiftApiParser::SwiftApiParser(QObject *parent) : QObject(parent), assets( SwiftCore::getAssets() )
 {
     qRegisterMetaType<SwiftApiClient::AsyncMethods>("SwiftApiClient::AsyncMethods");
+
 }
 
 quint32 SwiftApiParser::getExchangeId() const {
     static quint32 _id = 0;
     if ( _id == 0 ) {
-        _id = SwiftCore::getAssets()->getExchangeId( getExchangeName() );
+        _id = assets->getExchangeId( getExchangeName() );
     }
     return _id;
 }

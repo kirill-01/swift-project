@@ -12,10 +12,8 @@
 #include <QJsonArray>
 #include <swiftcore.h>
 #include <QTimer>
-
 #include <wampclient.h>
-
-#include "../swift-corelib/assetsstorage.h"
+#include <assetsstorage.h>
 
 struct FilteringStats {
     quint32 sell_pair;
@@ -28,20 +26,7 @@ struct FilteringStats {
     double roi;
     double spread;
     quint32 events_count;
-    QJsonObject toJson() const {
-        QJsonObject j;
-        j["sell_pair"] = QString::number( sell_pair );
-        j["buy_pair"] = QString::number( buy_pair );
-        j["min_size"] = QString::number( min_size,'f',4 );
-        j["max_size"] = QString::number( max_size,'f',4  );
-        j["min_profit"] = QString::number( min_profit,'f',4  );
-        j["max_profit"] = QString::number( max_profit ,'f',4 );
-        j["weight"] = QString::number( weight ,'f',2);
-        j["roi"] = QString::number( weight ,'f',4);
-        j["spread"] = QString::number( weight ,'f',4);
-        j["events_count"] = QString::number( events_count );
-        return j;
-    }
+    QJsonObject toJson() const;
 };
 
 class StatsNotifier : public QObject

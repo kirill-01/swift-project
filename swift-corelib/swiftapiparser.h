@@ -17,6 +17,7 @@ public:
     QSettings * getSettings() {
         return SwiftCore::getModuleSettings( getExchangeName() );
     }
+     AssetsStorage * assets;
 signals:
     void resultParsed( const quint64& uuid, const QJsonObject& j_result );
 

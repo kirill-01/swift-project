@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Building packages..."
+
 rm -rf *.deb > /dev/null
 rm -rf packages/* > /dev/null
 
@@ -20,7 +20,7 @@ increment_version() {
 }
 
 newver=$(increment_version $str)
-
+echo "Building packages version ${newver}: "
 find . -type f -name 'VERSION' -exec sed -i "s/${str}/${newver}/g" {} \;
 find . -type f -name 'control' -exec sed -i "s/${str}/${newver}/g" {} \;
 find . -type f -name 'main.cpp' -exec sed -i "s/${str}/${newver}/g" {} \;

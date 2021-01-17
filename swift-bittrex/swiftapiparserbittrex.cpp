@@ -80,7 +80,7 @@ void SwiftApiParserBittrex::parseResponse( const quint64& uuid, const SwiftApiCl
                 const QString market_name( j_curr.value("MarketName").toString()  );
                 const quint32 market_id = SwiftCore::getAssets( true )->getMarketIdByName(market_name, getExchangeId() );
                 const quint32 mcid = SwiftCore::getAssets(  )->getCurrencyIdByName( j_curr.value("BaseCurrency").toString(), getExchangeId() );
-                const quint32 bcid = SwiftCore::getAssets()->getCurrencyIdByName( j_curr.value("MarketCurrency").toString(), getExchangeId() );
+                const quint32 bcid = assets->getCurrencyIdByName( j_curr.value("MarketCurrency").toString(), getExchangeId() );
                 QJsonObject itm;
                 itm["exchange_id"] = QString::number( getExchangeId() );
                 itm["name"] =  market_name;
@@ -116,7 +116,7 @@ void SwiftApiParserBittrex::parseResponse( const quint64& uuid, const SwiftApiCl
             j_ret["success"] = true;
            j_ret["async_uuid"] = QString::number( uuid );
             const QString market_name( j_curr.value("Exchange").toString()  );
-            const quint32 market_id = SwiftCore::getAssets()->getMarketIdByName( market_name, getExchangeId() );
+            const quint32 market_id = assets->getMarketIdByName( market_name, getExchangeId() );
                 j_ret["exchange_id"] = QString::number( getExchangeId() );
                 j_ret["market_id"] = QString::number( market_id );
                 j_ret["created_at"] = QString::number( QDateTime::fromString( j_curr.value("Opened").toString(), Qt::ISODate ).toMSecsSinceEpoch() );
@@ -132,12 +132,15 @@ void SwiftApiParserBittrex::parseResponse( const quint64& uuid, const SwiftApiCl
             sendResponse( uuid, j_ret );
         } else if ( method == SwiftApiClient::AsyncMethods::TradeOpenOrders ) {
             QJsonArray j_objects( j_resp.value("result").toArray() );
+            if ( isApiDebug() ) {
+                qWarning() << "Received active orders" << j_objects;
+            }
             QJsonArray items;
             for( auto it = j_objects.begin(); it != j_objects.end(); it++ ) {
                 const QJsonObject j_curr( it->toObject() );
                 QJsonObject j_item;
                 const QString market_name( j_curr.value("Exchange").toString()  );
-                const quint32 market_id = SwiftCore::getAssets()->getMarketIdByName( market_name, getExchangeId() );
+                const quint32 market_id = assets->getMarketIdByName( market_name, getExchangeId() );
                 if ( market_id > 0  ) {
                     j_item["exchange_id"] = QString::number( getExchangeId() );
                     j_item["market_id"] = QString::number( market_id );
@@ -152,12 +155,19 @@ void SwiftApiParserBittrex::parseResponse( const quint64& uuid, const SwiftApiCl
                     j_item["fee"] = QString::number( j_curr.value("CommissionPaid").toDouble(), 'f', 8 );
                     j_item["type"] =  j_curr.value("OrderType").toString() == "LIMIT_SELL" ? "sell" : "buy";
                     items.push_back( j_item );
+                } else {
+                    if ( isApiDebug() ) {
+                        qWarning() << "Market unknown for active order" << j_curr;
+                    }
                 }
             }
             QJsonObject j_ret;
             j_ret["success"] = true;
             j_ret["async_uuid"] = QString::number( uuid );
             j_ret["orders"] = items;
+            if ( isApiDebug() ) {
+                qWarning() << "Sending response" << j_ret;
+            }
              sendResponse( uuid, j_ret );
         } else if ( method == SwiftApiClient::AsyncMethods::TradeHistory ) {
             QJsonArray j_objects( j_resp.value("result").toArray() );
@@ -166,7 +176,7 @@ void SwiftApiParserBittrex::parseResponse( const quint64& uuid, const SwiftApiCl
                 const QJsonObject j_curr( it->toObject() );
                 QJsonObject j_item;
                 const QString market_name( j_curr.value("Exchange").toString()  );
-                const quint32 market_id = SwiftCore::getAssets()->getMarketIdByName( market_name, getExchangeId() );
+                const quint32 market_id = assets->getMarketIdByName( market_name, getExchangeId() );
                     j_item["exchange_id"] = QString::number( getExchangeId() );
                     j_item["market_id"] = QString::number( market_id );
                     j_item["created_at"] = QString::number( QDateTime::fromString( j_curr.value("Closed").toString(),Qt::ISODate ).toTimeZone( QTimeZone("UTC+03:00") ).toSecsSinceEpoch() );
@@ -193,7 +203,7 @@ void SwiftApiParserBittrex::parseResponse( const quint64& uuid, const SwiftApiCl
                 const QJsonObject j_curr( it->toObject() );
                 QJsonObject j_item;
                 const QString currency_name( j_curr.value("Currency").toString()  );
-                const quint32 currency_id = SwiftCore::getAssets()->getCurrencyIdByName( currency_name, getExchangeId() );
+                const quint32 currency_id = assets->getCurrencyIdByName( currency_name, getExchangeId() );
                 if ( currency_id > 0  ) {
                     j_item["currency_id"] = QString::number( currency_id );
                     j_item["name"] = currency_name;
@@ -219,7 +229,7 @@ void SwiftApiParserBittrex::parseResponse( const quint64& uuid, const SwiftApiCl
                 const QJsonObject j_curr( it->toObject() );
                 QJsonObject j_item;
                 const QString currency_name( j_curr.value("Currency").toString()  );
-                const quint32 currency_id = SwiftCore::getAssets()->getCurrencyIdByName( currency_name, getExchangeId() );
+                const quint32 currency_id = assets->getCurrencyIdByName( currency_name, getExchangeId() );
                 if ( currency_id > 0  ) {
                     j_item["exchange_id"] = QString::number( getExchangeId() );
                     j_item["currency_id"] = QString::number( currency_id );
@@ -247,7 +257,7 @@ void SwiftApiParserBittrex::parseResponse( const quint64& uuid, const SwiftApiCl
                 const QJsonObject j_curr( it->toObject() );
 
                 const QString currency_name( j_curr.value("Currency").toString()  );
-                const quint32 currency_id = SwiftCore::getAssets()->getCurrencyIdByName( currency_name, getExchangeId() );
+                const quint32 currency_id = assets->getCurrencyIdByName( currency_name, getExchangeId() );
                 if ( currency_id > 0  ) {
                     QJsonObject j_item;
                     j_item["exchange_id"] = QString::number( getExchangeId() );
@@ -276,7 +286,7 @@ void SwiftApiParserBittrex::parseResponse( const quint64& uuid, const SwiftApiCl
                 const QJsonObject j_curr( it->toObject() );
                 QJsonObject j_item;
                 const QString currency_name( j_curr.value("Currency").toString()  );
-                const quint32 currency_id = SwiftCore::getAssets()->getCurrencyIdByName( currency_name, getExchangeId() );
+                const quint32 currency_id = assets->getCurrencyIdByName( currency_name, getExchangeId() );
                 if ( currency_id > 0  ) {
                     j_item["exchange_id"] = QString::number( getExchangeId() );
                     j_item["currency_id"] = QString::number( currency_id );
