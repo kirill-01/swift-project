@@ -9,6 +9,10 @@ OrderBooksProxy::OrderBooksProxy(QObject *parent) : QObject(parent),
 
     _rates_logger->setInterval( 3600000 );
 
+    if ( SwiftCore::getModuleSettings("orderbooks")->value("publish_interval", 1500 ).toUInt() > SwiftCore::getModuleSettings("orderbooks")->value("orderbooks_valid_time", 4500 ).toUInt() ) {
+        qInfo() << "Valid time more than publishing time. Resolving problem.";
+        SwiftCore::getModuleSettings("orderbooks")->setValue("publish_interval", SwiftCore::getModuleSettings("orderbooks")->value("orderbooks_valid_time", 4500 ).toUInt() / 2 );
+    }
     //orderbooks_interval = new QTimer(this);
     //orderbooks_interval->setInterval( SwiftCore::getModuleSettings("orderbooks")->value("request_interval", 1500 ).toUInt() );
 
@@ -33,7 +37,7 @@ OrderBooksProxy::OrderBooksProxy(QObject *parent) : QObject(parent),
 
     qInfo() << "Orderbooks valid timer: " << valid_interval;
     qInfo() << "Orderbooks update interval: " << SwiftCore::getModuleSettings("orderbooks")->value("request_interval", 1500 ).toUInt() ;
-    qInfo() << "Orderbooks publishing interval: " << SwiftCore::getModuleSettings("orderbooks")->value("publish_interval", 1500 ).toUInt() ;
+    qInfo() << "Orderbooks publishing interval: " << SwiftCore::getModuleSettings("orderbooks")->value("publish_interval", 1500 ).toUInt();
     qInfo() << "Orderbooks slicing: " << QString::number( limit_records_count );
 
     send_rates_interval->start();
