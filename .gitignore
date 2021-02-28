@@ -1,3 +1,9 @@
 *.user
 packages
+swift-project.pro.user
+**/*.o
+**/*.so
+**/*.moc
+**/Makefile
+**/*.user
 
