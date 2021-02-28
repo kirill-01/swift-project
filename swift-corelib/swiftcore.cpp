@@ -319,9 +319,12 @@ SwiftBot::Order::Order() {
 
 }
 
-SwiftBot::Order SwiftBot::Order::create(const quint32 &market_id, const double &amount, const double &rate, const quint32 &type)
+SwiftBot::Order SwiftBot::Order::create(
+        const quint32 &market_id,
+        const double &amount,
+        const double &rate,
+        const quint32 &type)
 {
-
     Order o( market_id, amount, rate, type );
     if ( SwiftBot::appParam("is_debug", false ).toBool() ) {
         addLog("Creating order: " + QJsonDocument( o.toJson() ).toJson( QJsonDocument::Compact ), "DEBUG");
@@ -417,16 +420,20 @@ void SwiftBot::Order::save() {
 
 SwiftBot::Order::Order(const quint32 &market_id_, const double &amount_, const double &rate_, const quint32 &type_)
     : local_id(0),
+      remote_id(""),
       amount( amount_ ),
+      amount_left( amount_ ),
       rate( rate_ ),
+      price( 0 ),
+      fee_amount( 0 ),
       market_id( market_id_ ),
       type( type_ )
 {
     exchange_id = SwiftBot::Market( market_id ).exchange_id;
     fee = SwiftCore::getExchangeFee( exchange_id );
-    amount_left = amount;
     created_at = QDateTime::currentDateTime();
     status = 0;
+    fixvals();
 }
 
 SwiftBot::Order::Order(const QSqlRecord &q) {
@@ -506,6 +513,14 @@ void SwiftBot::Order::cancel(Wamp::Session *session) {
 }
 
 bool SwiftBot::Order::place(Wamp::Session *session) {
+
+    if ( amount <= 0 ) {
+        return false;
+    }
+    if ( SwiftBot::appParam("round_rates_fix", true ).toBool() ) {
+        const double fixed_rate = QString::number( rate, 'f', 2 ).toDouble();
+        rate = fixed_rate;
+    }
     if ( SwiftBot::appParam("is_debug", false ).toBool() ) {
         addLog("Placing order: " + QJsonDocument( toJson() ).toJson( QJsonDocument::Compact ), "DEBUG");
     }

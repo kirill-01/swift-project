@@ -12,7 +12,7 @@ make -s -j4
 [ -f $PWD/libswift-corelib.so ] && {
     qtchooser ${1} -print-env > /tmp/qt.env
     . /tmp/qt.env
-    ldd /usr/bin/swift-server | grep ${QTLIBDIR} | sed "s/(.*)//g" | sed "s/.*> //g" > deb/depencies.txt
+    ldd ${PWD}/../swift-server/swift-server | grep ${QTLIBDIR} | sed "s/(.*)//g" | sed "s/.*> //g" > deb/depencies.txt
     
     [ -d deb/usr/lib/swiftbot/depends ] && rm -rf deb/usr/lib/swiftbot/depends
     mkdir -p deb/usr/lib/swiftbot/depends

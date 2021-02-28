@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
     QCoreApplication::setApplicationName("swift-arbitrage");
-    QCoreApplication::setApplicationVersion("1.0.479");
+    QCoreApplication::setApplicationVersion("1.0.493");
 
     // MySQL db
     QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");

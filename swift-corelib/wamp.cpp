@@ -55,7 +55,7 @@ namespace Wamp {
     // Appends XOR:ed ipad to context
     context.append(ipad, 64);
     // Appends key to context
-    context.append(key);
+    context.append( key.toUtf8() );
 
     //Hashes inner pad
     QByteArray sha256 = QCryptographicHash::hash(context, QCryptographicHash::Sha256);
@@ -80,7 +80,7 @@ namespace Wamp {
       m_stopped(false),
       m_in(in),
       m_out(out),
-      m_websocket(*(QWebSocket *)0),
+      m_websocket(*(QWebSocket *)nullptr),
       m_isJoined(false),
       m_msgRead(0),
       m_sessionId(0),
@@ -118,8 +118,8 @@ namespace Wamp {
     : QObject(0),
       m_debug(debug),
       m_stopped(false),
-      m_in(*(QIODevice *)0),
-      m_out(*(QIODevice *)0),
+      m_in(*(QIODevice *)nullptr),
+      m_out(*(QIODevice *)nullptr),
       m_websocket(websocket),
       m_isJoined(false),
       m_msgRead(0),

@@ -5,6 +5,9 @@
 #include <wampclient.h>
 #include <swiftcore.h>
 #include <assetsstorage.h>
+#include <QElapsedTimer>
+#include <QObject>
+
 
 struct filter_settings {
     QMap<quint32,double> _min_sizes;
@@ -12,10 +15,6 @@ struct filter_settings {
     QMap<quint32,double> _stp_sizes;
 
 };
-
-#include <QElapsedTimer>
-
-#include <QObject>
 
 
 class MarketsFilter : public QObject
@@ -35,6 +34,7 @@ public slots:
     void recalcSizeSettings();
 
 private:
+    QMutex m;
     void lockArbPair( const quint32& arbitrage_pair_id );
     bool isLockedArbPair( const quint32& arbitrage_pair_id);
     bool is_debug;

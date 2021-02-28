@@ -1,7 +1,7 @@
-/home/kkuznetsov/Qt/5.15.2/gcc_64/lib/libQt5Network.so.5 
-/home/kkuznetsov/Qt/5.15.2/gcc_64/lib/libQt5Sql.so.5 
-/home/kkuznetsov/Qt/5.15.2/gcc_64/lib/libQt5Core.so.5 
-/home/kkuznetsov/Qt/5.15.2/gcc_64/lib/libQt5WebSockets.so.5 
-/home/kkuznetsov/Qt/5.15.2/gcc_64/lib/libicui18n.so.56 
-/home/kkuznetsov/Qt/5.15.2/gcc_64/lib/libicuuc.so.56 
-/home/kkuznetsov/Qt/5.15.2/gcc_64/lib/libicudata.so.56 
+/home/user/Qt/5.15.2/gcc_64/lib/libQt5Network.so.5 
+/home/user/Qt/5.15.2/gcc_64/lib/libQt5Sql.so.5 
+/home/user/Qt/5.15.2/gcc_64/lib/libQt5Core.so.5 
+/home/user/Qt/5.15.2/gcc_64/lib/libQt5WebSockets.so.5 
+/home/user/Qt/5.15.2/gcc_64/lib/libicui18n.so.56 
+/home/user/Qt/5.15.2/gcc_64/lib/libicuuc.so.56 
+/home/user/Qt/5.15.2/gcc_64/lib/libicudata.so.56 

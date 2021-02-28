@@ -1,5 +1,12 @@
 #!/bin/bash
 
+if [ -z "$1" ]
+  then
+    echo "QT version not defined in argument"
+    echo "USAGE ./build_all.sh -qt=qt5"
+    echo "May be you need to define QT by qtchooser"
+    exit 1;
+fi
 
 rm -rf *.deb > /dev/null
 rm -rf packages/* > /dev/null
@@ -52,6 +59,7 @@ build_module() {
 	sed -i "s/MODULENAME/${modulename}/" deb/DEBIAN/preinst
 	chmod 0775 deb/DEBIAN/preinst && chmod +x deb/DEBIAN/preinst
 	cat ../_module_build.dist > build_module.sh
+        chmod +x build_module.sh
 	./build_module.sh ${2} ${3} ${4}
 	(($? != 0)) && { printf '%s\n' "Command exited with non-zero"; exit 1; }
 	cd ${SRCDIR}
@@ -64,7 +72,7 @@ cd ${SRCDIR}
 build_module swift-corelib ${1} ${2} ${3}
 cd ${SRCDIR}
 
-sudo dpkg -i swift-corelib*.deb
+# sudo dpkg -i swift-corelib*.deb
 
 for item in ${MODULES[*]}
 do

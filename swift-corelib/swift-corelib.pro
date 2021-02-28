@@ -2,7 +2,7 @@ QT -= gui
 QT += network websockets sql
 
 TEMPLATE = lib
-VERSION = 1.0.479
+VERSION = 1.0.493
 DEFINES += SWIFTCORELIB_LIBRARY
 
 CONFIG += c++11
@@ -37,11 +37,11 @@ HEADERS += \
 target.path = /usr/lib
 
 
-LIBS += -lqmsgpack
-
-
 CONFIG(debug, debug|release) {
     message(DEBUG BUILD $$TARGET)
+    INCLUDEPATH += $$PWD/../qmsgpack/src
+    DEPENDPATH += $$PWD/../qmsgpack/src
+    LIBS += -L$$OUT_PWD/../qmsgpack/bin/ -lqmsgpack
 }
 
 CONFIG(release, debug|release) {
@@ -49,6 +49,9 @@ CONFIG(release, debug|release) {
     headers.path    = /usr/include/swiftbot
     headers.files   += $$HEADERS
     INSTALLS += headers target
+    INCLUDEPATH += $$PWD/../qmsgpack/src
+    DEPENDPATH += $$PWD/../qmsgpack/src
+    LIBS += -L$$OUT_PWD/../qmsgpack/bin/ -lqmsgpack
 }
 
 DISTFILES += \
@@ -57,3 +60,5 @@ DISTFILES += \
     ../postinst.dist \
     ../preinst.dist \
     ../wamp_exchange.dist
+
+

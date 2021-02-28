@@ -73,6 +73,7 @@ void MarketsFilter::precessSnapShot(const QJsonObject &j_data) {
     if ( is_debug ) {
         _msg += QString::number( _checked.count() ) + " pairs ";
     }
+
     QMap<QPair<quint32,quint32>, quint32> _arbpairs_rel;
     if ( !_order_max_sizes.isEmpty() ) {
         filter_settings sizes;
@@ -183,8 +184,24 @@ void MarketsFilter::precessSnapShot(const QJsonObject &j_data) {
                     for( auto it2 = _vars.begin(); it2 != _vars.end(); it2++) {
                         if ( it2->amount <= sell_balance && it2->buyPrice() <= buy_balance ) {
                             qWarning() << "--- PLACING ORDERS ---";
-                            SwiftBot::Order sell_order = SwiftBot::Order::create( it.key().first, it2->amount, it2->sell_rate, 0 );
-                            SwiftBot::Order buy_order = SwiftBot::Order::create( it.key().second, it2->amount, it2->buy_rate, 1 );
+                            const quint32 sell_market_id = it.key().first;
+                            const quint32 buy_market_id = it.key().second;
+                            const double amount = it2->amount;
+                            const double sell_rate = it2->sell_rate;
+                            const double buy_rate = it2->buy_rate;
+
+                            SwiftBot::Order sell_order = SwiftBot::Order::create(
+                                        sell_market_id,
+                                        amount,
+                                        sell_rate,
+                                        0 );
+
+                            SwiftBot::Order buy_order = SwiftBot::Order::create(
+                                        buy_market_id,
+                                        amount,
+                                        buy_rate,
+                                        1 );
+
                             if ( sell_order.place( session ) && buy_order.place( session ) ) {
                                 qWarning() << "Orders placed";
                             } else {
@@ -347,6 +364,7 @@ void MarketsFilter::recalcSizeSettings() {
 }
 
 void MarketsFilter::lockArbPair(const quint32 &arbitrage_pair_id) {
+    QMutexLocker locker( &m );
     if ( is_debug ) {
         qWarning() << "Arbitrage" << "Locking arbitrage pair" << QString::number( arbitrage_pair_id );
     }
@@ -355,8 +373,9 @@ void MarketsFilter::lockArbPair(const quint32 &arbitrage_pair_id) {
 }
 
 bool MarketsFilter::isLockedArbPair(const quint32 &arbitrage_pair_id) {
+    QMutexLocker locker( &m );
     if ( _locked_markets.contains( arbitrage_pair_id ) ) {
-        const quint32 lock_time = QDateTime::currentDateTime().toSecsSinceEpoch() - _locked_markets_times.value( arbitrage_pair_id ).toMSecsSinceEpoch();
+        const quint32 lock_time = QDateTime::currentDateTime().toSecsSinceEpoch() - _locked_markets_times.value( arbitrage_pair_id ).toSecsSinceEpoch();
         const quint32 wait_time = SwiftBot::moduleParam("pair_lock_seconds", 45 ).toUInt();
         if ( lock_time >= wait_time ) {
             _locked_markets_times.remove( arbitrage_pair_id );
@@ -379,6 +398,7 @@ quint64 MarketsFilter::getFilerRate() {
     const quint64 total_markets_filtered = std::accumulate( _counters.begin(), _counters.end(), 0 );
     if ( secs_from_start <= 0 && total_markets_filtered <= 0 ) {
         return 0;
+    } else {
+        return total_markets_filtered / secs_from_start;
     }
-    return total_markets_filtered / secs_from_start;
 }

@@ -6,6 +6,9 @@ CONFIG -= app_bundle
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
+include( ../shared.pri )
+
+
 SOURCES += \
         main.cpp \
         marketsfilter.cpp \
@@ -19,7 +22,6 @@ HEADERS += \
     marketsfilter.h \
     statsnotifier.h
 
-include( ../shared.pri )
 
 DISTFILES += \
     deb/opt/swift-bot/modules/arbitrage/arbitrage.dist \

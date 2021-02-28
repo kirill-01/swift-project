@@ -111,7 +111,7 @@ void SwiftApiParserKraken::parseResponse( const quint64& uuid, const SwiftApiCli
                 j_ret["status"] = "1";
 
             const QString descr = result.value("descr").toObject().value("order").toString();
-            auto descr_data = descr.split(" ", QString::SkipEmptyParts);
+            auto descr_data = descr.split(" ", Qt::SkipEmptyParts);
             j_ret["remote_id"] = id_arr.at(0);
             //j_ret["local_id"] = ;
             j_ret["amount"] = descr_data.at(1);
