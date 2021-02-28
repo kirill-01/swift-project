@@ -35,7 +35,7 @@ is_enabled=true
 is_exchange=true
 name=binance
 version=1.0.252
-wamp_password=298D254629CE
+wamp_password=
 wamp_role=mbinance
 wamp_user=binance
 
@@ -51,7 +51,7 @@ name=bitfinex
 requests_delay=350
 requests_repeat_delay=500
 version=1.0.252
-wamp_password=1A45C57AAD13
+wamp_password=
 wamp_role=mbitfinex
 wamp_user=bitfinex
 
@@ -65,14 +65,14 @@ is_enabled=true
 is_exchange=true
 name=bittrex
 version=1.0.252
-wamp_password=705E00043747
+wamp_password=
 wamp_role=mbittrex
 wamp_user=bittrex
 
 [console]
 name=console
 version=1.0.255
-wamp_password=5C5EEE0131B9
+wamp_password=
 wamp_role=mconsole
 wamp_user=console
 
@@ -86,7 +86,7 @@ is_enabled=true
 is_exchange=true
 name=hitbtc
 version=1.0.252
-wamp_password=40A892DDD2DB
+wamp_password=
 wamp_role=mhitbtc
 wamp_user=hitbtc
 
@@ -100,7 +100,7 @@ is_enabled=true
 is_exchange=true
 name=huobi
 version=1.0.252
-wamp_password=308B46E82E42
+wamp_password=
 wamp_role=mhuobi
 wamp_user=huobi
 
@@ -114,7 +114,7 @@ is_enabled=true
 is_exchange=true
 name=idcm
 version=1.0.269
-wamp_password=BD528EAFA16B
+wamp_password=
 wamp_role=midcm
 wamp_user=idcm
 
@@ -128,7 +128,7 @@ is_enabled=true
 is_exchange=true
 name=kraken
 version=1.0.269
-wamp_password=7F581FECC8E7
+wamp_password=
 wamp_role=mkraken
 wamp_user=kraken
 
@@ -158,7 +158,7 @@ is_enabled=false
 is_exchange=true
 name=livecoin
 version=1.0.212
-wamp_password=441633693A58
+wamp_password=
 wamp_role=mlivecoin
 wamp_user=livecoin
 
@@ -190,16 +190,6 @@ version=1.0.252
 wamp_password=78DE7C137462
 wamp_role=morders
 wamp_user=orders
-
-[securewamp]
-binary=/opt/swift-bot/bin/swift-securewamp
-description=Auth component for WAMP crossbar router
-is_enabled=false
-is_exchange=false
-name=securewamp
-version=1.0.0
-wamo_secret=secret123
-wamp_user=authenticator1
 
 [server]
 name=server
@@ -241,12 +231,12 @@ warnings_outputs=true
 
 [telegram]
 binary=/opt/swift-bot/bin/swift-telegram
-chat_id=1019332177
+chat_id=
 description=Telegram API module
 is_enabled=true
 is_exchange=false
 name=telegram
-telegram_api=1395314851:AAGlakzocjMGW2c9IPpwGDuJt4bmdSd1msA
+telegram_api=
 version=1.0.252
 wamp_password=4D7B3458C8EF
 wamp_role=mtelegram
